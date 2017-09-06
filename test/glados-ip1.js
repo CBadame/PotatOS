@@ -18,7 +18,7 @@ function Glados() {
       _KernelInputQueue.enqueue('e');
       _KernelInputQueue.enqueue('l');
       _KernelInputQueue.enqueue('p');
-      TSOS.Kernel.prototype.krnInterruptHandler(KEYBOARD_IRQ, [13, false]);		
+      TSOS.Kernel.prototype.krnInterruptHandler(KEYBOARD_IRQ, [13, false]);
       _KernelInputQueue.enqueue('h');
       _KernelInputQueue.enqueue('e');
       _KernelInputQueue.enqueue('l');
@@ -75,7 +75,7 @@ function Glados() {
       _KernelInputQueue.enqueue('i');
       _KernelInputQueue.enqueue('e');
       _KernelInputQueue.enqueue('!');
-      TSOS.Kernel.prototype.krnInterruptHandler(KEYBOARD_IRQ, [13, false]);              
+      TSOS.Kernel.prototype.krnInterruptHandler(KEYBOARD_IRQ, [13, false]);
 
       // Try and load some invalid user program code.
       document.getElementById("taProgramInput").value = "This is NOT hex.";

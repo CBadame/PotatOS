@@ -80,7 +80,7 @@ function Glados() {
 								     _KernelInputQueue.enqueue('o');
 								     _KernelInputQueue.enqueue('a');
 								     _KernelInputQueue.enqueue('d');
-								     TSOS.Kernel.prototype.krnInterruptHandler(KEYBOARD_IRQ, [13, false]);           	   				
+								     TSOS.Kernel.prototype.krnInterruptHandler(KEYBOARD_IRQ, [13, false]);
 									}, 1000);
 
 		setTimeout(function(){ document.getElementById("taProgramInput").value = code2;
@@ -88,7 +88,7 @@ function Glados() {
 								     _KernelInputQueue.enqueue('o');
 								     _KernelInputQueue.enqueue('a');
 								     _KernelInputQueue.enqueue('d');
-								     TSOS.Kernel.prototype.krnInterruptHandler(KEYBOARD_IRQ, [13, false]);           	   				
+								     TSOS.Kernel.prototype.krnInterruptHandler(KEYBOARD_IRQ, [13, false]);
 									}, 2000);
 
 		setTimeout(function(){ document.getElementById("taProgramInput").value = code3;
@@ -96,7 +96,7 @@ function Glados() {
 								     _KernelInputQueue.enqueue('o');
 								     _KernelInputQueue.enqueue('a');
 								     _KernelInputQueue.enqueue('d');
-								     TSOS.Kernel.prototype.krnInterruptHandler(KEYBOARD_IRQ, [13, false]);           	   				
+								     TSOS.Kernel.prototype.krnInterruptHandler(KEYBOARD_IRQ, [13, false]);
 									}, 3000);
 
 		setTimeout(function(){ _KernelInputQueue.enqueue('r');
@@ -105,7 +105,7 @@ function Glados() {
 								     _KernelInputQueue.enqueue('a');
 								     _KernelInputQueue.enqueue('l');      
 								     _KernelInputQueue.enqueue('l');            
-								     TSOS.Kernel.prototype.krnInterruptHandler(KEYBOARD_IRQ, [13, false]);		
+								     TSOS.Kernel.prototype.krnInterruptHandler(KEYBOARD_IRQ, [13, false]);
 									}, 4000);
    };
 		
