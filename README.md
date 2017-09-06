@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Browser-based Operating System in TypeScript
 ============================================
 
@@ -73,3 +74,6 @@ This will be especially helpful for an OS or a Compiler that may need to run in 
 
 **Where can I get more info on TypeScript**
 [Right this way!](http://www.typescriptlang.org/)
+=======
+# PotatOS
+>>>>>>> 0dfd2769528e80e3c5d58de593d028c1a4146caa
