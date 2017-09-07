@@ -1,2 +1,1 @@
-PotatOS
-- Carson Badame
+PotatOS - Carson Badame
