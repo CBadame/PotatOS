@@ -195,38 +195,10 @@ var TSOS;
             if (args.length > 0) {
                 var topic = args[0];
                 switch (topic) {
-                    case "ver":
-                        _StdOut.putText("Ver displays the name and version number of the OS " +
-                            "(If this still confuses you then you are hopelessly lost).");
-                        break;
                     case "help":
                         _StdOut.putText("Help displays a list of (hopefully) valid commands.");
                         break;
-                    case "shutdown":
-                        _StdOut.putText("Shutdown turns off the virtual OS. It can then only be restarted by either " +
-                            "hitting the 'Reset' button or reloading the page and hitting the 'Start' button.");
-                        break;
-                    case "cls":
-                        _StdOut.putText("Cls clears all text from the terminal.");
-                        break;
-                    case "man":
-                        _StdOut.putText("Man displays a manual page for incompetent users who don't know how to use " +
-                            "context clues to figure out what a given command's function is.");
-                        break;
-                    case "trace":
-                        _StdOut.putText("Trace toggles the OS tracing for viewing in the Host Log.");
-                        break;
-                    case "rot13":
-                        _StdOut.putText("Rot13 shifts each letter in a given string 13 places down the alphabet. " +
-                            "This basically exists so that Alan could store curse's in the OS without having to " +
-                            "store them in plain text.");
-                        break;
-                    case "prompt":
-                        _StdOut.putText("");
-                        break;
-                    case "date":
-                        _StdOut.putText("");
-                        break;
+                    // TODO: Make descriptive MANual page entries for the the rest of the shell commands here.
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -279,11 +251,11 @@ var TSOS;
         };
         Shell.prototype.shellDate = function () {
             var currentDate = new Date();
-            var date = (currentDate.getMonth() + 1) + '/' + (currentDate.getDay() + 3) + '/' + currentDate.getFullYear() + ' ';
-            date += currentDate.getHours() + ':' + currentDate.getMinutes() + ':' + currentDate.getUTCSeconds();
-            _StdOut.putText(date);
+            var date = currentDate.getDate();
+            _StdOut.putText("Meh");
         };
         return Shell;
     }());
     TSOS.Shell = Shell;
 })(TSOS || (TSOS = {}));
+//# sourceMappingURL=shell.js.map
