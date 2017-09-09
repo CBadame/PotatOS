@@ -222,10 +222,11 @@ var TSOS;
                             "store them in plain text.");
                         break;
                     case "prompt":
-                        _StdOut.putText("");
+                        _StdOut.putText("Prompt allows the user to change the cursor, or 'prompt', to whatever " +
+                            "string they prefer.");
                         break;
                     case "date":
-                        _StdOut.putText("");
+                        _StdOut.putText("Displays current date and time. What did you think it did?");
                         break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
@@ -280,7 +281,7 @@ var TSOS;
         Shell.prototype.shellDate = function () {
             var currentDate = new Date();
             var date = (currentDate.getMonth() + 1) + '/' + (currentDate.getDay() + 3) + '/' + currentDate.getFullYear() + ' ';
-            date += currentDate.getHours() + ':' + currentDate.getMinutes() + ':' + currentDate.getUTCSeconds();
+            date += currentDate.getHours() + ':' + currentDate.getUTCMinutes() + ':' + currentDate.getUTCSeconds();
             _StdOut.putText(date);
         };
         return Shell;
