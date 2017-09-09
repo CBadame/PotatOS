@@ -85,6 +85,18 @@ module TSOS {
                                   " - Displays current date and time.");
             this.commandList[this.commandList.length] = sc;
 
+            //whereami
+            sc = new ShellCommand(this.shellWhere,
+                                  "whereami",
+                                  " - Displays user's current location.");
+            this.commandList[this.commandList.length] = sc;
+
+            //facts
+            sc = new ShellCommand(this.shellFacts,
+                                  "facts",
+                                  " - Displays a random fact about potatoes.");
+            this.commandList[this.commandList.length] = sc;
+
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
 
@@ -263,8 +275,8 @@ module TSOS {
                         break;
                     case "rot13":
                         _StdOut.putText("Rot13 shifts each letter in a given string 13 places down the alphabet. " +
-                            "This basically exists so that Alan could store curse's in the OS without having to " +
-                            "store them in plain text.");
+                            "This basically exists so that Alan could store curse words in the OS without leaving " +
+                            "them in plain text.");
                         break;
                     case "prompt":
                         _StdOut.putText("Prompt allows the user to change the cursor, or 'prompt', to whatever " +
@@ -272,6 +284,9 @@ module TSOS {
                         break;
                     case "date":
                         _StdOut.putText("Displays current date and time. What did you think it did?");
+                        break;
+                    case "whereami":
+                        _StdOut.putText("Tells the user where they are currently located.");
                         break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
@@ -324,10 +339,17 @@ module TSOS {
 
         public shellDate() {
             var currentDate = new Date();
-            var date = (currentDate.getMonth()+1) + '/' + (currentDate.getDay()+3) + '/' + currentDate.getFullYear() + ' ';
+            var date = (currentDate.getMonth()+1) + '/' + (currentDate.getUTCDate()) + '/' + currentDate.getFullYear() + ' ';
             date += currentDate.getHours() + ':' + currentDate.getUTCMinutes() + ':' + currentDate.getUTCSeconds();
            _StdOut.putText(date);
         }
 
+        public shellWhere() {
+            _StdOut.putText("Probably in front of a computer if I had to guess. (More creative response TBD)");
+        }
+
+        public shellFacts() {
+            _StdOut.putText(factGenerator(factList));
+        }
     }
 }
