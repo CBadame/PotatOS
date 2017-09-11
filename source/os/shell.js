@@ -235,7 +235,7 @@ var TSOS;
                         _StdOut.putText("Displays current date and time. What did you think it did?");
                         break;
                     case "whereami":
-                        _StdOut.putText("Tells the user where they are currently located.");
+                        _StdOut.putText("Tells the user where they are currently located...sorta.");
                         break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
