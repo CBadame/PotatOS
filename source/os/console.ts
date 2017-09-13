@@ -17,7 +17,8 @@ module TSOS {
                     public currentFontSize = _DefaultFontSize,
                     public currentXPosition = 0,
                     public currentYPosition = _DefaultFontSize,
-                    public buffer = "") {
+                    public buffer = "",
+                    public oldInput = [""]) {
         }
 
         public init(): void {
@@ -35,12 +36,17 @@ module TSOS {
         }
 
         public handleInput(): void {
+            var currentPosition = 0;
             while (_KernelInputQueue.getSize() > 0) {
                 // Get the next character from the kernel input queue.
                 var chr = _KernelInputQueue.dequeue();
                 // Check to see if it's "special" (enter or ctrl-c) or "normal" (anything else that the keyboard device driver gave us).
                 if (chr === String.fromCharCode(13)) { //     Enter key
                     // The enter key marks the end of a console command, so ...
+                    // ... add input to array ...
+                    this.oldInput.splice(1, 0, this.buffer);
+                    currentPosition = 0;
+                    this.oldInput[0] = "";
                     // ... tell the shell ...
                     _OsShell.handleInput(this.buffer);
                     // ... and reset our buffer.
@@ -60,14 +66,35 @@ module TSOS {
                     }
                     if (matchedCommands.length == 1)
                         redrawInput(matchedCommands[0]);
+
+                // Change buffer to next input in the array of old inputs (up arrow)
+                } else if (chr === String.fromCharCode(38)) {
+                    if (currentPosition < this.oldInput.length-1) {
+                        console.log(this.oldInput);
+                        currentPosition++;
+                        redrawInput(this.oldInput[currentPosition]);
+                    }
+
+                // Change buffer to last input in the array of old inputs (down arrow)
+                } else if (chr === String.fromCharCode(40)) {
+                    if (currentPosition > 0) {
+                        console.log(this.oldInput);
+                        currentPosition--;
+                        redrawInput(this.oldInput[currentPosition]);
+                    }
                 } else {
                     // This is a "normal" character, so ...
                     // ... draw it on the screen...
                     this.putText(chr);
                     // ... and add it to our buffer.
                     this.buffer += chr;
+                    // Add current buffer to input array
+                    this.oldInput[0] = this.buffer;
+                    currentPosition = 0;
                 }
-                console.log(this.buffer);
+                console.log(this.oldInput.length);
+                //console.log(this.buffer);
+                console.log(currentPosition);
                 // TODO: Write a case for Ctrl-C.
             }
 
