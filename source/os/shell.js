@@ -20,6 +20,8 @@ var TSOS;
             this.commandList = [];
             this.curses = "[fuvg],[cvff],[shpx],[phag],[pbpxfhpxre],[zbgureshpxre],[gvgf]";
             this.apologies = "[sorry]";
+            this.promptXPosition = _Console.currentXPosition;
+            this.promptYPosition = _Console.currentYPosition;
         }
         Shell.prototype.init = function () {
             var sc;
@@ -66,6 +68,8 @@ var TSOS;
         };
         Shell.prototype.putPrompt = function () {
             _StdOut.putText(this.promptStr);
+            this.promptXPosition = _Console.currentXPosition;
+            this.promptYPosition = _Console.currentYPosition;
         };
         Shell.prototype.handleInput = function (buffer) {
             _Kernel.krnTrace("Shell Command~" + buffer);

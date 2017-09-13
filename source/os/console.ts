@@ -45,6 +45,18 @@ module TSOS {
                     _OsShell.handleInput(this.buffer);
                     // ... and reset our buffer.
                     this.buffer = "";
+
+                // If the backspace is hit, remove the last char from the buffer...
+                // ...and redraw all char's since the last prompt
+                } else if (chr === String.fromCharCode(8)) {
+                    _DrawingContext.clearRect(_OsShell.promptXPosition,
+                        _OsShell.promptYPosition-_DefaultFontSize,
+                        _DrawingContext.measureText(this.currentFont, this.currentFontSize, _Console.buffer),
+                        _DefaultFontSize + _FontHeightMargin);
+                    _Console.buffer = _Console.buffer.substring(0, _Console.buffer.length - 1);
+                    this.currentXPosition = _OsShell.promptXPosition;
+                    this.currentYPosition = _OsShell.promptYPosition;
+                    this.putText(this.buffer);
                 } else {
                     // This is a "normal" character, so ...
                     // ... draw it on the screen...

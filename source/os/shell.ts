@@ -22,6 +22,8 @@ module TSOS {
         public commandList = [];
         public curses = "[fuvg],[cvff],[shpx],[phag],[pbpxfhpxre],[zbgureshpxre],[gvgf]";
         public apologies = "[sorry]";
+        public promptXPosition = _Console.currentXPosition;
+        public promptYPosition = _Console.currentYPosition;
 
         constructor() {
         }
@@ -107,6 +109,8 @@ module TSOS {
 
         public putPrompt() {
             _StdOut.putText(this.promptStr);
+            this.promptXPosition = _Console.currentXPosition;
+            this.promptYPosition = _Console.currentYPosition;
         }
 
         public handleInput(buffer) {
