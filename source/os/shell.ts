@@ -105,6 +105,7 @@ module TSOS {
             //
             // Display the initial prompt.
             this.putPrompt();
+
         }
 
         public putPrompt() {
@@ -299,6 +300,7 @@ module TSOS {
                 _StdOut.putText("Usage: man <topic>  Please supply a topic.");
             }
         }
+
 
         public shellTrace(args) {
             if (args.length > 0) {

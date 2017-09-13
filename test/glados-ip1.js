@@ -3,6 +3,7 @@
 //
 
 function Glados() {
+   // And the meek shall inherit the Earth...
    this.version = 2112;
 
    this.init = function() {

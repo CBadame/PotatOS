@@ -49,14 +49,17 @@ module TSOS {
                 // If the backspace is hit, remove the last char from the buffer...
                 // ...and redraw all char's since the last prompt
                 } else if (chr === String.fromCharCode(8)) {
-                    _DrawingContext.clearRect(_OsShell.promptXPosition,
-                        _OsShell.promptYPosition-_DefaultFontSize,
-                        _DrawingContext.measureText(this.currentFont, this.currentFontSize, _Console.buffer),
-                        _DefaultFontSize + _FontHeightMargin);
-                    _Console.buffer = _Console.buffer.substring(0, _Console.buffer.length - 1);
-                    this.currentXPosition = _OsShell.promptXPosition;
-                    this.currentYPosition = _OsShell.promptYPosition;
-                    this.putText(this.buffer);
+                    redrawInput(_Console.buffer.substring(0, _Console.buffer.length - 1));
+
+                // Command completion for 'tab'
+                } else if (chr === String.fromCharCode(9)) {
+                    var matchedCommands = new Array;
+                    for (var i = 0; i < _OsShell.commandList.length; i++) {
+                        if (_OsShell.commandList[i].command.indexOf(this.buffer) >= 0)
+                            matchedCommands.push(_OsShell.commandList[i].command);
+                    }
+                    if (matchedCommands.length == 1)
+                        redrawInput(matchedCommands[0]);
                 } else {
                     // This is a "normal" character, so ...
                     // ... draw it on the screen...
@@ -64,7 +67,20 @@ module TSOS {
                     // ... and add it to our buffer.
                     this.buffer += chr;
                 }
+                console.log(this.buffer);
                 // TODO: Write a case for Ctrl-C.
+            }
+
+            // Deletes and redraws updated buffer for backspace and command completion
+            function redrawInput(newBuffer) {
+                _DrawingContext.clearRect(_OsShell.promptXPosition,
+                    _OsShell.promptYPosition - _DefaultFontSize,
+                    _DrawingContext.measureText(_Console.currentFont, _Console.currentFontSize, _Console.buffer),
+                    _DefaultFontSize + _FontHeightMargin);
+                _Console.buffer = newBuffer;
+                _Console.currentXPosition = _OsShell.promptXPosition;
+                _Console.currentYPosition = _OsShell.promptYPosition;
+                _Console.putText(_Console.buffer);
             }
         }
 
