@@ -321,6 +321,9 @@ var PotatOS;
         Shell.prototype.shellLoad = function () {
             var userInput = document.getElementById('taProgramInput').value;
             if (userInput) {
+                // Decided to use regex because the valueType of 'taProgramInput' was being returned as 'undefined'...
+                // ...I got sick of trying to figure out how to make the value a string/compare it to a string, and...
+                // thought that this would be easier (Hint: It was)
                 if (!userInput.match(/[A-F0-9\s]+/))
                     _StdOut.putText("User input is invalid. Please use hex, digits, or spaces.");
             }
