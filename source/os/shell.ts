@@ -378,18 +378,10 @@ module PotatOS {
         }
 
         public shellLoad() {
-            var userInput = document.getElementById('taProgramInput').value.toString();
+            var userInput = document.getElementById('taProgramInput').value;
             if (userInput) {
-                console.log(userInput);
-                for (var i = 0; i < userInput.length; i++) {
-                    console.log(userInput[i]);
-                    console.log(userInput[i].valueType);
-                    console.log(userInput[i].toUpperCase().indexOf("ABCDEF0123456789 "));
-                    if (userInput[i].toUpperCase().indexOf("ABCDEF0123456789 ") < 0) {
-                        _StdOut.putText("User input is invalid. Please use hex, digits, or spaces.");
-                        break;
-                    }
-                }
+                if (!userInput.match(/[A-F0-9\s]+/))
+                    _StdOut.putText("User input is invalid. Please use hex, digits, or spaces.");
             }
         }
 
