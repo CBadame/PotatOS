@@ -3,8 +3,8 @@
 
    Utility functions.
    -------- */
-var TSOS;
-(function (TSOS) {
+var PotatOS;
+(function (PotatOS) {
     var Utils = (function () {
         function Utils() {
         }
@@ -46,5 +46,5 @@ var TSOS;
         };
         return Utils;
     })();
-    TSOS.Utils = Utils;
-})(TSOS || (TSOS = {}));
+    PotatOS.Utils = Utils;
+})(PotatOS || (PotatOS = {}));

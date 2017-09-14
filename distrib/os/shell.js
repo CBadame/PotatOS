@@ -3,16 +3,16 @@
 ///<reference path="shellCommand.ts" />
 ///<reference path="userCommand.ts" />
 /* ------------
-   Shell.ts
+ Shell.ts
 
-   The OS Shell - The "command line interface" (CLI) for the console.
+ The OS Shell - The "command line interface" (CLI) for the console.
 
-    Note: While fun and learning are the primary goals of all enrichment center activities,
-          serious injuries may occur when trying to write your own Operating System.
-   ------------ */
+ Note: While fun and learning are the primary goals of all enrichment center activities,
+ serious injuries may occur when trying to write your own Operating System.
+ ------------ */
 // TODO: Write a base class / prototype for system services and let Shell inherit from it.
-var TSOS;
-(function (TSOS) {
+var PotatOS;
+(function (PotatOS) {
     var Shell = (function () {
         function Shell() {
             // Properties
@@ -28,38 +28,46 @@ var TSOS;
             //
             // Load the command list.
             // ver
-            sc = new TSOS.ShellCommand(this.shellVer, "ver", "- Displays the current version data.");
+            sc = new PotatOS.ShellCommand(this.shellVer, "ver", "- Displays the current version data.");
             this.commandList[this.commandList.length] = sc;
             // help
-            sc = new TSOS.ShellCommand(this.shellHelp, "help", "- This is the help command. Seek help.");
+            sc = new PotatOS.ShellCommand(this.shellHelp, "help", "- This is the help command. Seek help.");
             this.commandList[this.commandList.length] = sc;
             // shutdown
-            sc = new TSOS.ShellCommand(this.shellShutdown, "shutdown", "- Shuts down the virtual OS but leaves the underlying host / hardware simulation running.");
+            sc = new PotatOS.ShellCommand(this.shellShutdown, "shutdown", "- Shuts down the virtual OS but leaves the underlying host / hardware simulation running.");
             this.commandList[this.commandList.length] = sc;
             // cls
-            sc = new TSOS.ShellCommand(this.shellCls, "cls", "- Clears the screen and resets the cursor position.");
+            sc = new PotatOS.ShellCommand(this.shellCls, "cls", "- Clears the screen and resets the cursor position.");
             this.commandList[this.commandList.length] = sc;
             // man <topic>
-            sc = new TSOS.ShellCommand(this.shellMan, "man", "<topic> - Displays the MANual page for <topic>.");
+            sc = new PotatOS.ShellCommand(this.shellMan, "man", "<topic> - Displays the MANual page for <topic>.");
             this.commandList[this.commandList.length] = sc;
             // trace <on | off>
-            sc = new TSOS.ShellCommand(this.shellTrace, "trace", "<on | off> - Turns the OS trace on or off.");
+            sc = new PotatOS.ShellCommand(this.shellTrace, "trace", "<on | off> - Turns the OS trace on or off.");
             this.commandList[this.commandList.length] = sc;
             // rot13 <string>
-            sc = new TSOS.ShellCommand(this.shellRot13, "rot13", "<string> - Does rot13 obfuscation on <string>.");
+            sc = new PotatOS.ShellCommand(this.shellRot13, "rot13", "<string> - Does rot13 obfuscation on <string>.");
             this.commandList[this.commandList.length] = sc;
             // prompt <string>
-            sc = new TSOS.ShellCommand(this.shellPrompt, "prompt", "<string> - Sets the prompt.");
+            sc = new PotatOS.ShellCommand(this.shellPrompt, "prompt", "<string> - Sets the prompt.");
             this.commandList[this.commandList.length] = sc;
             //date
-            sc = new TSOS.ShellCommand(this.shellDate, "date", " - Displays current date and time.");
+            sc = new PotatOS.ShellCommand(this.shellDate, "date", " - Displays current date and time.");
             this.commandList[this.commandList.length] = sc;
             //whereami
-            sc = new TSOS.ShellCommand(this.shellWhere, "whereami", " - Displays user's current location.");
+            sc = new PotatOS.ShellCommand(this.shellWhere, "whereami", " - Displays user's current location.");
             this.commandList[this.commandList.length] = sc;
             //facts
-            sc = new TSOS.ShellCommand(this.shellFacts, "facts", " - Displays a random fact about potatoes.");
+            sc = new PotatOS.ShellCommand(this.shellFacts, "facts", " - Displays a random fact about potatoes.");
             this.commandList[this.commandList.length] = sc;
+            //load
+            sc = new PotatOS.ShellCommand(this.shellLoad, "load", " - Validates code located in 'User Program Input'.");
+            this.commandList[this.commandList.length] = sc;
+            //bsod
+            /* sc = new ShellCommand(this.shellBSOD,
+                 "bsod",
+                 " - Initiates Blue Screen of Death.");
+             this.commandList[this.commandList.length] = sc; */
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
             //
@@ -102,7 +110,7 @@ var TSOS;
             }
             else {
                 // It's not found, so check for curses and apologies before declaring the command invalid.
-                if (this.curses.indexOf("[" + TSOS.Utils.rot13(cmd) + "]") >= 0) {
+                if (this.curses.indexOf("[" + PotatOS.Utils.rot13(cmd) + "]") >= 0) {
                     this.execute(this.shellCurse);
                 }
                 else if (this.apologies.indexOf("[" + cmd + "]") >= 0) {
@@ -127,9 +135,9 @@ var TSOS;
             this.putPrompt();
         };
         Shell.prototype.parseInput = function (buffer) {
-            var retVal = new TSOS.UserCommand();
+            var retVal = new PotatOS.UserCommand();
             // 1. Remove leading and trailing spaces.
-            buffer = TSOS.Utils.trim(buffer);
+            buffer = PotatOS.Utils.trim(buffer);
             // 2. Lower-case it.
             buffer = buffer.toLowerCase();
             // 3. Separate on spaces so we can determine the command and command-line args, if any.
@@ -137,12 +145,12 @@ var TSOS;
             // 4. Take the first (zeroth) element and use that as the command.
             var cmd = tempList.shift(); // Yes, you can do that to an array in JavaScript.  See the Queue class.
             // 4.1 Remove any left-over spaces.
-            cmd = TSOS.Utils.trim(cmd);
+            cmd = PotatOS.Utils.trim(cmd);
             // 4.2 Record it in the return value.
             retVal.command = cmd;
             // 5. Now create the args array from what's left.
             for (var i in tempList) {
-                var arg = TSOS.Utils.trim(tempList[i]);
+                var arg = PotatOS.Utils.trim(tempList[i]);
                 if (arg != "") {
                     retVal.args[retVal.args.length] = tempList[i];
                 }
@@ -241,6 +249,13 @@ var TSOS;
                     case "whereami":
                         _StdOut.putText("Tells the user where they are currently located...sorta.");
                         break;
+                    case "load":
+                        _StdOut.putText("Ensures that the user is only trying to use hex, digits, and/or spaces " +
+                            "with their program.");
+                        break;
+                    case "bsod":
+                        _StdOut.putText("Tests the Blue Screen of Death function...everyone's favorite part of an OS.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -277,7 +292,7 @@ var TSOS;
         Shell.prototype.shellRot13 = function (args) {
             if (args.length > 0) {
                 // Requires Utils.ts for rot13() function.
-                _StdOut.putText(args.join(' ') + " = '" + TSOS.Utils.rot13(args.join(' ')) + "'");
+                _StdOut.putText(args.join(' ') + " = '" + PotatOS.Utils.rot13(args.join(' ')) + "'");
             }
             else {
                 _StdOut.putText("Usage: rot13 <string>  Please supply a string.");
@@ -303,7 +318,22 @@ var TSOS;
         Shell.prototype.shellFacts = function () {
             _StdOut.putText(factGenerator(factList));
         };
+        Shell.prototype.shellLoad = function () {
+            var userInput = document.getElementById('taProgramInput').value.toString();
+            if (userInput) {
+                console.log(userInput);
+                for (var i = 0; i < userInput.length; i++) {
+                    console.log(userInput[i]);
+                    console.log(userInput[i].valueType);
+                    console.log(userInput[i].toUpperCase().indexOf("ABCDEF0123456789 "));
+                    if (userInput[i].toUpperCase().indexOf("ABCDEF0123456789 ") < 0) {
+                        _StdOut.putText("User input is invalid. Please use hex, digits, or spaces.");
+                        break;
+                    }
+                }
+            }
+        };
         return Shell;
     }());
-    TSOS.Shell = Shell;
-})(TSOS || (TSOS = {}));
+    PotatOS.Shell = Shell;
+})(PotatOS || (PotatOS = {}));

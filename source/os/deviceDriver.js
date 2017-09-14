@@ -3,8 +3,8 @@
 
      The "base class" for all Device Drivers.
      ------------------------------ */
-var TSOS;
-(function (TSOS) {
+var PotatOS;
+(function (PotatOS) {
     var DeviceDriver = (function () {
         function DeviceDriver() {
             this.version = '0.07';
@@ -15,5 +15,5 @@ var TSOS;
         }
         return DeviceDriver;
     }());
-    TSOS.DeviceDriver = DeviceDriver;
-})(TSOS || (TSOS = {}));
+    PotatOS.DeviceDriver = DeviceDriver;
+})(PotatOS || (PotatOS = {}));

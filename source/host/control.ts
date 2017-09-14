@@ -23,7 +23,7 @@
 //
 // Control Services
 //
-module TSOS {
+module PotatOS {
 
     export class Control {
 

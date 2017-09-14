@@ -7,8 +7,8 @@
      The OS Console - stdIn and stdOut by default.
      Note: This is not the Shell. The Shell is the "command line interface" (CLI) or interpreter for this console.
      ------------ */
-var TSOS;
-(function (TSOS) {
+var PotatOS;
+(function (PotatOS) {
     var Console = (function () {
         function Console(currentFont, currentFontSize, currentXPosition, currentYPosition, buffer, oldInput) {
             if (currentFont === void 0) { currentFont = _DefaultFontFamily; }
@@ -67,6 +67,7 @@ var TSOS;
                 else if (chr === String.fromCharCode(38)) {
                     if (currentPosition < this.oldInput.length - 1) {
                         console.log(this.oldInput);
+                        console.log(this.buffer);
                         currentPosition++;
                         redrawInput(this.oldInput[currentPosition]);
                     }
@@ -94,7 +95,8 @@ var TSOS;
             }
             // Deletes and redraws updated buffer for backspace and command completion
             function redrawInput(newBuffer) {
-                _DrawingContext.clearRect(_OsShell.promptXPosition, _OsShell.promptYPosition - _DefaultFontSize, _DrawingContext.measureText(_Console.currentFont, _Console.currentFontSize, _Console.buffer), _DefaultFontSize + _FontHeightMargin);
+                _DrawingContext.clearRect(_OsShell.promptXPosition, _OsShell.promptYPosition - (_DefaultFontSize + _FontHeightMargin), _DrawingContext.measureText(_Console.currentFont, _Console.currentFontSize, _Console.buffer), _DefaultFontSize + _FontHeightMargin);
+                _DrawingContext.clearRect(_OsShell.promptXPosition, _OsShell.promptYPosition - (_DefaultFontSize - _FontHeightMargin), _DrawingContext.measureText(_Console.currentFont, _Console.currentFontSize, _Console.buffer), _DefaultFontSize + _FontHeightMargin);
                 _Console.buffer = newBuffer;
                 _Console.currentXPosition = _OsShell.promptXPosition;
                 _Console.currentYPosition = _OsShell.promptYPosition;
@@ -132,5 +134,5 @@ var TSOS;
         };
         return Console;
     }());
-    TSOS.Console = Console;
-})(TSOS || (TSOS = {}));
+    PotatOS.Console = Console;
+})(PotatOS || (PotatOS = {}));

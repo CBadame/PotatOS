@@ -9,7 +9,7 @@
      Note: This is not the Shell. The Shell is the "command line interface" (CLI) or interpreter for this console.
      ------------ */
 
-module TSOS {
+module PotatOS {
 
     export class Console {
 
@@ -71,6 +71,7 @@ module TSOS {
                 } else if (chr === String.fromCharCode(38)) {
                     if (currentPosition < this.oldInput.length-1) {
                         console.log(this.oldInput);
+                        console.log(this.buffer);
                         currentPosition++;
                         redrawInput(this.oldInput[currentPosition]);
                     }
@@ -101,7 +102,11 @@ module TSOS {
             // Deletes and redraws updated buffer for backspace and command completion
             function redrawInput(newBuffer) {
                 _DrawingContext.clearRect(_OsShell.promptXPosition,
-                    _OsShell.promptYPosition - _DefaultFontSize,
+                    _OsShell.promptYPosition - (_DefaultFontSize + _FontHeightMargin),
+                    _DrawingContext.measureText(_Console.currentFont, _Console.currentFontSize, _Console.buffer),
+                    _DefaultFontSize + _FontHeightMargin);
+                _DrawingContext.clearRect(_OsShell.promptXPosition,
+                    _OsShell.promptYPosition - (_DefaultFontSize - _FontHeightMargin),
                     _DrawingContext.measureText(_Console.currentFont, _Console.currentFontSize, _Console.buffer),
                     _DefaultFontSize + _FontHeightMargin);
                 _Console.buffer = newBuffer;

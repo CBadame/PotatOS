@@ -1,5 +1,5 @@
-var TSOS;
-(function (TSOS) {
+var PotatOS;
+(function (PotatOS) {
     var ShellCommand = (function () {
         function ShellCommand(func, command, description) {
             if (command === void 0) { command = ""; }
@@ -10,5 +10,5 @@ var TSOS;
         }
         return ShellCommand;
     }());
-    TSOS.ShellCommand = ShellCommand;
-})(TSOS || (TSOS = {}));
+    PotatOS.ShellCommand = ShellCommand;
+})(PotatOS || (PotatOS = {}));

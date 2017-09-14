@@ -5,17 +5,17 @@
 
 
 /* ------------
-   Shell.ts
+ Shell.ts
 
-   The OS Shell - The "command line interface" (CLI) for the console.
+ The OS Shell - The "command line interface" (CLI) for the console.
 
-    Note: While fun and learning are the primary goals of all enrichment center activities,
-          serious injuries may occur when trying to write your own Operating System.
-   ------------ */
+ Note: While fun and learning are the primary goals of all enrichment center activities,
+ serious injuries may occur when trying to write your own Operating System.
+ ------------ */
 
 // TODO: Write a base class / prototype for system services and let Shell inherit from it.
 
-module TSOS {
+module PotatOS {
     export class Shell {
         // Properties
         public promptStr = ">";
@@ -35,69 +35,81 @@ module TSOS {
 
             // ver
             sc = new ShellCommand(this.shellVer,
-                                  "ver",
-                                  "- Displays the current version data.");
+                "ver",
+                "- Displays the current version data.");
             this.commandList[this.commandList.length] = sc;
 
             // help
             sc = new ShellCommand(this.shellHelp,
-                                  "help",
-                                  "- This is the help command. Seek help.");
+                "help",
+                "- This is the help command. Seek help.");
             this.commandList[this.commandList.length] = sc;
 
             // shutdown
             sc = new ShellCommand(this.shellShutdown,
-                                  "shutdown",
-                                  "- Shuts down the virtual OS but leaves the underlying host / hardware simulation running.");
+                "shutdown",
+                "- Shuts down the virtual OS but leaves the underlying host / hardware simulation running.");
             this.commandList[this.commandList.length] = sc;
 
             // cls
             sc = new ShellCommand(this.shellCls,
-                                  "cls",
-                                  "- Clears the screen and resets the cursor position.");
+                "cls",
+                "- Clears the screen and resets the cursor position.");
             this.commandList[this.commandList.length] = sc;
 
             // man <topic>
             sc = new ShellCommand(this.shellMan,
-                                  "man",
-                                  "<topic> - Displays the MANual page for <topic>.");
+                "man",
+                "<topic> - Displays the MANual page for <topic>.");
             this.commandList[this.commandList.length] = sc;
 
             // trace <on | off>
             sc = new ShellCommand(this.shellTrace,
-                                  "trace",
-                                  "<on | off> - Turns the OS trace on or off.");
+                "trace",
+                "<on | off> - Turns the OS trace on or off.");
             this.commandList[this.commandList.length] = sc;
 
             // rot13 <string>
             sc = new ShellCommand(this.shellRot13,
-                                  "rot13",
-                                  "<string> - Does rot13 obfuscation on <string>.");
+                "rot13",
+                "<string> - Does rot13 obfuscation on <string>.");
             this.commandList[this.commandList.length] = sc;
 
             // prompt <string>
             sc = new ShellCommand(this.shellPrompt,
-                                  "prompt",
-                                  "<string> - Sets the prompt.");
+                "prompt",
+                "<string> - Sets the prompt.");
             this.commandList[this.commandList.length] = sc;
 
             //date
             sc = new ShellCommand(this.shellDate,
-                                  "date",
-                                  " - Displays current date and time.");
+                "date",
+                " - Displays current date and time.");
             this.commandList[this.commandList.length] = sc;
 
             //whereami
             sc = new ShellCommand(this.shellWhere,
-                                  "whereami",
-                                  " - Displays user's current location.");
+                "whereami",
+                " - Displays user's current location.");
             this.commandList[this.commandList.length] = sc;
 
             //facts
             sc = new ShellCommand(this.shellFacts,
-                                  "facts",
-                                  " - Displays a random fact about potatoes.");
+                "facts",
+                " - Displays a random fact about potatoes.");
             this.commandList[this.commandList.length] = sc;
+
+            //load
+            sc = new ShellCommand(this.shellLoad,
+                "load",
+                " - Validates code located in 'User Program Input'.");
+            this.commandList[this.commandList.length] = sc;
+
+            //bsod
+           /* sc = new ShellCommand(this.shellBSOD,
+                "bsod",
+                " - Initiates Blue Screen of Death.");
+            this.commandList[this.commandList.length] = sc; */
 
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
@@ -219,14 +231,14 @@ module TSOS {
         }
 
         public shellApology() {
-           if (_SarcasticMode) {
-              _StdOut.putText("I think we can put our differences behind us.");
-              _StdOut.advanceLine();
-              _StdOut.putText("For science . . . You monster.");
-              _SarcasticMode = false;
-           } else {
-              _StdOut.putText("For what?");
-           }
+            if (_SarcasticMode) {
+                _StdOut.putText("I think we can put our differences behind us.");
+                _StdOut.advanceLine();
+                _StdOut.putText("For science . . . You monster.");
+                _SarcasticMode = false;
+            } else {
+                _StdOut.putText("For what?");
+            }
         }
 
         public shellVer(args) {
@@ -242,8 +254,8 @@ module TSOS {
         }
 
         public shellShutdown(args) {
-             _StdOut.putText("Shutting down...");
-             // Call Kernel shutdown routine.
+            _StdOut.putText("Shutting down...");
+            // Call Kernel shutdown routine.
             _Kernel.krnShutdown();
             // TODO: Stop the final prompt from being displayed.  If possible.  Not a high priority.  (Damn OCD!)
         }
@@ -292,6 +304,13 @@ module TSOS {
                         break;
                     case "whereami":
                         _StdOut.putText("Tells the user where they are currently located...sorta.");
+                        break;
+                    case "load":
+                        _StdOut.putText("Ensures that the user is only trying to use hex, digits, and/or spaces " +
+                            "with their program.");
+                        break;
+                    case "bsod":
+                        _StdOut.putText("Tests the Blue Screen of Death function...everyone's favorite part of an OS.");
                         break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
@@ -347,7 +366,7 @@ module TSOS {
             var currentDate = new Date();
             var date = (currentDate.getMonth()+1) + '/' + (currentDate.getUTCDate()) + '/' + currentDate.getFullYear() + ' ';
             date += currentDate.getHours() + ':' + currentDate.getUTCMinutes() + ':' + currentDate.getUTCSeconds();
-           _StdOut.putText(date);
+            _StdOut.putText(date);
         }
 
         public shellWhere() {
@@ -357,5 +376,25 @@ module TSOS {
         public shellFacts() {
             _StdOut.putText(factGenerator(factList));
         }
+
+        public shellLoad() {
+            var userInput = document.getElementById('taProgramInput').value.toString();
+            if (userInput) {
+                console.log(userInput);
+                for (var i = 0; i < userInput.length; i++) {
+                    console.log(userInput[i]);
+                    console.log(userInput[i].valueType);
+                    console.log(userInput[i].toUpperCase().indexOf("ABCDEF0123456789 "));
+                    if (userInput[i].toUpperCase().indexOf("ABCDEF0123456789 ") < 0) {
+                        _StdOut.putText("User input is invalid. Please use hex, digits, or spaces.");
+                        break;
+                    }
+                }
+            }
+        }
+
+        /* public shellBSOD() {
+            _Kernel.krnTrapError();
+        } */
     }
 }

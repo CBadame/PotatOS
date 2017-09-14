@@ -12,8 +12,8 @@ var __extends = (this && this.__extends) || function (d, b) {
 
    The Kernel Keyboard Device Driver.
    ---------------------------------- */
-var TSOS;
-(function (TSOS) {
+var PotatOS;
+(function (PotatOS) {
     // Extends DeviceDriver
     var DeviceDriverKeyboard = (function (_super) {
         __extends(DeviceDriverKeyboard, _super);
@@ -73,8 +73,10 @@ var TSOS;
             else if ((keyCode >= 48) && (keyCode <= 57)) {
                 if (isShifted) {
                     for (var i = 0; i < numCharArray.length; i++) {
-                        if (numCharArray[i][0] == keyCode)
+                        if (numCharArray[i][0] == keyCode) {
                             _KernelInputQueue.enqueue(numCharArray[i][1]);
+                            break;
+                        }
                     }
                 }
                 else {
@@ -86,17 +88,21 @@ var TSOS;
                 ((keyCode >= 219) && (keyCode <= 222))) {
                 for (var i = 0; i < charArray.length; i++) {
                     if (isShifted) {
-                        if (charArray[i][0] == keyCode + 100)
+                        if (charArray[i][0] == keyCode + 100) {
                             _KernelInputQueue.enqueue(charArray[i][1]);
+                            break;
+                        }
                     }
                     else {
-                        if (charArray[i][0] == keyCode)
+                        if (charArray[i][0] == keyCode) {
                             _KernelInputQueue.enqueue(charArray[i][1]);
+                            break;
+                        }
                     }
                 }
             }
         };
         return DeviceDriverKeyboard;
-    }(TSOS.DeviceDriver));
-    TSOS.DeviceDriverKeyboard = DeviceDriverKeyboard;
-})(TSOS || (TSOS = {}));
+    }(PotatOS.DeviceDriver));
+    PotatOS.DeviceDriverKeyboard = DeviceDriverKeyboard;
+})(PotatOS || (PotatOS = {}));

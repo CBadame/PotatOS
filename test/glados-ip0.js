@@ -20,13 +20,13 @@ function Glados() {
       _KernelInputQueue.enqueue('e');
       _KernelInputQueue.enqueue('l');
       _KernelInputQueue.enqueue('p');
-		TSOS.Kernel.prototype.krnInterruptHandler(KEYBOARD_IRQ, [13, false]);
+		PotatOS.Kernel.prototype.krnInterruptHandler(KEYBOARD_IRQ, [13, false]);
 		
 		// Test the 'ver' command.
       _KernelInputQueue.enqueue('v');
       _KernelInputQueue.enqueue('e');
       _KernelInputQueue.enqueue('r');
-		TSOS.Kernel.prototype.krnInterruptHandler(KEYBOARD_IRQ, [13, false]);
+		PotatOS.Kernel.prototype.krnInterruptHandler(KEYBOARD_IRQ, [13, false]);
 
    };
 }

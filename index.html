@@ -3,7 +3,7 @@
 <head>
    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
    <meta name="author"             content="Alan G. Labouseur" />
-   <link rel="stylesheet" href="TSOS.css" type="text/css" media="screen" />
+   <link rel="stylesheet" href="PotatOS.css" type="text/css" media="screen" />
    <title>
       PotatOS - a browser-based virtual Operating System in TypeScript
    </title>
@@ -32,7 +32,7 @@
    <!-- Other Routines -->
    <script type="text/javascript" src="distrib/utils.js"></script>
    <!-- Uncomment the line below to enable GLaDOS testing. -->
-   <script type="text/javascript" src="http://alanclasses.github.io/TSOS/test/glados-ip0.js"></script>
+   <script type="text/javascript" src="./test/glados-ip0.js"></script>
    
 </head>
 
@@ -47,7 +47,7 @@
              class="normal_button"
              value="Start"
              tabindex="0"
-             onclick="TSOS.Control.hostBtnStartOS_click(this);">
+             onclick="PotatOS.Control.hostBtnStartOS_click(this);">
 
       <input type="button"
              id = "btnHaltOS"
@@ -56,7 +56,7 @@
              disabled="disabled"
              value="Halt"
              tabindex="1"
-             onclick="TSOS.Control.hostBtnHaltOS_click(this);">
+             onclick="PotatOS.Control.hostBtnHaltOS_click(this);">
 
       <input type="button"
              id = "btnReset"
@@ -65,7 +65,7 @@
              disabled="disabled"
              value="Reset"
              tabindex="2"
-             onclick="TSOS.Control.hostBtnReset_click(this);">
+             onclick="PotatOS.Control.hostBtnReset_click(this);">
    </div>
 
    <div id="divConsole" style="margin:4px; width:500px; height:500px; float:left;">

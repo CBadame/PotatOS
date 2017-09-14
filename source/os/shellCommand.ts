@@ -1,4 +1,4 @@
-module TSOS {
+module PotatOS {
     export class ShellCommand {
         constructor(public func: any,
                     public command = "",

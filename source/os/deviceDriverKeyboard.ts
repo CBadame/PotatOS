@@ -9,7 +9,7 @@
    The Kernel Keyboard Device Driver.
    ---------------------------------- */
 
-module TSOS {
+module PotatOS {
 
     // Extends DeviceDriver
     export class DeviceDriverKeyboard extends DeviceDriver {
@@ -72,8 +72,10 @@ module TSOS {
             } else if ((keyCode >= 48) && (keyCode <= 57)) {
                 if (isShifted) {                                    // shifted num special characters
                     for (var i = 0; i < numCharArray.length; i++ ) {
-                        if (numCharArray[i][0] == keyCode)
+                        if (numCharArray[i][0] == keyCode) {
                             _KernelInputQueue.enqueue(numCharArray[i][1]);
+                            break;
+                        }
                     }
                 } else {                                            // numbers
                     chr = String.fromCharCode(keyCode);
@@ -83,11 +85,15 @@ module TSOS {
                         ((keyCode >= 219) && (keyCode <= 222))) {   // more special characters
                 for (var i = 0; i < charArray.length; i++ ) {
                     if (isShifted) {
-                        if (charArray[i][0] == keyCode+100)
+                        if (charArray[i][0] == keyCode+100) {
                             _KernelInputQueue.enqueue(charArray[i][1]);
+                            break;
+                        }
                     } else {
-                        if (charArray[i][0] == keyCode)
+                        if (charArray[i][0] == keyCode) {
                             _KernelInputQueue.enqueue(charArray[i][1]);
+                            break;
+                        }
                     }
                 }
             }

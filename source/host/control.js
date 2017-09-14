@@ -21,8 +21,8 @@
 //
 // Control Services
 //
-var TSOS;
-(function (TSOS) {
+var PotatOS;
+(function (PotatOS) {
     var Control = (function () {
         function Control() {
         }
@@ -33,7 +33,7 @@ var TSOS;
             // Get a global reference to the drawing context.
             _DrawingContext = _Canvas.getContext("2d");
             // Enable the added-in canvas text functions (see canvastext.ts for provenance and details).
-            CanvasTextFunctions.enable(_DrawingContext); // Text functionality is now built in to the HTML5 canvas. But this is old-school, and fun, so we'll keep it.
+            PotatOS.CanvasTextFunctions.enable(_DrawingContext); // Text functionality is now built in to the HTML5 canvas. But this is old-school, and fun, so we'll keep it.
             // Clear the log text box.
             // Use the TypeScript cast to HTMLInputElement
             document.getElementById("taHostLog").value = "";
@@ -100,5 +100,5 @@ var TSOS;
         };
         return Control;
     }());
-    TSOS.Control = Control;
-})(TSOS || (TSOS = {}));
+    PotatOS.Control = Control;
+})(PotatOS || (PotatOS = {}));

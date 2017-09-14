@@ -17,8 +17,8 @@
      This code references page numbers in the text book:
      Operating System Concepts 8th edition by Silberschatz, Galvin, and Gagne.  ISBN 978-0-470-12872-5
      ------------ */
-var TSOS;
-(function (TSOS) {
+var PotatOS;
+(function (PotatOS) {
     var Devices = (function () {
         function Devices() {
             _hardwareClockID = -1;
@@ -57,5 +57,5 @@ var TSOS;
         };
         return Devices;
     }());
-    TSOS.Devices = Devices;
-})(TSOS || (TSOS = {}));
+    PotatOS.Devices = Devices;
+})(PotatOS || (PotatOS = {}));
