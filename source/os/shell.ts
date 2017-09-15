@@ -106,10 +106,10 @@ module PotatOS {
             this.commandList[this.commandList.length] = sc;
 
             //bsod
-           /* sc = new ShellCommand(this.shellBSOD,
+            sc = new ShellCommand(this.shellBSOD,
                 "bsod",
                 " - Initiates Blue Screen of Death.");
-            this.commandList[this.commandList.length] = sc; */
+            this.commandList[this.commandList.length] = sc;
 
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
@@ -388,8 +388,12 @@ module PotatOS {
             }
         }
 
-        /* public shellBSOD() {
+        // This is only a simulated Kernel Panic for now.
+        public shellBSOD() {
+            _OsShell.promptStr = '';
+            _StdOut.putText('It looks like you broke something...way to go.');
+            document.getElementById('display').style.backgroundColor = '#0000FF';
             _Kernel.krnTrapError();
-        } */
+        }
     }
 }
