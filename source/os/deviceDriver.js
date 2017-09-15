@@ -1,8 +1,3 @@
-/* ------------------------------
-     DeviceDriver.ts
-
-     The "base class" for all Device Drivers.
-     ------------------------------ */
 var PotatOS;
 (function (PotatOS) {
     var DeviceDriver = (function () {
@@ -17,3 +12,4 @@ var PotatOS;
     }());
     PotatOS.DeviceDriver = DeviceDriver;
 })(PotatOS || (PotatOS = {}));
+//# sourceMappingURL=deviceDriver.js.map

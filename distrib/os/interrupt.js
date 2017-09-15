@@ -1,6 +1,3 @@
-/* ------------
-   Interrupt.ts
-   ------------ */
 var PotatOS;
 (function (PotatOS) {
     var Interrupt = (function () {
@@ -9,6 +6,7 @@ var PotatOS;
             this.params = params;
         }
         return Interrupt;
-    })();
+    }());
     PotatOS.Interrupt = Interrupt;
 })(PotatOS || (PotatOS = {}));
+//# sourceMappingURL=interrupt.js.map

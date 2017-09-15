@@ -12,3 +12,4 @@ var PotatOS;
     }());
     PotatOS.ShellCommand = ShellCommand;
 })(PotatOS || (PotatOS = {}));
+//# sourceMappingURL=shellCommand.js.map

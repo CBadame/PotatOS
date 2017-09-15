@@ -1,21 +1,3 @@
-/* ----------------- *
- * CanvasText.ts   *
- *
- * Downloaded from http://www.federated.com/~jim/canvastext.
- *
- * This code is released to the public domain by Jim Studt, 2007.
- * He may keep some sort of up to date copy at http://www.federated.com/~jim/canvastext/
- *
- * Modifications by Alan G. Labouseur:
- *  - fixed comma
- *  - added semi-colon
- *  - renamed 'letter' object to 'symbol'
- *
- * Port to TypeScript by Bob Nisco in 2014.
- *
- * Note: You could theoretically make up your own letters and symbols for your OS.
- *       That might be fun.
- * ----------------- */
 var PotatOS;
 (function (PotatOS) {
     var CanvasTextFunctions = (function () {
@@ -189,6 +171,7 @@ var PotatOS;
             '~': { width: 24, points: [[3, 6], [3, 8], [4, 11], [6, 12], [8, 12], [10, 11], [14, 8], [16, 7], [18, 7], [20, 8], [21, 10], [-1, -1], [3, 8], [4, 10], [6, 11], [8, 11], [10, 10], [14, 7], [16, 6], [18, 6], [20, 7], [21, 10], [21, 12]] }
         };
         return CanvasTextFunctions;
-    })();
+    }());
     PotatOS.CanvasTextFunctions = CanvasTextFunctions;
 })(PotatOS || (PotatOS = {}));
+//# sourceMappingURL=canvastext.js.map

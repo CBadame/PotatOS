@@ -51,3 +51,4 @@ var _GLaDOS = null; // If the above is linked in, this is the instantiated insta
 var onDocumentLoad = function () {
     PotatOS.Control.hostInit();
 };
+//# sourceMappingURL=globals.js.map

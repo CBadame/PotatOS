@@ -378,7 +378,7 @@ module PotatOS {
         }
 
         public shellLoad() {
-            var userInput = document.getElementById('taProgramInput').value;
+            var userInput =(<HTMLInputElement>document.getElementById('taProgramInput')).value;
             if (userInput) {
                 // Decided to use regex because the valueType of 'taProgramInput' was being returned as 'undefined'...
                 // ...I got sick of trying to figure out how to make the value a string/compare it to a string, and...
@@ -388,12 +388,10 @@ module PotatOS {
             }
         }
 
-        // This is only a simulated Kernel Panic for now.
+        // This is only a simulated Kernel Panic for now. EDIT: Now calls krnTrapError to initiate a real BSOD.
         public shellBSOD() {
             _OsShell.promptStr = '';
-            _StdOut.putText('It looks like you broke something...way to go.');
-            document.getElementById('display').style.backgroundColor = '#0000FF';
-            _Kernel.krnTrapError();
+            _Kernel.krnTrapError("test");
         }
     }
 }

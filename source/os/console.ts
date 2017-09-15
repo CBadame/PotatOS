@@ -18,7 +18,8 @@ module PotatOS {
                     public currentXPosition = 0,
                     public currentYPosition = _DefaultFontSize,
                     public buffer = "",
-                    public oldInput = [""]) {
+                    public oldInput = [""],
+                    public currentPosition = 0){
         }
 
         public init(): void {
@@ -36,7 +37,6 @@ module PotatOS {
         }
 
         public handleInput(): void {
-            var currentPosition = 0;
             while (_KernelInputQueue.getSize() > 0) {
                 // Get the next character from the kernel input queue.
                 var chr = _KernelInputQueue.dequeue();
@@ -45,7 +45,7 @@ module PotatOS {
                     // The enter key marks the end of a console command, so ...
                     // ... add input to array ...
                     this.oldInput.splice(1, 0, this.buffer);
-                    currentPosition = 0;
+                    this.currentPosition = 0;
                     this.oldInput[0] = "";
                     // ... tell the shell ...
                     _OsShell.handleInput(this.buffer);
@@ -69,19 +69,21 @@ module PotatOS {
 
                 // Change buffer to next input in the array of old inputs (up arrow)
                 } else if (chr === String.fromCharCode(38)) {
-                    if (currentPosition < this.oldInput.length-1) {
+                    if (this.currentPosition < this.oldInput.length-1) {
                         console.log(this.oldInput);
                         console.log(this.buffer);
-                        currentPosition++;
-                        redrawInput(this.oldInput[currentPosition]);
+                        console.log('up');
+                        this.currentPosition++;
+                        redrawInput(this.oldInput[this.currentPosition]);
                     }
 
                 // Change buffer to last input in the array of old inputs (down arrow)
                 } else if (chr === String.fromCharCode(40)) {
-                    if (currentPosition > 0) {
+                    if (this.currentPosition > 0) {
+                        console.log('down');
                         console.log(this.oldInput);
-                        currentPosition--;
-                        redrawInput(this.oldInput[currentPosition]);
+                        this.currentPosition--;
+                        redrawInput(this.oldInput[this.currentPosition]);
                     }
                 } else {
                     // This is a "normal" character, so ...
@@ -91,11 +93,11 @@ module PotatOS {
                     this.buffer += chr;
                     // Add current buffer to input array
                     this.oldInput[0] = this.buffer;
-                    currentPosition = 0;
+                    this.currentPosition = 0;
                 }
                 console.log(this.oldInput.length);
                 //console.log(this.buffer);
-                console.log(currentPosition);
+                console.log(this.currentPosition);
                 // TODO: Write a case for Ctrl-C.
             }
 

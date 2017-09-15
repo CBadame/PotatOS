@@ -1,4 +1,3 @@
-//Powers the 'facts' command for the OS for anyone interested in learning more about potatoes
 var factList = new Array(20);
 factList = [
     "Potatoes are 80% water.",
@@ -29,3 +28,4 @@ function factGenerator(argList) {
     var num = Math.floor(Math.random() * 19);
     return argList[num];
 }
+//# sourceMappingURL=facts.js.map

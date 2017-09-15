@@ -9,6 +9,7 @@ var PotatOS;
             this.description = description;
         }
         return ShellCommand;
-    })();
+    }());
     PotatOS.ShellCommand = ShellCommand;
 })(PotatOS || (PotatOS = {}));
+//# sourceMappingURL=shellCommand.js.map

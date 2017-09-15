@@ -8,6 +8,7 @@ var PotatOS;
             this.args = args;
         }
         return UserCommand;
-    })();
+    }());
     PotatOS.UserCommand = UserCommand;
 })(PotatOS || (PotatOS = {}));
+//# sourceMappingURL=userCommand.js.map

@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "noImplicitAny": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "sourceMap": true
+  },
+  "include": [
+    "./source/**/*"
+  ],
+  "exclude": [
+    "./test",
+    "./.idea"
+  ],
+  "files": [
+    "./source/globals.ts",
+    "./source/utils.ts",
+    "./source/host/control.ts",
+    "./source/host/devices.ts",
+    "./source/host/cpu.ts",
+    "./source/os/interrupt.ts",
+    "./source/os/canvastext.ts",
+    "./source/os/console.ts",
+    "./source/os/deviceDriver.ts",
+    "./source/os/deviceDriverKeyboard.ts",
+    "./source/os/queue.ts",
+    "./source/os/facts.ts",
+    "./source/os/shell.ts",
+    "./source/os/shellCommand.ts",
+    "./source/os/userCommand.ts",
+    "./source/os/kernel.ts"
+  ]
+}
