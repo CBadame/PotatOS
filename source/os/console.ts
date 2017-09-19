@@ -70,9 +70,6 @@ module PotatOS {
                 // Change buffer to next input in the array of old inputs (up arrow)
                 } else if (chr === String.fromCharCode(38)) {
                     if (this.currentPosition < this.oldInput.length-1) {
-                        console.log(this.oldInput);
-                        console.log(this.buffer);
-                        console.log('up');
                         this.currentPosition++;
                         redrawInput(this.oldInput[this.currentPosition]);
                     }
@@ -80,8 +77,6 @@ module PotatOS {
                 // Change buffer to last input in the array of old inputs (down arrow)
                 } else if (chr === String.fromCharCode(40)) {
                     if (this.currentPosition > 0) {
-                        console.log('down');
-                        console.log(this.oldInput);
                         this.currentPosition--;
                         redrawInput(this.oldInput[this.currentPosition]);
                     }
@@ -95,13 +90,11 @@ module PotatOS {
                     this.oldInput[0] = this.buffer;
                     this.currentPosition = 0;
                 }
-                console.log(this.oldInput.length);
-                //console.log(this.buffer);
-                console.log(this.currentPosition);
                 // TODO: Write a case for Ctrl-C.
             }
 
-            // Deletes and redraws updated buffer for backspace and command completion
+            // Deletes and redraws updated buffer for backspace and command completion...
+            // ...this makes it easier for using backspace with line wrap
             function redrawInput(newBuffer) {
                 _DrawingContext.clearRect(_OsShell.promptXPosition,
                     _OsShell.promptYPosition - (_DefaultFontSize + _FontHeightMargin),
@@ -146,7 +139,14 @@ module PotatOS {
             this.currentYPosition += _DefaultFontSize + 
                                      _DrawingContext.fontDescent(this.currentFont, this.currentFontSize) +
                                      _FontHeightMargin;
-
+            console.log(this.currentYPosition);
+            var screenshot = _DrawingContext.getImageData(0, 0, _Canvas.width, _Canvas.height);
+            if (this.currentYPosition >= 470) {
+                this.init();
+                _DrawingContext.putImageData(screenshot,0, -13);
+                this.currentXPosition = 0;
+                this.currentYPosition = 487.7199999999998;
+            }
             // TODO: Handle scrolling. (iProject 1)
         }
     }

@@ -52,17 +52,12 @@ var PotatOS;
                 }
                 else if (chr === String.fromCharCode(38)) {
                     if (this.currentPosition < this.oldInput.length - 1) {
-                        console.log(this.oldInput);
-                        console.log(this.buffer);
-                        console.log('up');
                         this.currentPosition++;
                         redrawInput(this.oldInput[this.currentPosition]);
                     }
                 }
                 else if (chr === String.fromCharCode(40)) {
                     if (this.currentPosition > 0) {
-                        console.log('down');
-                        console.log(this.oldInput);
                         this.currentPosition--;
                         redrawInput(this.oldInput[this.currentPosition]);
                     }
@@ -73,8 +68,6 @@ var PotatOS;
                     this.oldInput[0] = this.buffer;
                     this.currentPosition = 0;
                 }
-                console.log(this.oldInput.length);
-                console.log(this.currentPosition);
             }
             function redrawInput(newBuffer) {
                 _DrawingContext.clearRect(_OsShell.promptXPosition, _OsShell.promptYPosition - (_DefaultFontSize + _FontHeightMargin), _DrawingContext.measureText(_Console.currentFont, _Console.currentFontSize, _Console.buffer), _DefaultFontSize + _FontHeightMargin);
@@ -97,6 +90,14 @@ var PotatOS;
             this.currentYPosition += _DefaultFontSize +
                 _DrawingContext.fontDescent(this.currentFont, this.currentFontSize) +
                 _FontHeightMargin;
+            console.log(this.currentYPosition);
+            var screenshot = _DrawingContext.getImageData(0, 0, _Canvas.width, _Canvas.height);
+            if (this.currentYPosition >= 470) {
+                this.init();
+                _DrawingContext.putImageData(screenshot, 0, -13);
+                this.currentXPosition = 0;
+                this.currentYPosition = 487.7199999999998;
+            }
         };
         return Console;
     }());

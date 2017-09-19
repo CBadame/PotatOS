@@ -1,13 +1,17 @@
 {
+  "compileOnSave": true,
   "compilerOptions": {
     "module": "commonjs",
     "noImplicitAny": true,
     "removeComments": true,
     "preserveConstEnums": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "outDir": "distrib/"
   },
   "include": [
-    "./source/**/*"
+    "./source/*",
+    "./source/os/*",
+    "./source/host/*"
   ],
   "exclude": [
     "./test",

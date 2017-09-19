@@ -80,7 +80,7 @@ var PotatOS;
         Kernel.prototype.krnTrapError = function (msg) {
             PotatOS.Control.hostLog("OS ERROR - TRAP: " + msg);
             _StdOut.putText('It looks like you broke something...way to go.');
-            document.getElementById('display').style.backgroundColor = '#FF0000';
+            document.getElementById('display').style.backgroundColor = '#0000FF';
             this.krnShutdown();
         };
         return Kernel;
