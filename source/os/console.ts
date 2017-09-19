@@ -139,15 +139,18 @@ module PotatOS {
             this.currentYPosition += _DefaultFontSize + 
                                      _DrawingContext.fontDescent(this.currentFont, this.currentFontSize) +
                                      _FontHeightMargin;
-            console.log(this.currentYPosition);
+            //console.log(this.currentYPosition);
+
+            // Checks to see if anything is printed further down from the y-coordinate of 470 as this would cause the
+            // next prompt to go off-screen. It then clears the screen, prints the previous screenshot, and resets the
+            // current position to the bottom of the canvas.
             var screenshot = _DrawingContext.getImageData(0, 0, _Canvas.width, _Canvas.height);
             if (this.currentYPosition >= 470) {
                 this.init();
-                _DrawingContext.putImageData(screenshot,0, -13);
+                _DrawingContext.putImageData(screenshot,0, -20.64);
                 this.currentXPosition = 0;
-                this.currentYPosition = 487.7199999999998;
+                this.currentYPosition = 467.08;
             }
-            // TODO: Handle scrolling. (iProject 1)
         }
     }
  }
