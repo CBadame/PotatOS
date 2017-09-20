@@ -9,6 +9,8 @@ var PotatOS;
             PotatOS.CanvasTextFunctions.enable(_DrawingContext);
             document.getElementById("taHostLog").value = "";
             document.getElementById("btnStartOS").focus();
+            PotatOS.Utils.currentDate();
+            setInterval(function () { PotatOS.Utils.currentDate(); }, 1000);
             if (typeof Glados === "function") {
                 _GLaDOS = new Glados();
                 _GLaDOS.init();

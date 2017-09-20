@@ -43,5 +43,10 @@ module PotatOS {
             }
             return retVal;
         }
+
+        public static currentDate(): void {
+            var currentDate = new Date();
+            document.getElementById("date").innerHTML = currentDate.toString();
+        }
     }
 }

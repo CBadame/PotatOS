@@ -37,6 +37,8 @@ var PotatOS;
             this.commandList[this.commandList.length] = sc;
             sc = new PotatOS.ShellCommand(this.shellBSOD, "bsod", " - Initiates Blue Screen of Death.");
             this.commandList[this.commandList.length] = sc;
+            sc = new PotatOS.ShellCommand(this.shellStatus, "status", "<string> - Sets the status at the top of the page.");
+            this.commandList[this.commandList.length] = sc;
             this.putPrompt();
         };
         Shell.prototype.putPrompt = function () {
@@ -191,7 +193,12 @@ var PotatOS;
                             "with their program.");
                         break;
                     case "bsod":
-                        _StdOut.putText("Tests the Blue Screen of Death function...everyone's favorite part of an OS.");
+                        _StdOut.putText("Tests the Blue Screen of Death function...everyone's favorite part of " +
+                            "an OS.");
+                        break;
+                    case "status":
+                        _StdOut.putText("Sets the status to whatever the user wishes. Let's try and keep this " +
+                            "PG.");
                         break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
@@ -244,9 +251,7 @@ var PotatOS;
         };
         Shell.prototype.shellDate = function () {
             var currentDate = new Date();
-            var date = (currentDate.getMonth() + 1) + '/' + (currentDate.getUTCDate()) + '/' + currentDate.getFullYear() + ' ';
-            date += currentDate.getHours() + ':' + currentDate.getUTCMinutes() + ':' + currentDate.getUTCSeconds();
-            _StdOut.putText(date);
+            _StdOut.putText(currentDate.toString());
         };
         Shell.prototype.shellWhere = function () {
             _StdOut.putText("Probably in front of a computer if I had to guess. (More creative response TBD)");
@@ -264,6 +269,14 @@ var PotatOS;
         Shell.prototype.shellBSOD = function () {
             _OsShell.promptStr = '';
             _Kernel.krnTrapError("test");
+        };
+        Shell.prototype.shellStatus = function (newStatus) {
+            if (newStatus.length > 0) {
+                document.getElementById("status").innerHTML = "Status: " + newStatus.join(' ');
+            }
+            else {
+                _StdOut.putText("Usage: status <string>  Please supply a string.");
+            }
         };
         return Shell;
     }());

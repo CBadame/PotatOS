@@ -111,6 +111,12 @@ module PotatOS {
                 " - Initiates Blue Screen of Death.");
             this.commandList[this.commandList.length] = sc;
 
+            //status
+            sc = new ShellCommand(this.shellStatus,
+                "status",
+                "<string> - Sets the status at the top of the page.");
+            this.commandList[this.commandList.length] = sc;
+
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
 
@@ -310,7 +316,12 @@ module PotatOS {
                             "with their program.");
                         break;
                     case "bsod":
-                        _StdOut.putText("Tests the Blue Screen of Death function...everyone's favorite part of an OS.");
+                        _StdOut.putText("Tests the Blue Screen of Death function...everyone's favorite part of " +
+                            "an OS.");
+                        break;
+                    case "status":
+                        _StdOut.putText("Sets the status to whatever the user wishes. Let's try and keep this " +
+                            "PG.");
                         break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
@@ -364,9 +375,7 @@ module PotatOS {
 
         public shellDate() {
             var currentDate = new Date();
-            var date = (currentDate.getMonth()+1) + '/' + (currentDate.getUTCDate()) + '/' + currentDate.getFullYear() + ' ';
-            date += currentDate.getHours() + ':' + currentDate.getUTCMinutes() + ':' + currentDate.getUTCSeconds();
-            _StdOut.putText(date);
+            _StdOut.putText(currentDate.toString());
         }
 
         public shellWhere() {
@@ -392,6 +401,14 @@ module PotatOS {
         public shellBSOD() {
             _OsShell.promptStr = '';
             _Kernel.krnTrapError("test");
+        }
+
+        public shellStatus(newStatus) {
+            if (newStatus.length > 0) {
+                document.getElementById("status").innerHTML = "Status: " + newStatus.join(' ');
+            } else {
+                _StdOut.putText("Usage: status <string>  Please supply a string.");
+            }
         }
     }
 }

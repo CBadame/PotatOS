@@ -47,6 +47,10 @@ module PotatOS {
             // Use the TypeScript cast to HTMLInputElement
             (<HTMLInputElement> document.getElementById("btnStartOS")).focus();
 
+            //Auto-update date + status bar
+            Utils.currentDate();
+            setInterval(function{Utils.currentDate()}, 1000);
+
             // Check for our testing and enrichment core, which
             // may be referenced here (from index.html) as function Glados().
             if (typeof Glados === "function") {

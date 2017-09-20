@@ -25,6 +25,10 @@ var PotatOS;
             }
             return retVal;
         };
+        Utils.currentDate = function () {
+            var currentDate = new Date();
+            document.getElementById("date").innerHTML = currentDate.toString();
+        };
         return Utils;
     }());
     PotatOS.Utils = Utils;
