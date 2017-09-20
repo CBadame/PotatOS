@@ -262,9 +262,11 @@ var PotatOS;
         Shell.prototype.shellLoad = function () {
             var userInput = document.getElementById('taProgramInput').value;
             if (userInput) {
-                if (!userInput.match(/[A-F0-9\s]+/))
+                if (!userInput.match(/^[A-F0-9\s]+$/))
                     _StdOut.putText("User input is invalid. Please use hex, digits, or spaces.");
             }
+            else
+                _StdOut.putText("User input is invalid. Please use hex, digits, or spaces.");
         };
         Shell.prototype.shellBSOD = function () {
             _OsShell.promptStr = '';

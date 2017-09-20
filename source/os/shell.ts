@@ -392,9 +392,11 @@ module PotatOS {
                 // Decided to use regex because the valueType of 'taProgramInput' was being returned as 'undefined'...
                 // ...I got sick of trying to figure out how to make the value a string/compare it to a string, and...
                 // thought that this would be easier (Hint: It was)
-                if (!userInput.match(/[A-F0-9\s]+/))
+                if (!userInput.match(/^[A-F0-9\s]+$/))
                     _StdOut.putText("User input is invalid. Please use hex, digits, or spaces.");
             }
+                else
+                    _StdOut.putText("User input is invalid. Please use hex, digits, or spaces.");
         }
 
         // This is only a simulated Kernel Panic for now. EDIT: Now calls krnTrapError to initiate a real BSOD.
