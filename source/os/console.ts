@@ -104,7 +104,7 @@ module PotatOS {
             // Deletes and redraws updated buffer for backspace and command completion...
             // ...this makes it easier for using backspace with line wrap
             function redrawInput(newBuffer) {
-                if (_Console.currentYPosition < 470) {
+                if (_Console.currentYPosition < 460) {
                     _DrawingContext.clearRect(0,
                         _OsShell.promptYPosition - (_DefaultFontSize + _FontHeightMargin),
                         _DrawingContext.measureText(_Console.currentFont, _Console.currentFontSize, _Console.buffer),
