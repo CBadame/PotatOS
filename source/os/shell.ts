@@ -22,7 +22,6 @@ module PotatOS {
         public commandList = [];
         public curses = "[fuvg],[cvff],[shpx],[phag],[pbpxfhpxre],[zbgureshpxre],[gvgf]";
         public apologies = "[sorry]";
-        public promptXPosition = _Console.currentXPosition;
         public promptYPosition = _Console.currentYPosition;
 
         constructor() {
@@ -127,9 +126,8 @@ module PotatOS {
         }
 
         public putPrompt() {
-            _StdOut.putText(this.promptStr);
-            this.promptXPosition = _Console.currentXPosition;
             this.promptYPosition = _Console.currentYPosition;
+            _StdOut.putText(this.promptStr);
         }
 
         public handleInput(buffer) {
@@ -269,6 +267,7 @@ module PotatOS {
         public shellCls(args) {
             _StdOut.clearScreen();
             _StdOut.resetXY();
+            _Console.originalScreenshot = '';
         }
 
         public shellMan(args) {

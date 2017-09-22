@@ -6,7 +6,6 @@ var PotatOS;
             this.commandList = [];
             this.curses = "[fuvg],[cvff],[shpx],[phag],[pbpxfhpxre],[zbgureshpxre],[gvgf]";
             this.apologies = "[sorry]";
-            this.promptXPosition = _Console.currentXPosition;
             this.promptYPosition = _Console.currentYPosition;
         }
         Shell.prototype.init = function () {
@@ -42,9 +41,8 @@ var PotatOS;
             this.putPrompt();
         };
         Shell.prototype.putPrompt = function () {
-            _StdOut.putText(this.promptStr);
-            this.promptXPosition = _Console.currentXPosition;
             this.promptYPosition = _Console.currentYPosition;
+            _StdOut.putText(this.promptStr);
         };
         Shell.prototype.handleInput = function (buffer) {
             _Kernel.krnTrace("Shell Command~" + buffer);
@@ -147,6 +145,7 @@ var PotatOS;
         Shell.prototype.shellCls = function (args) {
             _StdOut.clearScreen();
             _StdOut.resetXY();
+            _Console.originalScreenshot = '';
         };
         Shell.prototype.shellMan = function (args) {
             if (args.length > 0) {
