@@ -59,14 +59,19 @@ module PotatOS {
             } else if ( (keyCode == 32)                         ||   // space
                         (keyCode == 13)                         ||   // enter
                         (keyCode == 8)                          ||   // backspace
-                        (keyCode == 9)) {                            // tab
+                        (keyCode == 9)                          ||   // tab
+                        (keyCode == 38)                         ||   // up arrow
+                        (keyCode == 40)) {                           // down arrow
                 chr = String.fromCharCode(keyCode);
                 _KernelInputQueue.enqueue(chr);
 
             //Determines intended special character based on the user's keyCode and enqueue's it
+            } else if (keyCode == 8) {                               // backspace
+                chr = String.fromCharCode(keyCode);
+                _KernelInputQueue.enqueue(chr);
             } else if ((keyCode >= 48) && (keyCode <= 57)) {
                 if (isShifted) {                                    // shifted num special characters
-                    for (var i = 0; i < numCharArray.length; i++) {
+                    for (var i = 0; i < numCharArray.length; i++ ) {
                         if (numCharArray[i][0] == keyCode) {
                             _KernelInputQueue.enqueue(numCharArray[i][1]);
                             break;
@@ -76,12 +81,6 @@ module PotatOS {
                     chr = String.fromCharCode(keyCode);
                     _KernelInputQueue.enqueue(chr);
                 }
-            } else if (keyCode == 38) {                             // up arrow
-                chr = 'UP';
-                _KernelInputQueue.enqueue(chr);
-            } else if (keyCode == 40) {                             // down arrow
-                chr = 'DOWN';
-                _KernelInputQueue.enqueue(chr);
             } else if (((keyCode >= 186) && (keyCode <= 192))   ||  // special characters
                         ((keyCode >= 219) && (keyCode <= 222))) {   // more special characters
                 for (var i = 0; i < charArray.length; i++ ) {

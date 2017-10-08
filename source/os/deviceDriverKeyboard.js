@@ -1,3 +1,5 @@
+///<reference path="../globals.ts" />
+///<reference path="deviceDriver.ts" />
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -8,20 +10,36 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+/* ----------------------------------
+   DeviceDriverKeyboard.ts
+
+   Requires deviceDriver.ts
+
+   The Kernel Keyboard Device Driver.
+   ---------------------------------- */
 var PotatOS;
 (function (PotatOS) {
+    // Extends DeviceDriver
     var DeviceDriverKeyboard = (function (_super) {
         __extends(DeviceDriverKeyboard, _super);
         function DeviceDriverKeyboard() {
-            var _this = _super.call(this) || this;
+            // Override the base method pointers.
+            var _this = 
+            // The code below cannot run because "this" can only be
+            // accessed after calling super.
+            //super(this.krnKbdDriverEntry, this.krnKbdDispatchKeyPress);
+            _super.call(this) || this;
             _this.driverEntry = _this.krnKbdDriverEntry;
             _this.isr = _this.krnKbdDispatchKeyPress;
             return _this;
         }
         DeviceDriverKeyboard.prototype.krnKbdDriverEntry = function () {
+            // Initialization routine for this, the kernel-mode Keyboard Device Driver.
             this.status = "loaded";
+            // More?
         };
         DeviceDriverKeyboard.prototype.krnKbdDispatchKeyPress = function (params) {
+            // Parse the params.    TODO: Check that the params are valid and osTrapError if not.
             var keyCode = params[0];
             var isShifted = params[1];
             _Kernel.krnTrace("Key code:" + keyCode + " shifted:" + isShifted);
@@ -33,12 +51,17 @@ var PotatOS;
             var numCharArray = new Array(10);
             numCharArray = [[48, ')'], [49, '!'], [50, '@'], [51, '#'], [52, '$'], [53, '%'], [54, '^'], [55, '&'],
                 [56, '*'], [57, '(']];
+            // Check to see if we even want to deal with the key that was pressed.
             if (((keyCode >= 65) && (keyCode <= 90)) ||
                 ((keyCode >= 97) && (keyCode <= 123))) {
+                // Determine the character we want to display.
+                // Assume it's lowercase...
                 chr = String.fromCharCode(keyCode + 32);
+                // ... then check the shift key and re-adjust if necessary.
                 if (isShifted) {
                     chr = String.fromCharCode(keyCode);
                 }
+                // TODO: Check for caps-lock and handle as shifted if so.
                 _KernelInputQueue.enqueue(chr);
             }
             else if ((keyCode == 32) ||
@@ -49,6 +72,7 @@ var PotatOS;
                 (keyCode == 40)) {
                 chr = String.fromCharCode(keyCode);
                 _KernelInputQueue.enqueue(chr);
+                //Determines intended special character based on the user's keyCode and enqueue's it
             }
             else if (keyCode == 8) {
                 chr = String.fromCharCode(keyCode);
@@ -90,4 +114,3 @@ var PotatOS;
     }(PotatOS.DeviceDriver));
     PotatOS.DeviceDriverKeyboard = DeviceDriverKeyboard;
 })(PotatOS || (PotatOS = {}));
-//# sourceMappingURL=deviceDriverKeyboard.js.map
