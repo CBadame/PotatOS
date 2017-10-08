@@ -44,13 +44,7 @@ var PotatOS;
             else if ((keyCode == 32) ||
                 (keyCode == 13) ||
                 (keyCode == 8) ||
-                (keyCode == 9) ||
-                (keyCode == 38) ||
-                (keyCode == 40)) {
-                chr = String.fromCharCode(keyCode);
-                _KernelInputQueue.enqueue(chr);
-            }
-            else if (keyCode == 8) {
+                (keyCode == 9)) {
                 chr = String.fromCharCode(keyCode);
                 _KernelInputQueue.enqueue(chr);
             }
@@ -67,6 +61,14 @@ var PotatOS;
                     chr = String.fromCharCode(keyCode);
                     _KernelInputQueue.enqueue(chr);
                 }
+            }
+            else if (keyCode == 38) {
+                chr = 'UP';
+                _KernelInputQueue.enqueue(chr);
+            }
+            else if (keyCode == 40) {
+                chr = 'DOWN';
+                _KernelInputQueue.enqueue(chr);
             }
             else if (((keyCode >= 186) && (keyCode <= 192)) ||
                 ((keyCode >= 219) && (keyCode <= 222))) {
