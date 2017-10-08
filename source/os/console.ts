@@ -42,12 +42,10 @@ module PotatOS {
             while (_KernelInputQueue.getSize() > 0) {
                 // Get the next character from the kernel input queue.
                 var chr = _KernelInputQueue.dequeue();
-                console.log(chr);
                 // Check to see if it's "special" (enter or ctrl-c) or "normal" (anything else that the keyboard device driver gave us).
                 if (chr === String.fromCharCode(13)) { //     Enter key
                     // The enter key marks the end of a console command, so ...
                     // ... add input to array ...
-                    _Console.originalScreenshot = _DrawingContext.getImageData(0, 0, _Canvas.width, _Canvas.height);
                     this.oldInput.splice(1, 0, this.buffer);
                     this.currentPosition = 0;
                     this.oldInput[0] = "";
@@ -102,15 +100,15 @@ module PotatOS {
             // Deletes and redraws updated buffer for backspace and command completion...
             // ...this makes it easier for using backspace with line wrap
             function redrawInput(newBuffer) {
+                console.log(_Console.currentYPosition);
                 if (_Console.currentYPosition < 460) {
                     _DrawingContext.clearRect(_OsShell.promptXPosition,
-                        _OsShell.promptYPosition - (_DefaultFontSize + _FontHeightMargin),
-                        _DrawingContext.measureText(_Console.currentFont, _Console.currentFontSize, _Console.buffer),
-                        _DefaultFontSize + _FontHeightMargin);
+                        _OsShell.promptYPosition - (_DefaultFontSize + _FontHeightMargin), _Canvas.width,
+                        _Console.currentYPosition);
                     _DrawingContext.clearRect(_OsShell.promptXPosition,
                         _OsShell.promptYPosition - (_DefaultFontSize - _FontHeightMargin),
-                        _DrawingContext.measureText(_Console.currentFont, _Console.currentFontSize, _Console.buffer),
-                        _DefaultFontSize + _FontHeightMargin);
+                        _Canvas.width,
+                        _Console.currentYPosition;
                     _Console.buffer = newBuffer;
                     _Console.currentXPosition = _OsShell.promptXPosition;
                     _Console.currentYPosition = _OsShell.promptYPosition;
@@ -140,7 +138,6 @@ module PotatOS {
                 var subText = "";
                 // Checks to see if the text that's about to be drawn is going to exceed the canvas width. If it is,
                 // it breaks the excess off into a substring and prints it on the next line.
-                console.log(this.currentXPosition + _DrawingContext.measureText(this.currentFont, this.currentFontSize, text));
                 if (this.currentXPosition + _DrawingContext.measureText(this.currentFont, this.currentFontSize, text) >= _Canvas.width) {
                     var difference = (this.currentXPosition + _DrawingContext.measureText(this.currentFont, this.currentFontSize, text)) - _Canvas.width;
                     var extChar = Math.ceil(difference / 6.24);
@@ -170,7 +167,6 @@ module PotatOS {
             this.currentYPosition += _DefaultFontSize + 
                                      _DrawingContext.fontDescent(this.currentFont, this.currentFontSize) +
                                      _FontHeightMargin;
-            //console.log(this.currentYPosition);
 
             // Checks to see if anything is printed further down from the y-coordinate of 470 as this would cause the
             // next prompt to go off-screen. It then clears the screen, prints the previous screenshot, and resets the

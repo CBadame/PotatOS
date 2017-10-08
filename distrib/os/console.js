@@ -35,9 +35,7 @@ var PotatOS;
         Console.prototype.handleInput = function () {
             while (_KernelInputQueue.getSize() > 0) {
                 var chr = _KernelInputQueue.dequeue();
-                console.log(chr);
                 if (chr === String.fromCharCode(13)) {
-                    _Console.originalScreenshot = _DrawingContext.getImageData(0, 0, _Canvas.width, _Canvas.height);
                     this.oldInput.splice(1, 0, this.buffer);
                     this.currentPosition = 0;
                     this.oldInput[0] = "";
@@ -77,9 +75,10 @@ var PotatOS;
                 }
             }
             function redrawInput(newBuffer) {
+                console.log(_Console.currentYPosition);
                 if (_Console.currentYPosition < 460) {
-                    _DrawingContext.clearRect(_OsShell.promptXPosition, _OsShell.promptYPosition - (_DefaultFontSize + _FontHeightMargin), _DrawingContext.measureText(_Console.currentFont, _Console.currentFontSize, _Console.buffer), _DefaultFontSize + _FontHeightMargin);
-                    _DrawingContext.clearRect(_OsShell.promptXPosition, _OsShell.promptYPosition - (_DefaultFontSize - _FontHeightMargin), _DrawingContext.measureText(_Console.currentFont, _Console.currentFontSize, _Console.buffer), _DefaultFontSize + _FontHeightMargin);
+                    _DrawingContext.clearRect(_OsShell.promptXPosition, _OsShell.promptYPosition - (_DefaultFontSize + _FontHeightMargin), _Canvas.width, _Console.currentYPosition);
+                    _DrawingContext.clearRect(_OsShell.promptXPosition, _OsShell.promptYPosition - (_DefaultFontSize - _FontHeightMargin), _Canvas.width, _Console.currentYPosition);
                     _Console.buffer = newBuffer;
                     _Console.currentXPosition = _OsShell.promptXPosition;
                     _Console.currentYPosition = _OsShell.promptYPosition;
@@ -98,7 +97,6 @@ var PotatOS;
         Console.prototype.putText = function (text) {
             if (text !== "") {
                 var subText = "";
-                console.log(this.currentXPosition + _DrawingContext.measureText(this.currentFont, this.currentFontSize, text));
                 if (this.currentXPosition + _DrawingContext.measureText(this.currentFont, this.currentFontSize, text) >= _Canvas.width) {
                     var difference = (this.currentXPosition + _DrawingContext.measureText(this.currentFont, this.currentFontSize, text)) - _Canvas.width;
                     var extChar = Math.ceil(difference / 6.24);

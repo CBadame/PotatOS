@@ -81,6 +81,7 @@ var PotatOS;
         Shell.prototype.execute = function (fn, args) {
             _StdOut.advanceLine();
             fn(args);
+            _Console.originalScreenshot = _DrawingContext.getImageData(0, 0, _Canvas.width, _Canvas.height);
             if (_StdOut.currentXPosition > 0) {
                 _StdOut.advanceLine();
             }
