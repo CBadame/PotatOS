@@ -11,7 +11,8 @@
   "include": [
     "./source/*",
     "./source/os/*",
-    "./source/host/*"
+    "./source/host/*",
+    "./source/client/*"
   ],
   "exclude": [
     "./test",
@@ -23,6 +24,7 @@
     "./source/host/control.ts",
     "./source/host/devices.ts",
     "./source/host/cpu.ts",
+    "./source/host/memory.ts",
     "./source/os/interrupt.ts",
     "./source/os/canvastext.ts",
     "./source/os/console.ts",
@@ -33,6 +35,8 @@
     "./source/os/shell.ts",
     "./source/os/shellCommand.ts",
     "./source/os/userCommand.ts",
-    "./source/os/kernel.ts"
+    "./source/os/kernel.ts",
+    "./source/os/memoryManager.ts",
+    "./source/client/processControlBlock.ts"
   ]
 }

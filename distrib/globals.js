@@ -6,6 +6,8 @@ var KEYBOARD_IRQ = 1;
 var _CPU;
 var _OSclock = 0;
 var _Mode = 0;
+var _PCB;
+var _Process;
 var _Canvas;
 var _DrawingContext;
 var _DefaultFontFamily = "sans";
