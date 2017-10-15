@@ -387,7 +387,7 @@ module PotatOS {
             _StdOut.putText(factGenerator(factList));
         }
 
-        public shellLoad() {
+        public shellLoad(priority: number) {
             var userInput =(<HTMLInputElement>document.getElementById('taProgramInput')).value;
             if (userInput) {
                 // Decided to use regex because the valueType of 'taProgramInput' was being returned as 'undefined'...
@@ -396,7 +396,10 @@ module PotatOS {
                 if (!userInput.match(/^[A-F0-9\s]+$/))
                     _StdOut.putText("User input is invalid. Please use hex, digits, or spaces.");
                 else {
-                    _MM.writeCode();
+                    var PCB = new PotatOS.PCB();
+                    if (priority)
+                        PCB.priority = priority;
+                    _MM.write(userInput, PCB);
                 }
             }
                 else

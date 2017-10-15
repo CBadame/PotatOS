@@ -260,13 +260,16 @@ var PotatOS;
         Shell.prototype.shellFacts = function () {
             _StdOut.putText(factGenerator(factList));
         };
-        Shell.prototype.shellLoad = function () {
+        Shell.prototype.shellLoad = function (priority) {
             var userInput = document.getElementById('taProgramInput').value;
             if (userInput) {
                 if (!userInput.match(/^[A-F0-9\s]+$/))
                     _StdOut.putText("User input is invalid. Please use hex, digits, or spaces.");
                 else {
-                    _MM.writeCode();
+                    var PCB = new PotatOS.PCB();
+                    if (priority)
+                        PCB.priority = priority;
+                    _MM.write(userInput, PCB);
                 }
             }
             else

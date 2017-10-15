@@ -2,19 +2,34 @@ module PotatOS {
 
     export class MM {
 
-        static write(code: string, segment: number): void {
+        // Keeps track of what segments of memory are still free
+        public segment = -1;
+
+        // Writes user program to memory
+        public write(code: string, pcb): void {
             var codeArray = code.split(" ");
-            for (var i = this.base(segment); i < this.limit(segment); i++) {
-                _Memory.memory[i] = codeArray[i];
-                if (i == codeArray.length - 1) {
-                    i++;
-                    _Memory.memory[i] = 'Done';
-                    break;
+            if (this.segment < 2) {
+                this.segment++;
+                var arrayCount = 0;
+                for (var i = this.base(this.segment); i < this.limit(this.segment); i++) {
+                    _Memory.memory[i] = codeArray[arrayCount];
+                    arrayCount++;
+                    console.log(_Memory.memory[i]);
+                    if (i == codeArray.length + (this.base(this.segment) - 1)) {
+                        i++;
+                        _Memory.memory[i] = 'Done';
+                        console.log(_Memory.memory[i]);
+                        break;
+                    }
                 }
+                _StdOut.putText('The process successfully loaded and has a PID of: ' + pcb.PID);
             }
+            else
+                _StdOut.putText('No more free memory.');
         }
 
-        static read(segment: number): void {
+        // Reads user program from memory
+        public read(segment: number) {
             var codeArray = Array();
             for (var i = this.base(segment); i < this.limit(segment); i++) {
                 if (_Memory.memory[i] != "Done")
@@ -22,10 +37,11 @@ module PotatOS {
                 else
                     break;
             }
+            return codeArray;
         }
 
         // Return base address for the given segment of memory
-        static base(segment: number) {
+        public base(segment: number) {
             if (segment == 0)
                 return 0;
             else if (segment == 1)
@@ -35,7 +51,7 @@ module PotatOS {
         }
 
         // Return limit address for the given segment of memory
-        static limit(segment: number) {
+        public limit(segment: number) {
             if (segment == 0)
                 return 256;
             else if (segment == 1)
