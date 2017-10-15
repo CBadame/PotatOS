@@ -10,6 +10,7 @@ var _Memory;
 var _MM;
 var _PIDCount = -1;
 var _PCB;
+var _PCBList = new Array();
 var _Canvas;
 var _DrawingContext;
 var _DefaultFontFamily = "sans";

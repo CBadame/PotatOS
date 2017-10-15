@@ -35,7 +35,8 @@ var _Mode: number = 0;     // (currently unused)  0 = Kernel Mode, 1 = User Mode
 var _Memory: PotatOS.Memory;	// Utilize TypeScript's type annotation system to ensure that _Memory is an instance of the Memory class.
 var _MM: PotatOS.MM;	// Utilize TypeScript's type annotation system to ensure that _MM is an instance of the MM class.
 var _PIDCount = -1;	// Creates global counter for processes.
-var _PCB: PotatOS.PCB; // Global array to store all processes.
+var _PCB: PotatOS.PCB; // Utilize TypeScript's type annotation system to ensure that _PCB is an instance of the PCB class.
+var _PCBList = new Array(); // Global array to store all processes.
 
 var _Canvas: HTMLCanvasElement;         // Initialized in Control.hostInit().
 var _DrawingContext: any; // = _Canvas.getContext("2d");  // Assigned here for type safety, but re-initialized in Control.hostInit() for OCD and logic.

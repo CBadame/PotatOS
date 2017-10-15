@@ -7,7 +7,7 @@ module PotatOS {
                       public Xreg: number = 0,
                       public Yreg: number = 0,
                       public Zflag: number = 0,
-                      public PID: number = ++_PIDCount,
+                      public PID: number = _PIDCount++,
                       public IR: string = '',
                       public segment: number = 0,
                       public base: number = _MM.base(segment),
@@ -15,8 +15,7 @@ module PotatOS {
                       public state: string = 'NEW',
                       public priority: number = 0,
                       public runtime: number = 0,
-                      public waitTime: number = 0,
-                      public pcbCount = 0){
+                      public waitTime: number = 0){
         }
 
     }

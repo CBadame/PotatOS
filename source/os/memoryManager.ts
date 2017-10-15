@@ -3,29 +3,28 @@ module PotatOS {
     export class MM {
 
         // Keeps track of what segments of memory are still free
-        public segment = -1;
+        public segment = [0,0,0];
 
         // Writes user program to memory
-        public write(code: string, pcb): void {
+        public write(code: string, pcb: PCB): void {
+
+            //  This ensures that each new program gets loaded in an available segment of memory
             var codeArray = code.split(" ");
-            if (this.segment < 2) {
-                this.segment++;
-                var arrayCount = 0;
-                for (var i = this.base(this.segment); i < this.limit(this.segment); i++) {
-                    _Memory.memory[i] = codeArray[arrayCount];
-                    arrayCount++;
-                    console.log(_Memory.memory[i]);
-                    if (i == codeArray.length + (this.base(this.segment) - 1)) {
-                        i++;
-                        _Memory.memory[i] = 'Done';
-                        console.log(_Memory.memory[i]);
-                        break;
-                    }
+            var pcbNum = _PCBList.indexOf(pcb);
+            _PCBList[pcbNum].segment = this.checkMem();
+            this.segment[_PCBList[pcbNum].segment] = 1;
+            var arrayCount = 0;
+            _PCBList[pcbNum].base = this.base(_PCBList[pcbNum].segment); _PCBList[pcbNum].limit = this.limit(_PCBList[pcbNum].segment);
+            for (var i = _PCBList[pcbNum].base; i < _PCBList[pcbNum].limit; i++) {
+                _Memory.memory[i] = codeArray[arrayCount];
+                arrayCount++;
+                if (i == codeArray.length + (_PCBList[pcbNum].base) - 1){
+                    i++;
+                    _Memory.memory[i] = 'Done';
+                    break;
                 }
-                _StdOut.putText('The process successfully loaded and has a PID of: ' + pcb.PID);
             }
-            else
-                _StdOut.putText('No more free memory.');
+            _StdOut.putText('The process successfully loaded and has a PID of: ' + pcbNum);
         }
 
         // Reads user program from memory
@@ -59,6 +58,16 @@ module PotatOS {
             else if (segment == 2)
                 return 768;
         }
+
+        public checkMem() {
+            var avaialbeSeg;
+            for (var j = 0; j < this.segment.length; j++) {
+                if (this.segment[j] == 0)
+                    avaialbeSeg = j;
+            }
+            return avaialbeSeg;
+        }
+
     }
 
 }

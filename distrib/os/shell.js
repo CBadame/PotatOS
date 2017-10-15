@@ -266,10 +266,15 @@ var PotatOS;
                 if (!userInput.match(/^[A-F0-9\s]+$/))
                     _StdOut.putText("User input is invalid. Please use hex, digits, or spaces.");
                 else {
-                    var PCB = new PotatOS.PCB();
-                    if (priority)
-                        PCB.priority = priority;
-                    _MM.write(userInput, PCB);
+                    if (_MM.checkMem() != null) {
+                        var PCB = new PotatOS.PCB();
+                        if (priority)
+                            PCB.priority = priority;
+                        _PCBList.push(PCB);
+                        _MM.write(userInput, PCB);
+                    }
+                    else
+                        _StdOut.putText('No more free memory.');
                 }
             }
             else

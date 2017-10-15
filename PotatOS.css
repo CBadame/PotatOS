@@ -30,6 +30,19 @@ h3 {
   font-style: normal;
 }
 
+table {
+  border: 1px solid black;
+}
+
+#tbMemory{
+  position: absolute;
+  background-color: white;
+  height:400px;
+  width:420px;
+  overflow-y:auto;
+  display: block;
+}
+
 #display {
   background-color:#DFDBC3;
   border: 2px solid red;
