@@ -102,6 +102,11 @@ module PotatOS {
             // .. and call the OS Kernel Bootstrap routine.
             _Kernel = new Kernel();
             _Kernel.krnBootstrap();  // _GLaDOS.afterStartup() will get called in there, if configured.
+
+            _Memory = new PotatOS.Memory();
+            _Memory.init();
+            _MM = new PotatOS.MM();
+            _PCB = new PotatOS.PCB();
         }
 
         public static hostBtnHaltOS_click(btn): void {

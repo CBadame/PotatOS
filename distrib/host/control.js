@@ -34,6 +34,10 @@ var PotatOS;
             _hardwareClockID = setInterval(PotatOS.Devices.hostClockPulse, CPU_CLOCK_INTERVAL);
             _Kernel = new PotatOS.Kernel();
             _Kernel.krnBootstrap();
+            _Memory = new PotatOS.Memory();
+            _Memory.init();
+            _MM = new PotatOS.MM();
+            _PCB = new PotatOS.PCB();
         };
         Control.hostBtnHaltOS_click = function (btn) {
             Control.hostLog("Emergency halt", "host");

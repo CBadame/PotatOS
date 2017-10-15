@@ -395,6 +395,9 @@ module PotatOS {
                 // thought that this would be easier (Hint: It was)
                 if (!userInput.match(/^[A-F0-9\s]+$/))
                     _StdOut.putText("User input is invalid. Please use hex, digits, or spaces.");
+                else {
+
+                }
             }
                 else
                     _StdOut.putText("User input is invalid. Please use hex, digits, or spaces.");
