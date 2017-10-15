@@ -102,7 +102,7 @@ module PotatOS {
             //load
             sc = new ShellCommand(this.shellLoad,
                 "load",
-                " - Validates code located in 'User Program Input'.");
+                "<number> - Validates code located in 'User Program Input' and writes it to memory.");
             this.commandList[this.commandList.length] = sc;
 
             //bsod
@@ -115,6 +115,18 @@ module PotatOS {
             sc = new ShellCommand(this.shellStatus,
                 "status",
                 "<string> - Sets the status at the top of the page.");
+            this.commandList[this.commandList.length] = sc;
+
+            //run
+            sc = new ShellCommand(this.shellRun,
+                "run",
+                "<number> - Executes a given process from memory.");
+            this.commandList[this.commandList.length] = sc;
+
+            //programs
+            sc = new ShellCommand(this.shellPrograms,
+                "programs",
+                " - Lists programs stored in memory.");
             this.commandList[this.commandList.length] = sc;
 
             // ps  - list the running processes and their IDs
@@ -314,7 +326,7 @@ module PotatOS {
                         break;
                     case "load":
                         _StdOut.putText("Ensures that the user is only trying to use hex, digits, and/or spaces " +
-                            "with their program.");
+                            "with their program, then writes it to memory.");
                         break;
                     case "bsod":
                         _StdOut.putText("Tests the Blue Screen of Death function...everyone's favorite part of " +
@@ -323,6 +335,13 @@ module PotatOS {
                     case "status":
                         _StdOut.putText("Sets the status to whatever the user wishes. Let's try and keep this " +
                             "PG.");
+                        break;
+                    case "run":
+                        _StdOut.putText("Grabs one of the programs stored in a segment of memory and executes " +
+                        "for the WHOLE world to see. Pretty exciting stuff here.");
+                        break;
+                    case "programs":
+                        _StdOut.putText("Lists all programs stored in memory.");
                         break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
@@ -396,6 +415,8 @@ module PotatOS {
                 if (!userInput.match(/^[A-F0-9\s]+$/))
                     _StdOut.putText("User input is invalid. Please use hex, digits, or spaces.");
                 else {
+
+                    // Sets the PCB's priority and adds it to the list of ready PCBs
                     if (_MM.checkMem() != null) {
                         var PCB = new PotatOS.PCB();
                         if (priority)
@@ -424,5 +445,25 @@ module PotatOS {
                 _StdOut.putText("Usage: status <string>  Please supply a string.");
             }
         }
+
+        public shellRun(pid: number) {
+            var ifExists = false;
+            for (var i = 0; i < _PCBList.length; i++) {
+                if (_PCBList[i].PID == pid) {
+                    _MM.run(_PCBList[i]);
+                    ifExists = true;
+                }
+            }
+            if (!ifExists)
+                _StdOut.putText("This program does not exists. Type 'programs' to view what is currently in memory");
+        }
+
+        public shellPrograms() {
+            for (var i = 0; i < _PCBList.length; i++) {
+                _StdOut.putText('PID: ' + _PCBList[i].PID);
+                _StdOut.advanceLine();
+            }
+        }
+
     }
 }

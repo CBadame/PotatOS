@@ -75,7 +75,6 @@ var PotatOS;
                 }
             }
             function redrawInput(newBuffer) {
-                console.log(_Console.currentYPosition);
                 if (_Console.currentYPosition < 460) {
                     _DrawingContext.clearRect(_OsShell.promptXPosition, _OsShell.promptYPosition - (_DefaultFontSize + _FontHeightMargin), _Canvas.width, _Console.currentYPosition);
                     _DrawingContext.clearRect(_OsShell.promptXPosition, _OsShell.promptYPosition - (_DefaultFontSize - _FontHeightMargin), _Canvas.width, _Console.currentYPosition);

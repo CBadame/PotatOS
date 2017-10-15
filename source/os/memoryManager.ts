@@ -8,12 +8,15 @@ module PotatOS {
         // Writes user program to memory
         public write(code: string, pcb: PCB): void {
 
-            //  This ensures that each new program gets loaded in an available segment of memory
             var codeArray = code.split(" ");
             var pcbNum = _PCBList.indexOf(pcb);
+
+            // Takes available segment of memory
             _PCBList[pcbNum].segment = this.checkMem();
             this.segment[_PCBList[pcbNum].segment] = 1;
             var arrayCount = 0;
+
+            // Sets the PCB's base + limit, and writes the code to the given segment
             _PCBList[pcbNum].base = this.base(_PCBList[pcbNum].segment); _PCBList[pcbNum].limit = this.limit(_PCBList[pcbNum].segment);
             for (var i = _PCBList[pcbNum].base; i < _PCBList[pcbNum].limit; i++) {
                 _Memory.memory[i] = codeArray[arrayCount];
@@ -66,6 +69,10 @@ module PotatOS {
                     avaialbeSeg = j;
             }
             return avaialbeSeg;
+        }
+
+        public run(PCB) {
+            
         }
 
     }

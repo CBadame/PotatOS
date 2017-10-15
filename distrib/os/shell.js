@@ -33,11 +33,15 @@ var PotatOS;
             this.commandList[this.commandList.length] = sc;
             sc = new PotatOS.ShellCommand(this.shellFacts, "facts", " - Displays a random fact about potatoes.");
             this.commandList[this.commandList.length] = sc;
-            sc = new PotatOS.ShellCommand(this.shellLoad, "load", " - Validates code located in 'User Program Input'.");
+            sc = new PotatOS.ShellCommand(this.shellLoad, "load", "<number> - Validates code located in 'User Program Input' and writes it to memory.");
             this.commandList[this.commandList.length] = sc;
             sc = new PotatOS.ShellCommand(this.shellBSOD, "bsod", " - Initiates Blue Screen of Death.");
             this.commandList[this.commandList.length] = sc;
             sc = new PotatOS.ShellCommand(this.shellStatus, "status", "<string> - Sets the status at the top of the page.");
+            this.commandList[this.commandList.length] = sc;
+            sc = new PotatOS.ShellCommand(this.shellRun, "run", "<number> - Executes a given process from memory.");
+            this.commandList[this.commandList.length] = sc;
+            sc = new PotatOS.ShellCommand(this.shellPrograms, "programs", " - Lists programs stored in memory.");
             this.commandList[this.commandList.length] = sc;
             this.putPrompt();
         };
@@ -191,7 +195,7 @@ var PotatOS;
                         break;
                     case "load":
                         _StdOut.putText("Ensures that the user is only trying to use hex, digits, and/or spaces " +
-                            "with their program.");
+                            "with their program, then writes it to memory.");
                         break;
                     case "bsod":
                         _StdOut.putText("Tests the Blue Screen of Death function...everyone's favorite part of " +
@@ -200,6 +204,13 @@ var PotatOS;
                     case "status":
                         _StdOut.putText("Sets the status to whatever the user wishes. Let's try and keep this " +
                             "PG.");
+                        break;
+                    case "run":
+                        _StdOut.putText("Grabs one of the programs stored in a segment of memory and executes " +
+                            "for the WHOLE world to see. Pretty exciting stuff here.");
+                        break;
+                    case "programs":
+                        _StdOut.putText("Lists all programs stored in memory.");
                         break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
@@ -290,6 +301,23 @@ var PotatOS;
             }
             else {
                 _StdOut.putText("Usage: status <string>  Please supply a string.");
+            }
+        };
+        Shell.prototype.shellRun = function (pid) {
+            var ifExists = false;
+            for (var i = 0; i < _PCBList.length; i++) {
+                if (_PCBList[i].PID == pid) {
+                    _MM.run(_PCBList[i]);
+                    ifExists = true;
+                }
+            }
+            if (!ifExists)
+                _StdOut.putText("This program does not exists. Type 'programs' to view what is currently in memory");
+        };
+        Shell.prototype.shellPrograms = function () {
+            for (var i = 0; i < _PCBList.length; i++) {
+                _StdOut.putText('PID: ' + _PCBList[i].PID);
+                _StdOut.advanceLine();
             }
         };
         return Shell;

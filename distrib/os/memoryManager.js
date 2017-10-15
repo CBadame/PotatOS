@@ -57,6 +57,8 @@ var PotatOS;
             }
             return avaialbeSeg;
         };
+        MM.prototype.run = function (PCB) {
+        };
         return MM;
     }());
     PotatOS.MM = MM;
