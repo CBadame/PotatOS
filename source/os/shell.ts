@@ -19,7 +19,7 @@ module PotatOS {
     export class Shell {
         // Properties
         public promptStr = ">";
-        public commandList = [];
+        public commandList = new Array();
         public curses = "[fuvg],[cvff],[shpx],[phag],[pbpxfhpxre],[zbgureshpxre],[gvgf]";
         public apologies = "[sorry]";
         public promptXPosition = _Console.currentXPosition;
@@ -129,7 +129,6 @@ module PotatOS {
                 " - Lists programs stored in memory.");
             this.commandList[this.commandList.length] = sc;
 
-            // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
 
             //
@@ -412,6 +411,8 @@ module PotatOS {
                 // Decided to use regex because the valueType of 'taProgramInput' was being returned as 'undefined'...
                 // ...I got sick of trying to figure out how to make the value a string/compare it to a string, and...
                 // thought that this would be easier (Hint: It was)
+
+                userInput = userInput.toUpperCase();
                 if (!userInput.match(/^[A-F0-9\s]+$/))
                     _StdOut.putText("User input is invalid. Please use hex, digits, or spaces.");
                 else {
@@ -455,7 +456,7 @@ module PotatOS {
                 }
             }
             if (!ifExists)
-                _StdOut.putText("This program does not exists. Type 'programs' to view what is currently in memory");
+                _StdOut.putText("This program does not exist. Type 'programs' to view what is currently in memory");
         }
 
         public shellPrograms() {

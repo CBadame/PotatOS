@@ -11,26 +11,17 @@ var PotatOS;
             this.segment[_PCBList[pcbNum].segment] = 1;
             var arrayCount = 0;
             _PCBList[pcbNum].base = this.base(_PCBList[pcbNum].segment);
-            _PCBList[pcbNum].limit = this.limit(_PCBList[pcbNum].segment);
+            _PCBList[pcbNum].limit = _PCBList[pcbNum].base + codeArray.length;
             for (var i = _PCBList[pcbNum].base; i < _PCBList[pcbNum].limit; i++) {
                 _Memory.memory[i] = codeArray[arrayCount];
                 arrayCount++;
-                if (i == codeArray.length + (_PCBList[pcbNum].base) - 1) {
-                    i++;
-                    _Memory.memory[i] = 'Done';
-                    break;
-                }
             }
             _StdOut.putText('The process successfully loaded and has a PID of: ' + pcbNum);
         };
-        MM.prototype.read = function (segment) {
+        MM.prototype.read = function (base, limit) {
             var codeArray = Array();
-            for (var i = this.base(segment); i < this.limit(segment); i++) {
-                if (_Memory.memory[i] != "Done")
-                    codeArray.push(_Memory.memory[i]);
-                else
-                    break;
-            }
+            for (var i = base; i < limit; i++)
+                codeArray.push(_Memory.memory[i]);
             return codeArray;
         };
         MM.prototype.base = function (segment) {
@@ -50,14 +41,19 @@ var PotatOS;
                 return 768;
         };
         MM.prototype.checkMem = function () {
-            var avaialbeSeg;
+            var availableSeg;
             for (var j = 0; j < this.segment.length; j++) {
                 if (this.segment[j] == 0)
-                    avaialbeSeg = j;
+                    availableSeg = j;
             }
-            return avaialbeSeg;
+            return availableSeg;
         };
         MM.prototype.run = function (PCB) {
+            _CPU.execute(PCB);
+        };
+        MM.prototype.readAddr = function (addr, pcb) {
+            if (addr >= 0 && addr <= pcb.limit)
+                return _Memory.memory[pcb.base + addr];
         };
         return MM;
     }());

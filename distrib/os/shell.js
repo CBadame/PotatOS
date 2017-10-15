@@ -3,7 +3,7 @@ var PotatOS;
     var Shell = (function () {
         function Shell() {
             this.promptStr = ">";
-            this.commandList = [];
+            this.commandList = new Array();
             this.curses = "[fuvg],[cvff],[shpx],[phag],[pbpxfhpxre],[zbgureshpxre],[gvgf]";
             this.apologies = "[sorry]";
             this.promptXPosition = _Console.currentXPosition;
@@ -274,6 +274,7 @@ var PotatOS;
         Shell.prototype.shellLoad = function (priority) {
             var userInput = document.getElementById('taProgramInput').value;
             if (userInput) {
+                userInput = userInput.toUpperCase();
                 if (!userInput.match(/^[A-F0-9\s]+$/))
                     _StdOut.putText("User input is invalid. Please use hex, digits, or spaces.");
                 else {
@@ -312,7 +313,7 @@ var PotatOS;
                 }
             }
             if (!ifExists)
-                _StdOut.putText("This program does not exists. Type 'programs' to view what is currently in memory");
+                _StdOut.putText("This program does not exist. Type 'programs' to view what is currently in memory");
         };
         Shell.prototype.shellPrograms = function () {
             for (var i = 0; i < _PCBList.length; i++) {
