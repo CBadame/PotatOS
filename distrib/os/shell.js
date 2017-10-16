@@ -89,7 +89,8 @@ var PotatOS;
             if (_StdOut.currentXPosition > 0) {
                 _StdOut.advanceLine();
             }
-            this.putPrompt();
+            if (!_CPU.isExecuting)
+                this.putPrompt();
         };
         Shell.prototype.parseInput = function (buffer) {
             var retVal = new PotatOS.UserCommand();
@@ -313,7 +314,7 @@ var PotatOS;
                 }
             }
             if (!ifExists)
-                _StdOut.putText("This program does not exist. Type 'programs' to view what is currently in memory");
+                _StdOut.putText("This program does not exist. Type 'programs' to view what is currently in memory.");
         };
         Shell.prototype.shellPrograms = function () {
             for (var i = 0; i < _PCBList.length; i++) {

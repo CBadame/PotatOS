@@ -194,7 +194,8 @@ module PotatOS {
                 _StdOut.advanceLine();
             }
             // ... and finally write the prompt again.
-            this.putPrompt();
+            if (!_CPU.isExecuting)
+                this.putPrompt();
         }
 
         public parseInput(buffer): UserCommand {
@@ -455,7 +456,7 @@ module PotatOS {
                 }
             }
             if (!ifExists)
-                _StdOut.putText("This program does not exist. Type 'programs' to view what is currently in memory");
+                _StdOut.putText("This program does not exist. Type 'programs' to view what is currently in memory.");
         }
 
         public shellPrograms() {

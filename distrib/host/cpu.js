@@ -38,8 +38,6 @@ var PotatOS;
             this.processIndex = _PCBList.indexOf(PCB);
             var codeArray = _MM.read(PCB.base, PCB.limit);
             _CPU.isExecuting = true;
-            console.log(codeArray);
-            console.log(this.PC);
             switch (codeArray[this.PC]) {
                 case 'A9':
                     this.loadAccConst(codeArray[this.PC + 1]);
@@ -92,12 +90,10 @@ var PotatOS;
                 default:
                     _StdOut.putText('OP code is invalid. Nice job. It was ' + codeArray[this.PC] + ' if you care ' +
                         'enough to fix it. Or don\'t. Doesn\'t matter to me.');
+                    _StdOut.advanceLine();
                     this.isExecuting = false;
                     this.terminate();
             }
-            console.log(_PCBList);
-            this.isExecuting = false;
-            this.terminate();
         };
         Cpu.prototype.loadAccConst = function (constant) {
             this.PC += 2;
@@ -164,6 +160,8 @@ var PotatOS;
                 _Memory.memory.push(0);
             _PCBList.splice(this.processIndex, 1);
             this.processIndex = 0;
+            _StdOut.advanceLine();
+            _OsShell.putPrompt();
         };
         Cpu.prototype.compareByteX = function () {
             var value = _MM.readAddr(this.PC + 2, _PCBList[this.processIndex]);

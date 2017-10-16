@@ -53,69 +53,62 @@ module PotatOS {
             this.processIndex = _PCBList.indexOf(PCB);
             var codeArray = _MM.read(PCB.base, PCB.limit);
             _CPU.isExecuting = true;
-            //while (_CPU.isExecuting == true && this.PC <= codeArray.length - 1) {
-            console.log(codeArray);
-            console.log(this.PC);
-                switch (codeArray[this.PC]) {
-                    case 'A9':
-                        this.loadAccConst(codeArray[this.PC + 1]);
-                        break;
-                    case 'AD':
-                        this.loadAccMem();
-                        break;
-                    case '8D':
-                        this.writeAcc();
-                        break;
-                    case '6D':
-                        this.addAcc();
-                        break;
-                    case 'A2':
-                        this.loadXConst(codeArray[this.PC + 1]);
-                        break;
-                    case 'AE':
-                        this.loadXMem();
-                        break;
-                    case 'A0':
-                        this.loadYConst(codeArray[this.PC + 1]);
-                        break;
-                    case 'AC':
-                        this.loadYMem();
-                        break;
-                    case 'EA':
-                        this.PC++;
-                        break;
-                    case '00':
-                        _CPU.isExecuting = false;
-                        this.IR = '00';
-                        this.terminate();
-                        break;
-                    case 'EC':
-                        this.compareByteX();
-                        break;
-                    case 'D0':
-                        this.branchZ(codeArray[this.PC + 1]);
-                        break;
-                    case 'EE':
-                        this.incrByte();
-                        break;
-                    case 'FF':
-                        this.sysCall();
-                        break;
-                    case '0':
-                        _CPU.isExecuting = false;
-                        this.terminate();
-                        break;
-                    default:
-                        _StdOut.putText('OP code is invalid. Nice job. It was ' + codeArray[this.PC] + ' if you care ' +
-                            'enough to fix it. Or don\'t. Doesn\'t matter to me.');
-                        this.isExecuting = false;
-                        this.terminate();
-                }
-                console.log(_PCBList);
-                this.isExecuting = false;
-                this.terminate();
-                //break;
-            //}
+            switch (codeArray[this.PC]) {
+                case 'A9':
+                    this.loadAccConst(codeArray[this.PC + 1]);
+                    break;
+                case 'AD':
+                    this.loadAccMem();
+                    break;
+                case '8D':
+                    this.writeAcc();
+                    break;
+                case '6D':
+                    this.addAcc();
+                    break;
+                case 'A2':
+                    this.loadXConst(codeArray[this.PC + 1]);
+                    break;
+                case 'AE':
+                    this.loadXMem();
+                    break;
+                case 'A0':
+                    this.loadYConst(codeArray[this.PC + 1]);
+                    break;
+                case 'AC':
+                    this.loadYMem();
+                    break;
+                case 'EA':
+                    this.PC++;
+                    break;
+                case '00':
+                    _CPU.isExecuting = false;
+                    this.IR = '00';
+                    this.terminate();
+                    break;
+                case 'EC':
+                    this.compareByteX();
+                    break;
+                case 'D0':
+                    this.branchZ(codeArray[this.PC + 1]);
+                    break;
+                case 'EE':
+                    this.incrByte();
+                    break;
+                case 'FF':
+                    this.sysCall();
+                    break;
+                case '0':
+                    _CPU.isExecuting = false;
+                    this.terminate();
+                    break;
+                default:
+                    _StdOut.putText('OP code is invalid. Nice job. It was ' + codeArray[this.PC] + ' if you care ' +
+                        'enough to fix it. Or don\'t. Doesn\'t matter to me.');
+                    _StdOut.advanceLine();
+                    this.isExecuting = false;
+                    this.terminate();
+            }
         }
 
         public loadAccConst(constant: string) {
@@ -191,6 +184,8 @@ module PotatOS {
                 _Memory.memory.push(0);
             _PCBList.splice(this.processIndex, 1);
             this.processIndex = 0;
+            _StdOut.advanceLine();
+            _OsShell.putPrompt();
         }
 
         public compareByteX() {
