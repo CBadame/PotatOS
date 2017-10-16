@@ -44,6 +44,15 @@ module PotatOS {
                 return 512;
         }
 
+        public getLimit(segment: number) {
+            if (segment == 0)
+                return 256;
+            else if (segment == 1)
+                return 512;
+            else if (segment == 2)
+                return 768;
+        }
+
         public checkMem() {
             var availableSeg;
             for (var j = 0; j < this.segment.length; j++) {

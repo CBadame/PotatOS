@@ -26,7 +26,8 @@ module PotatOS {
                     public Zflag: number = 0,
                     public isExecuting: boolean = false,
                     public processIndex = 0,
-                    public IR = '') {
+                    public IR = '',
+                    public codeArray = new Array()) {
 
         }
 
@@ -39,23 +40,28 @@ module PotatOS {
             this.isExecuting = false;
             this.processIndex = 0;
             this.IR = '';
+            this.codeArray = [0,0,0];
         }
 
         public cycle(): void {
             _Kernel.krnTrace('CPU cycle');
             // TODO: Accumulate CPU usage and profiling statistics here.
             // Do the real work here. Be sure to set this.isExecuting appropriately.
-            if (this.isExecuting)
+            if (this.isExecuting == true && this.PC <= this.codeArray.length - 1)
                 this.execute(_PCBList[this.processIndex]);
+            else if (this.PC > this.codeArray.length - 1)
+                this.terminate();
         }
 
         public execute(PCB: PCB): void {
             this.processIndex = _PCBList.indexOf(PCB);
-            var codeArray = _MM.read(PCB.base, PCB.limit);
+            this.codeArray = _MM.read(PCB.base, PCB.limit);
             _CPU.isExecuting = true;
-            switch (codeArray[this.PC]) {
+            console.log(this.PC);
+            console.log(this.codeArray[this.PC]);
+            switch (this.codeArray[this.PC]) {
                 case 'A9':
-                    this.loadAccConst(codeArray[this.PC + 1]);
+                    this.loadAccConst(this.codeArray[this.PC + 1]);
                     break;
                 case 'AD':
                     this.loadAccMem();
@@ -67,13 +73,13 @@ module PotatOS {
                     this.addAcc();
                     break;
                 case 'A2':
-                    this.loadXConst(codeArray[this.PC + 1]);
+                    this.loadXConst(this.codeArray[this.PC + 1]);
                     break;
                 case 'AE':
                     this.loadXMem();
                     break;
                 case 'A0':
-                    this.loadYConst(codeArray[this.PC + 1]);
+                    this.loadYConst(this.codeArray[this.PC + 1]);
                     break;
                 case 'AC':
                     this.loadYMem();
@@ -82,7 +88,6 @@ module PotatOS {
                     this.PC++;
                     break;
                 case '00':
-                    _CPU.isExecuting = false;
                     this.IR = '00';
                     this.terminate();
                     break;
@@ -90,7 +95,7 @@ module PotatOS {
                     this.compareByteX();
                     break;
                 case 'D0':
-                    this.branchZ(codeArray[this.PC + 1]);
+                    this.branchZ(this.codeArray[this.PC + 1]);
                     break;
                 case 'EE':
                     this.incrByte();
@@ -99,14 +104,12 @@ module PotatOS {
                     this.sysCall();
                     break;
                 case '0':
-                    _CPU.isExecuting = false;
                     this.terminate();
                     break;
                 default:
-                    _StdOut.putText('OP code is invalid. Nice job. It was ' + codeArray[this.PC] + ' if you care ' +
+                    _StdOut.putText('OP code is invalid. Nice job. It was ' + this.codeArray[this.PC] + ' if you care ' +
                         'enough to fix it. Or don\'t. Doesn\'t matter to me.');
                     _StdOut.advanceLine();
-                    this.isExecuting = false;
                     this.terminate();
             }
         }
@@ -183,7 +186,9 @@ module PotatOS {
             for (var i = 0; i < (_PCBList[this.processIndex].limit - _PCBList[this.processIndex].base); i++)
                 _Memory.memory.push(0);
             _PCBList.splice(this.processIndex, 1);
-            this.processIndex = 0;
+            this.processIndex = -1;
+            _CPU.isExecuting = false;
+            this.codeArray = [0,0,0];
             _StdOut.advanceLine();
             _OsShell.putPrompt();
         }
@@ -205,13 +210,20 @@ module PotatOS {
                 var bytes = parseInt(constant, 16);
                 // Check to make sure the branch does not cause the process counter to exceed the the segment limit.
                 // If it does, loop back to the base.
-                if (this.PC + bytes <= _PCBList[this.processIndex].limit)
-                    this.PC += bytes;
-                else {
-                    var difference = this.PC + bytes;
-                    difference -= _PCBList[this.processIndex].limit;
-                    this.PC = difference - 1;
+                if ((this.PC+2) + bytes + _PCBList[this.processIndex].base <= _MM.getLimit(_PCBList[this.processIndex].segment) - 1) {
+                    this.PC += 2+bytes;
                 }
+                else {
+                    var difference = (this.PC+2) + bytes + _PCBList[this.processIndex].base;
+                    difference = difference - 256;
+                    while (difference > _MM.getLimit(_PCBList[this.processIndex].segment) - 1) {
+                        difference = difference - 256;
+                    }
+                    this.PC = difference - _PCBList[this.processIndex].base;
+                }
+            }
+            else {
+                this.PC += 2;
             }
             this.IR = 'D0';
         }
@@ -230,20 +242,26 @@ module PotatOS {
         }
 
         public sysCall() {
-            if (this.Xreg == 1)
+            if (this.Xreg == 1) {
                 _StdOut.putText(this.Yreg.toString());
-            else if (this.Xreg == 2) {
-                var addr = this.Yreg;
-                var addrVal = _MM.readAddr(addr, _PCBList[this.processIndex]);
-                addr++;
-                while (parseInt(_MM.readAddr(addr, _PCBList[this.processIndex]), 16) != 0) {
-                    addrVal += _MM.readAddr(addr, _PCBList[this.processIndex]);
-                    addr++;
-                }
-                _StdOut.putText(addrVal.toString());
+                _StdOut.advanceLine();
             }
-            else
+            else if (this.Xreg == 2) {
+                var addr = this.Yreg + _PCBList[this.processIndex].base;
+                var addrVal = _Memory.memory[addr];
+                var str:string = '';
+                while (addrVal != 0 && addr < 768) {
+                    str += String.fromCharCode(parseInt(addrVal, 16));
+                    addr++;
+                    addrVal = _Memory.memory[addr];
+                }
+                _StdOut.putText(str);
+                _StdOut.advanceLine();
+            }
+            else {
                 _StdOut.putText('Xreg does not equal 1 or 2.');
+                _StdOut.advanceLine();
+            }
             this.IR = 'FF';
             this.PC++;
         }
