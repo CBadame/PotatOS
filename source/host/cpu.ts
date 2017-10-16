@@ -45,17 +45,20 @@ module PotatOS {
             _Kernel.krnTrace('CPU cycle');
             // TODO: Accumulate CPU usage and profiling statistics here.
             // Do the real work here. Be sure to set this.isExecuting appropriately.
+            if (this.isExecuting)
+                this.execute(_PCBList[this.processIndex]);
         }
 
         public execute(PCB: PCB): void {
             this.processIndex = _PCBList.indexOf(PCB);
-            console.log(PCB.base + ' ' + PCB.limit);
             var codeArray = _MM.read(PCB.base, PCB.limit);
             _CPU.isExecuting = true;
-            while (_CPU.isExecuting == true && this.PC <= codeArray.length - 1) {
+            //while (_CPU.isExecuting == true && this.PC <= codeArray.length - 1) {
+            console.log(codeArray);
+            console.log(this.PC);
                 switch (codeArray[this.PC]) {
                     case 'A9':
-                        this.loadAccConst(codeArray[this.PC+1]);
+                        this.loadAccConst(codeArray[this.PC + 1]);
                         break;
                     case 'AD':
                         this.loadAccMem();
@@ -67,13 +70,13 @@ module PotatOS {
                         this.addAcc();
                         break;
                     case 'A2':
-                        this.loadXConst(codeArray[this.PC+1]);
+                        this.loadXConst(codeArray[this.PC + 1]);
                         break;
                     case 'AE':
                         this.loadXMem();
                         break;
                     case 'A0':
-                        this.loadYConst(codeArray[this.PC+1]);
+                        this.loadYConst(codeArray[this.PC + 1]);
                         break;
                     case 'AC':
                         this.loadYMem();
@@ -90,12 +93,13 @@ module PotatOS {
                         this.compareByteX();
                         break;
                     case 'D0':
-                        this.branchZ(codeArray[this.PC+1]);
+                        this.branchZ(codeArray[this.PC + 1]);
                         break;
                     case 'EE':
                         this.incrByte();
                         break;
                     case 'FF':
+                        this.sysCall();
                         break;
                     case '0':
                         _CPU.isExecuting = false;
@@ -107,7 +111,11 @@ module PotatOS {
                         this.isExecuting = false;
                         this.terminate();
                 }
-            }
+                console.log(_PCBList);
+                this.isExecuting = false;
+                this.terminate();
+                //break;
+            //}
         }
 
         public loadAccConst(constant: string) {
@@ -179,6 +187,8 @@ module PotatOS {
         public terminate() {
             _StdOut.putText('PID: ' + _PCBList[this.processIndex].PID + ' has completed.');
             _MM.segment[_PCBList[this.processIndex].segment] = 0;
+            for (var i = 0; i < (_PCBList[this.processIndex].limit - _PCBList[this.processIndex].base); i++)
+                _Memory.memory.push(0);
             _PCBList.splice(this.processIndex, 1);
             this.processIndex = 0;
         }
@@ -230,11 +240,16 @@ module PotatOS {
             else if (this.Xreg == 2) {
                 var addr = this.Yreg;
                 var addrVal = _MM.readAddr(addr, _PCBList[this.processIndex]);
-                var result = parseInt(addrVal, 16);
-                while (parseInt(addrVal, 16) != 0) {
-                    
+                addr++;
+                while (parseInt(_MM.readAddr(addr, _PCBList[this.processIndex]), 16) != 0) {
+                    addrVal += _MM.readAddr(addr, _PCBList[this.processIndex]);
+                    addr++;
                 }
+                _StdOut.putText(addrVal.toString());
             }
+            else
+                _StdOut.putText('Xreg does not equal 1 or 2.');
+            this.IR = 'FF';
             this.PC++;
         }
 

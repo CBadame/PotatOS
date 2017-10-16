@@ -17,7 +17,8 @@ module PotatOS {
             var arrayCount = 0;
 
             // Sets the PCB's base + limit, and writes the code to the given segment
-            _PCBList[pcbNum].base = this.getBase(_PCBList[pcbNum].segment); _PCBList[pcbNum].limit = _PCBList[pcbNum].base + codeArray.length;
+            _PCBList[pcbNum].base = this.getBase(_PCBList[pcbNum].segment);
+            _PCBList[pcbNum].limit = _PCBList[pcbNum].base + codeArray.length;
             for (var i = _PCBList[pcbNum].base; i < _PCBList[pcbNum].limit; i++) {
                 _Memory.memory[i] = codeArray[arrayCount];
                 arrayCount++;
@@ -52,8 +53,14 @@ module PotatOS {
             return availableSeg;
         }
 
-        public run(PCB: PCB) {
-            _CPU.execute(PCB);
+        public run(pcb: PCB) {
+            _CPU.processIndex = _PCBList.indexOf(pcb);
+            _CPU.isExecuting = true;
+            _CPU.PC = pcb.PC;
+            _CPU.Xreg = pcb.Xreg;
+            _CPU.Yreg = pcb.Yreg;
+            _CPU.Zflag = pcb.Zflag;
+            _CPU.Acc = pcb.Acc;
         }
 
         public readAddr(addr: number, pcb: PCB) {

@@ -31,68 +31,73 @@ var PotatOS;
         };
         Cpu.prototype.cycle = function () {
             _Kernel.krnTrace('CPU cycle');
+            if (this.isExecuting)
+                this.execute(_PCBList[this.processIndex]);
         };
         Cpu.prototype.execute = function (PCB) {
             this.processIndex = _PCBList.indexOf(PCB);
-            console.log(PCB.base + ' ' + PCB.limit);
             var codeArray = _MM.read(PCB.base, PCB.limit);
             _CPU.isExecuting = true;
-            while (_CPU.isExecuting == true && this.PC <= codeArray.length - 1) {
-                switch (codeArray[this.PC]) {
-                    case 'A9':
-                        this.loadAccConst(codeArray[this.PC + 1]);
-                        break;
-                    case 'AD':
-                        this.loadAccMem();
-                        break;
-                    case '8D':
-                        this.writeAcc();
-                        break;
-                    case '6D':
-                        this.addAcc();
-                        break;
-                    case 'A2':
-                        this.loadXConst(codeArray[this.PC + 1]);
-                        break;
-                    case 'AE':
-                        this.loadXMem();
-                        break;
-                    case 'A0':
-                        this.loadYConst(codeArray[this.PC + 1]);
-                        break;
-                    case 'AC':
-                        this.loadYMem();
-                        break;
-                    case 'EA':
-                        this.PC++;
-                        break;
-                    case '00':
-                        _CPU.isExecuting = false;
-                        this.IR = '00';
-                        this.terminate();
-                        break;
-                    case 'EC':
-                        this.compareByteX();
-                        break;
-                    case 'D0':
-                        this.branchZ(codeArray[this.PC + 1]);
-                        break;
-                    case 'EE':
-                        this.incrByte();
-                        break;
-                    case 'FF':
-                        break;
-                    case '0':
-                        _CPU.isExecuting = false;
-                        this.terminate();
-                        break;
-                    default:
-                        _StdOut.putText('OP code is invalid. Nice job. It was ' + codeArray[this.PC] + ' if you care ' +
-                            'enough to fix it. Or don\'t. Doesn\'t matter to me.');
-                        this.isExecuting = false;
-                        this.terminate();
-                }
+            console.log(codeArray);
+            console.log(this.PC);
+            switch (codeArray[this.PC]) {
+                case 'A9':
+                    this.loadAccConst(codeArray[this.PC + 1]);
+                    break;
+                case 'AD':
+                    this.loadAccMem();
+                    break;
+                case '8D':
+                    this.writeAcc();
+                    break;
+                case '6D':
+                    this.addAcc();
+                    break;
+                case 'A2':
+                    this.loadXConst(codeArray[this.PC + 1]);
+                    break;
+                case 'AE':
+                    this.loadXMem();
+                    break;
+                case 'A0':
+                    this.loadYConst(codeArray[this.PC + 1]);
+                    break;
+                case 'AC':
+                    this.loadYMem();
+                    break;
+                case 'EA':
+                    this.PC++;
+                    break;
+                case '00':
+                    _CPU.isExecuting = false;
+                    this.IR = '00';
+                    this.terminate();
+                    break;
+                case 'EC':
+                    this.compareByteX();
+                    break;
+                case 'D0':
+                    this.branchZ(codeArray[this.PC + 1]);
+                    break;
+                case 'EE':
+                    this.incrByte();
+                    break;
+                case 'FF':
+                    this.sysCall();
+                    break;
+                case '0':
+                    _CPU.isExecuting = false;
+                    this.terminate();
+                    break;
+                default:
+                    _StdOut.putText('OP code is invalid. Nice job. It was ' + codeArray[this.PC] + ' if you care ' +
+                        'enough to fix it. Or don\'t. Doesn\'t matter to me.');
+                    this.isExecuting = false;
+                    this.terminate();
             }
+            console.log(_PCBList);
+            this.isExecuting = false;
+            this.terminate();
         };
         Cpu.prototype.loadAccConst = function (constant) {
             this.PC += 2;
@@ -155,6 +160,8 @@ var PotatOS;
         Cpu.prototype.terminate = function () {
             _StdOut.putText('PID: ' + _PCBList[this.processIndex].PID + ' has completed.');
             _MM.segment[_PCBList[this.processIndex].segment] = 0;
+            for (var i = 0; i < (_PCBList[this.processIndex].limit - _PCBList[this.processIndex].base); i++)
+                _Memory.memory.push(0);
             _PCBList.splice(this.processIndex, 1);
             this.processIndex = 0;
         };
@@ -200,10 +207,16 @@ var PotatOS;
             else if (this.Xreg == 2) {
                 var addr = this.Yreg;
                 var addrVal = _MM.readAddr(addr, _PCBList[this.processIndex]);
-                var result = parseInt(addrVal, 16);
-                while (parseInt(addrVal, 16) != 0) {
+                addr++;
+                while (parseInt(_MM.readAddr(addr, _PCBList[this.processIndex]), 16) != 0) {
+                    addrVal += _MM.readAddr(addr, _PCBList[this.processIndex]);
+                    addr++;
                 }
+                _StdOut.putText(addrVal.toString());
             }
+            else
+                _StdOut.putText('Xreg does not equal 1 or 2.');
+            this.IR = 'FF';
             this.PC++;
         };
         return Cpu;

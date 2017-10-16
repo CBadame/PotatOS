@@ -3,7 +3,7 @@ var PotatOS;
     var Shell = (function () {
         function Shell() {
             this.promptStr = ">";
-            this.commandList = new Array();
+            this.commandList = [];
             this.curses = "[fuvg],[cvff],[shpx],[phag],[pbpxfhpxre],[zbgureshpxre],[gvgf]";
             this.apologies = "[sorry]";
             this.promptXPosition = _Console.currentXPosition;

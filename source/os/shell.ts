@@ -19,7 +19,7 @@ module PotatOS {
     export class Shell {
         // Properties
         public promptStr = ">";
-        public commandList = new Array();
+        public commandList = [];
         public curses = "[fuvg],[cvff],[shpx],[phag],[pbpxfhpxre],[zbgureshpxre],[gvgf]";
         public apologies = "[sorry]";
         public promptXPosition = _Console.currentXPosition;
@@ -416,7 +416,6 @@ module PotatOS {
                 if (!userInput.match(/^[A-F0-9\s]+$/))
                     _StdOut.putText("User input is invalid. Please use hex, digits, or spaces.");
                 else {
-
                     // Sets the PCB's priority and adds it to the list of ready PCBs
                     if (_MM.checkMem() != null) {
                         var PCB = new PotatOS.PCB();

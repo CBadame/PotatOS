@@ -40,8 +40,14 @@ var PotatOS;
             }
             return availableSeg;
         };
-        MM.prototype.run = function (PCB) {
-            _CPU.execute(PCB);
+        MM.prototype.run = function (pcb) {
+            _CPU.processIndex = _PCBList.indexOf(pcb);
+            _CPU.isExecuting = true;
+            _CPU.PC = pcb.PC;
+            _CPU.Xreg = pcb.Xreg;
+            _CPU.Yreg = pcb.Yreg;
+            _CPU.Zflag = pcb.Zflag;
+            _CPU.Acc = pcb.Acc;
         };
         MM.prototype.readAddr = function (addr, pcb) {
             if (addr >= 0 && addr <= pcb.limit)

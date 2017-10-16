@@ -10,8 +10,8 @@ var PotatOS;
             if (PID === void 0) { PID = _PIDCount++; }
             if (IR === void 0) { IR = ''; }
             if (segment === void 0) { segment = 0; }
-            if (base === void 0) { base = _MM.base(segment); }
-            if (limit === void 0) { limit = _MM.limit(segment); }
+            if (base === void 0) { base = _MM.getBase(segment); }
+            if (limit === void 0) { limit = 0; }
             if (state === void 0) { state = 'NEW'; }
             if (priority === void 0) { priority = 0; }
             if (runtime === void 0) { runtime = 0; }
