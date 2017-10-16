@@ -17,12 +17,12 @@ module PotatOS {
             var arrayCount = 0;
 
             // Sets the PCB's base + limit, and writes the code to the given segment
-            _PCBList[pcbNum].base = this.base(_PCBList[pcbNum].segment); _PCBList[pcbNum].limit = _PCBList[pcbNum].base + codeArray.length;
+            _PCBList[pcbNum].base = this.getBase(_PCBList[pcbNum].segment); _PCBList[pcbNum].limit = _PCBList[pcbNum].base + codeArray.length;
             for (var i = _PCBList[pcbNum].base; i < _PCBList[pcbNum].limit; i++) {
                 _Memory.memory[i] = codeArray[arrayCount];
                 arrayCount++;
             }
-            _StdOut.putText('The process successfully loaded and has a PID of: ' + pcbNum);
+            _StdOut.putText('The process successfully loaded and has a PID of: ' + _PCBList[pcbNum].PID);
         }
 
         // Reads user program from memory
@@ -34,23 +34,13 @@ module PotatOS {
         }
 
         // Return base address for the given segment of memory
-        public base(segment: number) {
+        public getBase(segment: number) {
             if (segment == 0)
                 return 0;
             else if (segment == 1)
                 return 256;
             else if (segment == 2)
                 return 512;
-        }
-
-        // Return limit address for the given segment of memory
-        public limit(segment: number) {
-            if (segment == 0)
-                return 256;
-            else if (segment == 1)
-                return 512;
-            else if (segment == 2)
-                return 768;
         }
 
         public checkMem() {
@@ -69,6 +59,11 @@ module PotatOS {
         public readAddr(addr: number, pcb: PCB) {
             if (addr >= 0 && addr <= pcb.limit)
                 return _Memory.memory[pcb.base + addr];
+        }
+
+        public writeAddr(addr: number, pcb: PCB, code: string): void {
+            if (addr >= 0 && addr <= pcb.limit)
+                _Memory.memory[pcb.base + addr] = code;
         }
 
     }
