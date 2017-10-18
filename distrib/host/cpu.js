@@ -164,14 +164,16 @@ var PotatOS;
         Cpu.prototype.terminate = function () {
             _StdOut.putText('PID: ' + _PCBList[this.processIndex].PID + ' has completed.');
             _MM.segment[_PCBList[this.processIndex].segment] = 0;
-            for (var i = 0; i < (_PCBList[this.processIndex].limit - _PCBList[this.processIndex].base); i++)
-                _Memory.memory.push(0);
+            for (var i = _PCBList[this.processIndex].base; i < (_MM.getLimit(_PCBList[this.processIndex].segment) - _PCBList[this.processIndex].base); i++)
+                _Memory.memory[i] = 0;
             _PCBList.splice(this.processIndex, 1);
             this.processIndex = -1;
             this.singleStep = false;
             document.getElementById("btnStep").disabled = true;
             this.isExecuting = false;
             this.codeArray = [0, 0, 0];
+            PotatOS.Control.updateMemoryDisplay();
+            console.log(_Memory.memory.length);
             _StdOut.advanceLine();
             _OsShell.putPrompt();
         };

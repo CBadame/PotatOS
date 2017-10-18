@@ -135,6 +135,7 @@ module PotatOS {
 
         }
 
+        // Builds memory table in UI based of off the memory array
         public static updateMemoryDisplay(): void {
             var str: string = '';
             var count = 0;
