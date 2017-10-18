@@ -79,6 +79,24 @@
              value="Reset"
              tabindex="2"
              onclick="PotatOS.Control.hostBtnReset_click(this);">
+
+      <input type="button"
+             id = "btnSingleStep"
+             name="brnSingleStep"
+             class="normal_button"
+             disabled="disabled"
+             value="Single Step"
+             tabindex="3"
+             onclick="PotatOS.Control.singleStep_click(this);">
+
+      <input type="button"
+             id = "btnStep"
+             name="brnStep"
+             class="normal_button"
+             disabled="disabled"
+             value="Step"
+             tabindex="4"
+             onclick="PotatOS.Control.step_click(this);">
    </div>
 
    <div id="divConsole" style="margin:4px; width:500px; height:500px; float:left;">
@@ -89,7 +107,7 @@
       </canvas>
    </div>
 
-   <div id="divLog" style="margin-left:520px;">
+   <div id="divLog" style="margin-left:520px; max-width: 26%;">
       <label>
          Host Log
          <br>
@@ -101,7 +119,7 @@
       </label>
    </div>
 
-   <div id="divUserProgramInput" style="margin-left:520px;">
+   <div id="divUserProgramInput" style="margin-left:520px; max-width: 26%;">
       <label>
          User Program Input
          <br>
@@ -113,69 +131,42 @@
       </label>
    </div>
 
-   <div id="divMemory" style="margin-left:910px; ">
+   <div id="divMemory" style="display: inline-block;">
       <label>
          Memory
          <br>
-         <table id = "tbMemory" cellpadding="15"">
-            <tbody id = "body">
-            <tr>
-               <td> 0x000 </td>
-               <td> 0 </td>
-               <td> 0 </td>
-               <td> 0 </td>
-               <td> 0 </td>
-               <td> 0 </td>
-               <td> 0 </td>
-               <td> 0 </td>
-               <td> 0 </td>
-            </tr>
+         <table id = "tbMemory" cellpadding="10">
+            <tbody id = "memBody">
+            </tbody>
+         </table>
+      </label>
+   </div>
+
+   <div id="divCPU" style="margin-left:400px">
+      <label>
+         CPU
+         <br>
+         <table id = "tbCPU" cellpadding="10">
+            <tbody id = "cpuBody">
+            </tbody>
+         </table>
+      </label>
+   </div>
+
+   <div id="divPCB" style="margin-left: 800px">
+      <label>
+         PCB
+         <br>
+         <table id = "tbPCB" cellpadding="10">
+            <tbody id = "pcbBody">
             </tbody>
          </table>
       </label>
    </div>
 </div>
 
-<script>
-    var table = document.getElementById("tbMemory");
-    var j = 1;
-    for(var i = 0; i <= 760; i+=8){
-        var row = table.insertRow(j);
-        var cell1 = row.insertCell(0);
-        var cell2 = row.insertCell(1);
-        var cell3 = row.insertCell(2);
-        var cell4 = row.insertCell(3);
-        var cell5 = row.insertCell(4);
-        var cell6 = row.insertCell(5);
-        var cell7 = row.insertCell(6);
-        var cell8 = row.insertCell(7);
-        var cell9 = row.insertCell(8);
 
-        var hexRow = i.toString(16);
-
-        if(i != 0){
-            cell1.innerHTML = "0x";
-            if(hexRow.length == 1){
-                cell1.innerHTML += "00" + hexRow;
-            }else if(hexRow.length == 2){
-                cell1.innerHTML += "0" + hexRow;
-            }else{
-                cell1.innerHTML += hexRow;
-            }
-            cell2.innerHTML = "0";
-            cell3.innerHTML = "0";
-            cell4.innerHTML = "0";
-            cell5.innerHTML = "0";
-            cell6.innerHTML = "0";
-            cell7.innerHTML = "0";
-            cell8.innerHTML = "0";
-            cell9.innerHTML = "0";
-            j++;
-        }
-    }
-</script>
-
-<p class="footerText" style="clear:both;">
+<p class="footerText" style="clear:both; margin-top: 100px">
    <br>
    Copyright &copy; 2008 - 2016 No Rights Reserved.
    <br>

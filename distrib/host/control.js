@@ -28,6 +28,7 @@ var PotatOS;
             btn.disabled = true;
             document.getElementById("btnHaltOS").disabled = false;
             document.getElementById("btnReset").disabled = false;
+            document.getElementById("btnSingleStep").disabled = false;
             document.getElementById("display").focus();
             _CPU = new PotatOS.Cpu();
             _CPU.init();
@@ -47,6 +48,31 @@ var PotatOS;
         };
         Control.hostBtnReset_click = function (btn) {
             location.reload(true);
+        };
+        Control.updateCPUDisplay = function () {
+        };
+        Control.updateMemoryDisplay = function () {
+        };
+        Control.updateProcessDisplay = function () {
+        };
+        Control.singleStep_click = function (btn) {
+            if (_CPU.singleStep) {
+                document.getElementById("btnStep").disabled = true;
+                _CPU.singleStep = false;
+                _CPU.isExecuting = true;
+            }
+            else {
+                if (_CPU.isExecuting) {
+                    document.getElementById("btnStep").disabled = false;
+                    _CPU.singleStep = true;
+                }
+            }
+        };
+        Control.step_click = function (btn) {
+            if (_CPU.codeArray != [0, 0, 0]) {
+                console.log(_CPU.singleStep);
+                _CPU.isExecuting = true;
+            }
         };
         return Control;
     }());

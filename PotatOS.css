@@ -37,8 +37,26 @@ table {
 #tbMemory{
   position: absolute;
   background-color: white;
-  height:400px;
-  width:420px;
+  height:200px;
+  width:320px;
+  overflow-y:auto;
+  display: block;
+}
+
+#tbCPU{
+  position: absolute;
+  background-color: white;
+  height:100px;
+  width:320px;
+  overflow-y:auto;
+  display: block;
+}
+
+#tbPCB{
+  position: absolute;
+  background-color: white;
+  height:100px;
+  width:320px;
   overflow-y:auto;
   display: block;
 }

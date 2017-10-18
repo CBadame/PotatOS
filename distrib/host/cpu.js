@@ -1,7 +1,7 @@
 var PotatOS;
 (function (PotatOS) {
     var Cpu = (function () {
-        function Cpu(PC, Acc, Xreg, Yreg, Zflag, isExecuting, processIndex, IR, codeArray) {
+        function Cpu(PC, Acc, Xreg, Yreg, Zflag, isExecuting, processIndex, IR, codeArray, singleStep) {
             if (PC === void 0) { PC = 0; }
             if (Acc === void 0) { Acc = 0; }
             if (Xreg === void 0) { Xreg = 0; }
@@ -11,6 +11,7 @@ var PotatOS;
             if (processIndex === void 0) { processIndex = 0; }
             if (IR === void 0) { IR = ''; }
             if (codeArray === void 0) { codeArray = new Array(); }
+            if (singleStep === void 0) { singleStep = false; }
             this.PC = PC;
             this.Acc = Acc;
             this.Xreg = Xreg;
@@ -20,6 +21,7 @@ var PotatOS;
             this.processIndex = processIndex;
             this.IR = IR;
             this.codeArray = codeArray;
+            this.singleStep = singleStep;
         }
         Cpu.prototype.init = function () {
             this.PC = 0;
@@ -31,13 +33,15 @@ var PotatOS;
             this.processIndex = 0;
             this.IR = '';
             this.codeArray = [0, 0, 0];
+            this.singleStep = false;
         };
         Cpu.prototype.cycle = function () {
             _Kernel.krnTrace('CPU cycle');
-            if (this.isExecuting == true && this.PC <= this.codeArray.length - 1)
+            if (this.isExecuting == true && this.PC <= this.codeArray.length - 1) {
                 this.execute(_PCBList[this.processIndex]);
-            else if (this.PC > this.codeArray.length - 1)
-                this.terminate();
+                if (this.singleStep)
+                    this.isExecuting = false;
+            }
         };
         Cpu.prototype.execute = function (PCB) {
             this.processIndex = _PCBList.indexOf(PCB);
@@ -164,7 +168,9 @@ var PotatOS;
                 _Memory.memory.push(0);
             _PCBList.splice(this.processIndex, 1);
             this.processIndex = -1;
-            _CPU.isExecuting = false;
+            this.singleStep = false;
+            document.getElementById("btnStep").disabled = true;
+            this.isExecuting = false;
             this.codeArray = [0, 0, 0];
             _StdOut.advanceLine();
             _OsShell.putPrompt();
@@ -230,7 +236,7 @@ var PotatOS;
                 _StdOut.advanceLine();
             }
             else {
-                _StdOut.putText('Xreg does not equal 1 or 2.');
+                _StdOut.putText('System Call Failed: Xreg does not equal 1 or 2.');
                 _StdOut.advanceLine();
             }
             this.IR = 'FF';

@@ -89,6 +89,7 @@ module PotatOS {
             // .. enable the Halt and Reset buttons ...
             (<HTMLButtonElement>document.getElementById("btnHaltOS")).disabled = false;
             (<HTMLButtonElement>document.getElementById("btnReset")).disabled = false;
+            (<HTMLButtonElement>document.getElementById("btnSingleStep")).disabled = false;
 
             // .. set focus on the OS console display ...
             document.getElementById("display").focus();
@@ -125,6 +126,42 @@ module PotatOS {
             // That boolean parameter is the 'forceget' flag. When it is true it causes the page to always
             // be reloaded from the server. If it is false or not specified the browser may reload the
             // page from its cache, which is not what we want.
+        }
+
+        public static updateCPUDisplay(): void {
+
+        }
+
+        public static updateMemoryDisplay(): void {
+
+        }
+
+        public static updateProcessDisplay(): void {
+
+        }
+
+        // If singleStep is active, turn it off and allow the program to run normally. Otherwise, activate singleStep
+        // and require the user to click the 'step' button to continue.
+        public static singleStep_click(btn): void {
+            if (_CPU.singleStep) {
+                (<HTMLButtonElement>document.getElementById("btnStep")).disabled = true;
+                _CPU.singleStep = false;
+                _CPU.isExecuting = true;
+            }
+            else {
+                if (_CPU.isExecuting) {
+                    (<HTMLButtonElement>document.getElementById("btnStep")).disabled = false;
+                    _CPU.singleStep = true;
+                }
+            }
+        }
+
+        // Allow the next step of the program to run during the next CPU cycle
+        public static step_click(btn): void {
+            if (_CPU.codeArray != [0,0,0]) {
+                console.log(_CPU.singleStep);
+                _CPU.isExecuting = true;
+            }
         }
     }
 }

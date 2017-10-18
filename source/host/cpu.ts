@@ -27,7 +27,8 @@ module PotatOS {
                     public isExecuting: boolean = false,
                     public processIndex = 0,
                     public IR = '',
-                    public codeArray = new Array()) {
+                    public codeArray = new Array(),
+                    public singleStep: boolean = false) {
 
         }
 
@@ -41,16 +42,18 @@ module PotatOS {
             this.processIndex = 0;
             this.IR = '';
             this.codeArray = [0,0,0];
+            this.singleStep = false;
         }
 
         public cycle(): void {
             _Kernel.krnTrace('CPU cycle');
             // TODO: Accumulate CPU usage and profiling statistics here.
             // Do the real work here. Be sure to set this.isExecuting appropriately.
-            if (this.isExecuting == true && this.PC <= this.codeArray.length - 1)
+            if (this.isExecuting == true && this.PC <= this.codeArray.length - 1) {
                 this.execute(_PCBList[this.processIndex]);
-            else if (this.PC > this.codeArray.length - 1)
-                this.terminate();
+                if (this.singleStep)
+                    this.isExecuting = false;
+            }
         }
 
         public execute(PCB: PCB): void {
@@ -120,6 +123,7 @@ module PotatOS {
             this.IR = 'A9';
         }
 
+        // Grabs Little Endian Address and loads accumulator from it
         public loadAccMem() {
             var value = _MM.readAddr(this.PC+2, _PCBList[this.processIndex]);
             value += _MM.readAddr(this.PC+1, _PCBList[this.processIndex]);
@@ -129,6 +133,7 @@ module PotatOS {
             this.PC += 3;
         }
 
+        // Grabs Little Endian Address and writes accumulator to it
         public writeAcc() {
             var addr = _MM.readAddr(this.PC+2, _PCBList[this.processIndex]);
             addr += _MM.readAddr(this.PC+1, _PCBList[this.processIndex]);
@@ -141,6 +146,7 @@ module PotatOS {
             this.PC += 3;
         }
 
+        // Grabs Little Endian Address and adds value of address to the accumulator
         public addAcc() {
             var value = _MM.readAddr(this.PC+2, _PCBList[this.processIndex]);
             value += _MM.readAddr(this.PC+1, _PCBList[this.processIndex]);
@@ -180,6 +186,7 @@ module PotatOS {
             this.PC += 3;
         }
 
+        // Ends process, removes it from the PCB List, and removes it from memory
         public terminate() {
             _StdOut.putText('PID: ' + _PCBList[this.processIndex].PID + ' has completed.');
             _MM.segment[_PCBList[this.processIndex].segment] = 0;
@@ -187,7 +194,9 @@ module PotatOS {
                 _Memory.memory.push(0);
             _PCBList.splice(this.processIndex, 1);
             this.processIndex = -1;
-            _CPU.isExecuting = false;
+            this.singleStep = false;
+            (<HTMLButtonElement>document.getElementById("btnStep")).disabled = true;
+            this.isExecuting = false;
             this.codeArray = [0,0,0];
             _StdOut.advanceLine();
             _OsShell.putPrompt();
@@ -205,6 +214,7 @@ module PotatOS {
             this.PC += 3;
         }
 
+        // Jumps the PC forward the desired amount of bytes
         public branchZ(constant: string) {
             if (this.Zflag == 0) {
                 var bytes = parseInt(constant, 16);
@@ -228,6 +238,7 @@ module PotatOS {
             this.IR = 'D0';
         }
 
+        // Increments the desired byte by 1 and saves it in memory
         public incrByte() {
             var addr = _MM.readAddr(this.PC+2, _PCBList[this.processIndex]);
             addr += _MM.readAddr(this.PC+1, _PCBList[this.processIndex]);
@@ -241,6 +252,8 @@ module PotatOS {
             this.PC += 3;
         }
 
+        // Converts all hex after the yreg address to text if xreg == 2. Otherwise if xreg == 1, it just prints the
+        // value of the yreg.
         public sysCall() {
             if (this.Xreg == 1) {
                 _StdOut.putText(this.Yreg.toString());
@@ -259,7 +272,7 @@ module PotatOS {
                 _StdOut.advanceLine();
             }
             else {
-                _StdOut.putText('Xreg does not equal 1 or 2.');
+                _StdOut.putText('System Call Failed: Xreg does not equal 1 or 2.');
                 _StdOut.advanceLine();
             }
             this.IR = 'FF';

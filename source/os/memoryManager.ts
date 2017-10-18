@@ -44,6 +44,7 @@ module PotatOS {
                 return 512;
         }
 
+        // Get the limit address for a given segment
         public getLimit(segment: number) {
             if (segment == 0)
                 return 256;
@@ -53,6 +54,7 @@ module PotatOS {
                 return 768;
         }
 
+        // Returns next available memory space
         public checkMem() {
             var availableSeg;
             for (var j = 0; j < this.segment.length; j++) {
@@ -62,6 +64,7 @@ module PotatOS {
             return availableSeg;
         }
 
+        // Prepares the CPU for a new program to run
         public run(pcb: PCB) {
             _CPU.processIndex = _PCBList.indexOf(pcb);
             _CPU.isExecuting = true;
@@ -72,11 +75,13 @@ module PotatOS {
             _CPU.Acc = pcb.Acc;
         }
 
+        // Reads a specific area of memory for a process
         public readAddr(addr: number, pcb: PCB) {
             if (addr >= 0 && addr <= pcb.limit)
                 return _Memory.memory[pcb.base + addr];
         }
 
+        // Writes to a specific area of memory for a process
         public writeAddr(addr: number, pcb: PCB, code: string): void {
             if (addr >= 0 && addr <= pcb.limit)
                 _Memory.memory[pcb.base + addr] = code;
