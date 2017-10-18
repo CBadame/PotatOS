@@ -65,7 +65,6 @@ var PotatOS;
             var str = '';
             var count = 0;
             var byteCount = 0;
-            console.log(_Memory.memory.length);
             while (count < _Memory.memory.length) {
                 if (count < 10)
                     str += '<tr><td>0x00' + count.toString() + '</td>';
@@ -111,7 +110,6 @@ var PotatOS;
         };
         Control.step_click = function (btn) {
             if (_CPU.codeArray != [0, 0, 0]) {
-                console.log(_CPU.singleStep);
                 _CPU.isExecuting = true;
             }
         };

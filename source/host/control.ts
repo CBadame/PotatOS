@@ -149,7 +149,6 @@ module PotatOS {
             var str: string = '';
             var count = 0;
             var byteCount = 0;
-            console.log(_Memory.memory.length);
             while (count < _Memory.memory.length) {
                 if (count < 10)
                     str += '<tr><td>0x00' + count.toString() + '</td>';
@@ -201,7 +200,6 @@ module PotatOS {
         // Allow the next step of the program to run during the next CPU cycle
         public static step_click(btn): void {
             if (_CPU.codeArray != [0,0,0]) {
-                console.log(_CPU.singleStep);
                 _CPU.isExecuting = true;
             }
         }

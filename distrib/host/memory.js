@@ -7,7 +7,7 @@ var PotatOS;
         }
         Memory.prototype.init = function () {
             for (var i = 0; i < 768; i++) {
-                this.memory.push(0);
+                this.memory.push('00');
             }
         };
         return Memory;

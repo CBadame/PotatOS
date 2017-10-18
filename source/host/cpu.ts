@@ -53,8 +53,11 @@ module PotatOS {
                 this.execute(_PCBList[this.processIndex]);
                 if (this.singleStep)
                     this.isExecuting = false;
-
             }
+            else {
+                this.terminate();
+            }
+
             this.updateProcess();
             PotatOS.Control.updateCPUDisplay();
             PotatOS.Control.updateProcessDisplay();
@@ -63,7 +66,6 @@ module PotatOS {
         public execute(PCB: PCB): void {
             this.processIndex = _PCBList.indexOf(PCB);
             this.codeArray = _MM.read(PCB.base, PCB.limit);
-            _CPU.isExecuting = true;
             switch (this.codeArray[this.PC]) {
                 case 'A9':
                     this.loadAccConst(this.codeArray[this.PC + 1]);
@@ -107,9 +109,6 @@ module PotatOS {
                     break;
                 case 'FF':
                     this.sysCall();
-                    break;
-                case '0':
-                    this.terminate();
                     break;
                 default:
                     _StdOut.putText('OP code is invalid. Nice job. It was ' + this.codeArray[this.PC] + ' if you care ' +
@@ -192,8 +191,9 @@ module PotatOS {
         public terminate() {
             _StdOut.putText('PID: ' + _PCBList[this.processIndex].PID + ' has completed.');
             _MM.segment[_PCBList[this.processIndex].segment] = 0;
-            for (var i = _PCBList[this.processIndex].base; i < (_MM.getLimit(_PCBList[this.processIndex].segment) - _PCBList[this.processIndex].base); i++)
-                _Memory.memory[i] = 0;
+            for (var i = _PCBList[this.processIndex].base; i < _MM.getLimit(_PCBList[this.processIndex].segment); i++) {
+                _Memory.memory[i] = '00';
+            }
             _PCBList.splice(this.processIndex, 1);
             this.processIndex = -1;
             this.singleStep = false;
@@ -201,7 +201,6 @@ module PotatOS {
             this.isExecuting = false;
             this.codeArray = [0,0,0];
             PotatOS.Control.updateMemoryDisplay();
-            console.log(_Memory.memory.length);
             _StdOut.advanceLine();
             _OsShell.putPrompt();
         }
