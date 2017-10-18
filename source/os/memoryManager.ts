@@ -23,6 +23,7 @@ module PotatOS {
                 _Memory.memory[i] = codeArray[arrayCount];
                 arrayCount++;
             }
+            PotatOS.Control.updateMemoryDisplay();
             _StdOut.putText('The process successfully loaded and has a PID of: ' + _PCBList[pcbNum].PID);
         }
 
@@ -83,8 +84,10 @@ module PotatOS {
 
         // Writes to a specific area of memory for a process
         public writeAddr(addr: number, pcb: PCB, code: string): void {
-            if (addr >= 0 && addr <= pcb.limit)
+            if (addr >= 0 && addr <= pcb.limit) {
                 _Memory.memory[pcb.base + addr] = code;
+                PotatOS.Control.updateMemoryDisplay();
+            }
         }
 
     }

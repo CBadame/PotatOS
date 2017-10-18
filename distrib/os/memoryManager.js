@@ -16,6 +16,7 @@ var PotatOS;
                 _Memory.memory[i] = codeArray[arrayCount];
                 arrayCount++;
             }
+            PotatOS.Control.updateMemoryDisplay();
             _StdOut.putText('The process successfully loaded and has a PID of: ' + _PCBList[pcbNum].PID);
         };
         MM.prototype.read = function (base, limit) {
@@ -62,8 +63,10 @@ var PotatOS;
                 return _Memory.memory[pcb.base + addr];
         };
         MM.prototype.writeAddr = function (addr, pcb, code) {
-            if (addr >= 0 && addr <= pcb.limit)
+            if (addr >= 0 && addr <= pcb.limit) {
                 _Memory.memory[pcb.base + addr] = code;
+                PotatOS.Control.updateMemoryDisplay();
+            }
         };
         return MM;
     }());

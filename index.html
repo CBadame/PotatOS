@@ -99,27 +99,31 @@
              onclick="PotatOS.Control.step_click(this);">
    </div>
 
-   <div id="divConsole" style="margin:4px; width:500px; height:500px; float:left;">
-      <canvas id="display"
-              width="500px"
-              height="500px"
-              tabindex="3">
-      </canvas>
+   <div style="position: absolute;">
+      <div id="divConsole" style="margin:4px; width:500px; height:500px; float:left;">
+         <canvas id="display"
+                 width="500px"
+                 height="500px"
+                 tabindex="3">
+         </canvas>
+      </div>
+
+      <div id="divLog" style="margin-left:15px; max-width: 26%; display:inline-block; position: relative;">
+         <label>
+            Host Log
+            <br>
+            <textarea name="taHostLog"
+                      id  ="taHostLog"
+                      rows="26"
+                      cols="48"
+                      style="resize: none;"
+            ></textarea>
+         </label>
+      </div>
    </div>
 
-   <div id="divLog" style="margin-left:520px; max-width: 26%;">
-      <label>
-         Host Log
-         <br>
-         <textarea name="taHostLog"
-                   id  ="taHostLog"
-                   rows="26"
-                   cols="48"
-         ></textarea>
-      </label>
-   </div>
 
-   <div id="divUserProgramInput" style="margin-left:520px; max-width: 26%;">
+   <div id="divUserProgramInput" style="margin-left:523px; margin-top: 450px; max-width: 26%; display:inline-block; position:relative;">
       <label>
          User Program Input
          <br>
@@ -127,41 +131,44 @@
                    id  ="taProgramInput"
                    rows="8"
                    cols="48"
+                   style="resize: none;"
          ></textarea>
       </label>
    </div>
 
-   <div id="divMemory" style="display: inline-block;">
-      <label>
-         Memory
-         <br>
-         <table id = "tbMemory" cellpadding="10">
-            <tbody id = "memBody">
-            </tbody>
-         </table>
-      </label>
-   </div>
+   <div id="tables" style="float: right;">
+      <div id="divMemory">
+         <label>
+            Memory
+            <br>
+            <table id = "tbMemory" cellpadding="10">
+               <tbody id = "memBody">
+               </tbody>
+            </table>
+         </label>
+      </div>
 
-   <div id="divCPU" style="margin-left:400px">
-      <label>
-         CPU
-         <br>
-         <table id = "tbCPU" cellpadding="10">
-            <tbody id = "cpuBody">
-            </tbody>
-         </table>
-      </label>
-   </div>
+      <div id="divCPU" style="margin-top: 10px;">
+         <label>
+            CPU
+            <br>
+            <table id = "tbCPU" cellpadding="10">
+               <tbody id = "cpuBody">
+               </tbody>
+            </table>
+         </label>
+      </div>
 
-   <div id="divPCB" style="margin-left: 800px">
-      <label>
-         PCB
-         <br>
-         <table id = "tbPCB" cellpadding="10">
-            <tbody id = "pcbBody">
-            </tbody>
-         </table>
-      </label>
+      <div id="divPCB" style="margin-top: 10px;">
+         <label>
+            PCB
+            <br>
+            <table id = "tbPCB" cellpadding="10">
+               <tbody id = "pcbBody">
+               </tbody>
+            </table>
+         </label>
+      </div>
    </div>
 </div>
 

@@ -108,6 +108,9 @@ module PotatOS {
             _Memory.init();
             _MM = new PotatOS.MM();
             _PCB = new PotatOS.PCB();
+
+            // Initialize hardware stats
+            PotatOS.Control.updateMemoryDisplay();
         }
 
         public static hostBtnHaltOS_click(btn): void {
@@ -133,7 +136,26 @@ module PotatOS {
         }
 
         public static updateMemoryDisplay(): void {
-
+            var str: string = '';
+            var count = 0;
+            var byteCount = 0;
+            console.log(_Memory.memory.length);
+            while (count < _Memory.memory.length) {
+                if (count < 10)
+                    str += '<tr><td>0x00' + count.toString() + '</td>';
+                else if (count >= 10 && count < 100)
+                    str += '<tr><td>0x0' + count.toString() + '</td>';
+                else
+                    str+= '<tr><td>0x' + count.toString() + '</td>';
+                while (byteCount < 8) {
+                    str += '<td>' + _Memory.memory[count] + '</td>';
+                    byteCount++;
+                    count++;
+                }
+                str += '</tr>';
+                byteCount = 0;
+            }
+            document.getElementById("tbMemory").innerHTML = str;
         }
 
         public static updateProcessDisplay(): void {

@@ -30,35 +30,33 @@ h3 {
   font-style: normal;
 }
 
-table {
-  border: 1px solid black;
-}
-
 #tbMemory{
-  position: absolute;
+  position: relative;
   background-color: white;
   height:200px;
-  width:320px;
+  width:430px;
   overflow-y:auto;
-  display: block;
+  overflow-x: hidden;
+  display: inline-block;
 }
 
 #tbCPU{
-  position: absolute;
+  position: relative;
   background-color: white;
   height:100px;
-  width:320px;
+  width:340px;
   overflow-y:auto;
-  display: block;
+  display: inline-block;
+  margin-right: 200px;
 }
 
 #tbPCB{
-  position: absolute;
+  position: relative;
   background-color: white;
   height:100px;
-  width:320px;
+  width:340px;
   overflow-y:auto;
-  display: block;
+  display: inline-block;
 }
 
 #display {
