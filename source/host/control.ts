@@ -111,6 +111,8 @@ module PotatOS {
 
             // Initialize hardware stats
             PotatOS.Control.updateMemoryDisplay();
+            PotatOS.Control.updateCPUDisplay();
+            PotatOS.Control.updateProcessDisplay();
         }
 
         public static hostBtnHaltOS_click(btn): void {
@@ -132,7 +134,14 @@ module PotatOS {
         }
 
         public static updateCPUDisplay(): void {
+            var displayIR = '00';
+            if (_CPU.IR != '')
+                displayIR = _CPU.IR;
 
+            var str: string = '<tr><td>PC</td><td>AC</td><td>IR</td><td>X</td><td>Y</td><td>Z</td></tr>';
+            str += '<tr><td>' + _CPU.PC + '</td><td>' + _CPU.Acc + '</td><td>' + displayIR + '</td><td>' + _CPU.Xreg +
+                '</td><td>' + _CPU.Yreg + '</td><td>' + _CPU.Zflag + '</td></tr>';
+            document.getElementById("tbCPU").innerHTML = str;
         }
 
         // Builds memory table in UI based of off the memory array
@@ -160,7 +169,17 @@ module PotatOS {
         }
 
         public static updateProcessDisplay(): void {
-
+            var str: string = '<tr><td>PID</td><td>PC</td><td>AC</td><td>IR</td><td>X</td><td>Y</td><td>Z</td>' +
+                '<td>State</td><td>Segment</td></tr>';
+            var i = 0;
+            while (i < _PCBList.length) {
+                str += '<tr><td>' + _PCBList[i].PID + '</td><td>' + _PCBList[i].PC + '</td><td>' +  _PCBList[i].Acc +
+                    '</td><td>' + _PCBList[i].IR + '</td><td>' + _PCBList[i].Xreg + '</td><td>' + _PCBList[i].Yreg +
+                    '</td><td>' + _PCBList[i].Zflag + '</td><td>' + _PCBList[i].state + '</td><td>' +
+                    _PCBList[i].segment + '</td><td>';
+                i++;
+            }
+            document.getElementById("tbPCB").innerHTML = str;
         }
 
         // If singleStep is active, turn it off and allow the program to run normally. Otherwise, activate singleStep

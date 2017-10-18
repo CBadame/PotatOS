@@ -43,18 +43,18 @@ h3 {
 #tbCPU{
   position: relative;
   background-color: white;
-  height:100px;
-  width:340px;
+  height:90px;
+  width:250px;
   overflow-y:auto;
   display: inline-block;
-  margin-right: 200px;
+  margin-right: 300px;
 }
 
 #tbPCB{
   position: relative;
   background-color: white;
   height:100px;
-  width:340px;
+  width:500px;
   overflow-y:auto;
   display: inline-block;
 }

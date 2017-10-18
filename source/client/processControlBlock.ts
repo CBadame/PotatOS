@@ -8,11 +8,11 @@ module PotatOS {
                       public Yreg: number = 0,
                       public Zflag: number = 0,
                       public PID: number = _PIDCount++,
-                      public IR: string = '',
+                      public IR: string = '00',
                       public segment: number = 0,
                       public base: number = _MM.getBase(segment),
                       public limit: number = 0,
-                      public state: string = 'NEW',
+                      public state: string = 'READY',
                       public priority: number = 0,
                       public runtime: number = 0,
                       public waitTime: number = 0){

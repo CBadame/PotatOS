@@ -422,7 +422,10 @@ module PotatOS {
                         var PCB = new PotatOS.PCB();
                         if (priority)
                             PCB.priority = priority;
+                        else
+                            PCB.priority = 0;
                         _PCBList.push(PCB);
+                        PotatOS.Control.updateProcessDisplay();
                         _MM.write(userInput, PCB);
                     }
                     else

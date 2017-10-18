@@ -30,7 +30,7 @@ var PotatOS;
             this.Yreg = 0;
             this.Zflag = 0;
             this.isExecuting = false;
-            this.processIndex = 0;
+            this.processIndex = -1;
             this.IR = '';
             this.codeArray = [0, 0, 0];
             this.singleStep = false;
@@ -42,13 +42,14 @@ var PotatOS;
                 if (this.singleStep)
                     this.isExecuting = false;
             }
+            this.updateProcess();
+            PotatOS.Control.updateCPUDisplay();
+            PotatOS.Control.updateProcessDisplay();
         };
         Cpu.prototype.execute = function (PCB) {
             this.processIndex = _PCBList.indexOf(PCB);
             this.codeArray = _MM.read(PCB.base, PCB.limit);
             _CPU.isExecuting = true;
-            console.log(this.PC);
-            console.log(this.codeArray[this.PC]);
             switch (this.codeArray[this.PC]) {
                 case 'A9':
                     this.loadAccConst(this.codeArray[this.PC + 1]);
@@ -243,6 +244,16 @@ var PotatOS;
             }
             this.IR = 'FF';
             this.PC++;
+        };
+        Cpu.prototype.updateProcess = function () {
+            if (this.processIndex != 1 && _PCBList[this.processIndex]) {
+                _PCBList[this.processIndex].PC = _CPU.PC;
+                _PCBList[this.processIndex].Acc = _CPU.Acc;
+                _PCBList[this.processIndex].IR = _CPU.IR;
+                _PCBList[this.processIndex].Xreg = _CPU.Xreg;
+                _PCBList[this.processIndex].Yreg = _CPU.Yreg;
+                _PCBList[this.processIndex].Zflag = _CPU.Zflag;
+            }
         };
         return Cpu;
     }());

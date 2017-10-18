@@ -40,6 +40,8 @@ var PotatOS;
             _MM = new PotatOS.MM();
             _PCB = new PotatOS.PCB();
             PotatOS.Control.updateMemoryDisplay();
+            PotatOS.Control.updateCPUDisplay();
+            PotatOS.Control.updateProcessDisplay();
         };
         Control.hostBtnHaltOS_click = function (btn) {
             Control.hostLog("Emergency halt", "host");
@@ -51,6 +53,13 @@ var PotatOS;
             location.reload(true);
         };
         Control.updateCPUDisplay = function () {
+            var displayIR = '00';
+            if (_CPU.IR != '')
+                displayIR = _CPU.IR;
+            var str = '<tr><td>PC</td><td>AC</td><td>IR</td><td>X</td><td>Y</td><td>Z</td></tr>';
+            str += '<tr><td>' + _CPU.PC + '</td><td>' + _CPU.Acc + '</td><td>' + displayIR + '</td><td>' + _CPU.Xreg +
+                '</td><td>' + _CPU.Yreg + '</td><td>' + _CPU.Zflag + '</td></tr>';
+            document.getElementById("tbCPU").innerHTML = str;
         };
         Control.updateMemoryDisplay = function () {
             var str = '';
@@ -75,6 +84,17 @@ var PotatOS;
             document.getElementById("tbMemory").innerHTML = str;
         };
         Control.updateProcessDisplay = function () {
+            var str = '<tr><td>PID</td><td>PC</td><td>AC</td><td>IR</td><td>X</td><td>Y</td><td>Z</td>' +
+                '<td>State</td><td>Segment</td></tr>';
+            var i = 0;
+            while (i < _PCBList.length) {
+                str += '<tr><td>' + _PCBList[i].PID + '</td><td>' + _PCBList[i].PC + '</td><td>' + _PCBList[i].Acc +
+                    '</td><td>' + _PCBList[i].IR + '</td><td>' + _PCBList[i].Xreg + '</td><td>' + _PCBList[i].Yreg +
+                    '</td><td>' + _PCBList[i].Zflag + '</td><td>' + _PCBList[i].state + '</td><td>' +
+                    _PCBList[i].segment + '</td><td>';
+                i++;
+            }
+            document.getElementById("tbPCB").innerHTML = str;
         };
         Control.singleStep_click = function (btn) {
             if (_CPU.singleStep) {

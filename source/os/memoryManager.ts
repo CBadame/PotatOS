@@ -74,6 +74,7 @@ module PotatOS {
             _CPU.Yreg = pcb.Yreg;
             _CPU.Zflag = pcb.Zflag;
             _CPU.Acc = pcb.Acc;
+            _PCBList[_CPU.processIndex].state = 'RUNNING';
         }
 
         // Reads a specific area of memory for a process

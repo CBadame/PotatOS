@@ -57,6 +57,7 @@ var PotatOS;
             _CPU.Yreg = pcb.Yreg;
             _CPU.Zflag = pcb.Zflag;
             _CPU.Acc = pcb.Acc;
+            _PCBList[_CPU.processIndex].state = 'RUNNING';
         };
         MM.prototype.readAddr = function (addr, pcb) {
             if (addr >= 0 && addr <= pcb.limit)
