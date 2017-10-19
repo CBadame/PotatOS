@@ -94,6 +94,11 @@ module PotatOS {
             // .. set focus on the OS console display ...
             document.getElementById("display").focus();
 
+            _Memory = new PotatOS.Memory();
+            _Memory.init();
+            _MM = new PotatOS.MM();
+            _PCB = new PotatOS.PCB();
+
             // ... Create and initialize the CPU (because it's part of the hardware)  ...
             _CPU = new Cpu();  // Note: We could simulate multi-core systems by instantiating more than one instance of the CPU here.
             _CPU.init();       //       There's more to do, like dealing with scheduling and such, but this would be a start. Pretty cool.
@@ -104,10 +109,6 @@ module PotatOS {
             _Kernel = new Kernel();
             _Kernel.krnBootstrap();  // _GLaDOS.afterStartup() will get called in there, if configured.
 
-            _Memory = new PotatOS.Memory();
-            _Memory.init();
-            _MM = new PotatOS.MM();
-            _PCB = new PotatOS.PCB();
 
             // Initialize hardware stats
             PotatOS.Control.updateMemoryDisplay();
