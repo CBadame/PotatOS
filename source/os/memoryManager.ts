@@ -77,16 +77,11 @@ module PotatOS {
             _PCBList[_CPU.processIndex].state = 'RUNNING';
         }
 
-        // Reads a specific area of memory for a process
-        public readAddr(addr: number, pcb: PCB) {
-            if (addr >= 0 && addr <= pcb.limit)
-                return _Memory.memory[pcb.base + addr];
-        }
 
         // Writes to a specific area of memory for a process
         public writeAddr(addr: number, pcb: PCB, code: string): void {
-            if (addr >= 0 && addr <= pcb.limit) {
-                _Memory.memory[pcb.base + addr] = code;
+            if (addr >= pcb.base && addr <= this.getLimit(pcb.segment)) {
+                _Memory.memory[addr] = code;
                 PotatOS.Control.updateMemoryDisplay();
             }
         }

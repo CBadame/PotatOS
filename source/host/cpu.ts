@@ -126,33 +126,35 @@ module PotatOS {
 
         // Grabs Little Endian Address and loads accumulator from it
         public loadAccMem() {
-            var value = _MM.readAddr(this.PC+2, _PCBList[this.processIndex]);
-            value += _MM.readAddr(this.PC+1, _PCBList[this.processIndex]);
-            value = parseInt(value, 16);
-            this.Acc = parseInt(_MM.readAddr(value, _PCBList[this.processIndex]), 16);
+            var value = _Memory.memory[this.PC+2 + _PCBList[this.processIndex].base];
+            value += _Memory.memory[this.PC+1 + _PCBList[this.processIndex].base];
+            value = parseInt(value, 16) + _PCBList[this.processIndex].base;
+            this.Acc = parseInt(_Memory.memory[value], 16);
             this.IR = 'AD';
             this.PC += 3;
         }
 
         // Grabs Little Endian Address and writes accumulator to it
         public writeAcc() {
-            var addr = _MM.readAddr(this.PC+2, _PCBList[this.processIndex]);
-            addr += _MM.readAddr(this.PC+1, _PCBList[this.processIndex]);
-            addr = parseInt(addr, 16);
+            var addr = _Memory.memory[this.PC+2 + _PCBList[this.processIndex].base];
+            addr += _Memory.memory[this.PC+1 + _PCBList[this.processIndex].base];
+            addr = parseInt(addr, 16) + _PCBList[this.processIndex].base;
             var accVal = this.Acc.toString(16).toUpperCase();
             if (accVal.length != 2)
                 accVal = '0' + accVal;
+            console.log('Before write: ' + _Memory.memory[addr] + 'Addr: ' + addr);
             _MM.writeAddr(addr, _PCBList[this.processIndex], accVal);
+            console.log('After write: ' + _Memory.memory[addr] + 'Addr: ' + addr);
             this.IR = '8D';
             this.PC += 3;
         }
 
         // Grabs Little Endian Address and adds value of address to the accumulator
         public addAcc() {
-            var value = _MM.readAddr(this.PC+2, _PCBList[this.processIndex]);
-            value += _MM.readAddr(this.PC+1, _PCBList[this.processIndex]);
-            value = parseInt(value, 16);
-            this.Acc += parseInt(_MM.readAddr(value, _PCBList[this.processIndex]), 16);
+            var value = _Memory.memory[this.PC+2 + _PCBList[this.processIndex].base];
+            value += _Memory.memory[this.PC+1 + _PCBList[this.processIndex].base];
+            value = parseInt(value, 16) + _PCBList[this.processIndex].base;
+            this.Acc += parseInt(_Memory.memory[value], 16);
             this.IR = '6D';
             this.PC += 3;
         }
@@ -164,10 +166,10 @@ module PotatOS {
         }
 
         public loadXMem() {
-            var value = _MM.readAddr(this.PC+2, _PCBList[this.processIndex]);
-            value += _MM.readAddr(this.PC+1, _PCBList[this.processIndex]);
-            value = parseInt(value, 16);
-            this.Xreg = parseInt(_MM.readAddr(value, _PCBList[this.processIndex]), 16);
+            var value = _Memory.memory[this.PC+2 + _PCBList[this.processIndex].base];
+            value += _Memory.memory[this.PC+1 + _PCBList[this.processIndex].base];
+            value = parseInt(value, 16) + _PCBList[this.processIndex].base;
+            this.Xreg = parseInt(_Memory.memory[value], 16);
             this.IR = 'AE';
             this.PC += 3;
         }
@@ -179,10 +181,10 @@ module PotatOS {
         }
 
         public loadYMem() {
-            var value = _MM.readAddr(this.PC+2, _PCBList[this.processIndex]);
-            value += _MM.readAddr(this.PC+1, _PCBList[this.processIndex]);
-            value = parseInt(value, 16);
-            this.Yreg = parseInt(_MM.readAddr(value, _PCBList[this.processIndex]), 16);
+            var value = _Memory.memory[this.PC+2 + _PCBList[this.processIndex].base];
+            value += _Memory.memory[this.PC+1 + _PCBList[this.processIndex].base];
+            value = parseInt(value, 16) + _PCBList[this.processIndex].base;
+            this.Yreg = parseInt(_Memory.memory[value], 16);
             this.IR = 'AC';
             this.PC += 3;
         }
@@ -206,10 +208,11 @@ module PotatOS {
         }
 
         public compareByteX() {
-            var value = _MM.readAddr(this.PC+2, _PCBList[this.processIndex]);
-            value += _MM.readAddr(this.PC+1, _PCBList[this.processIndex]);
-            value = parseInt(value, 16);
-            if (parseInt(_MM.readAddr(value, _PCBList[this.processIndex]), 16) == this.Xreg)
+            var value = _Memory.memory[this.PC+2 + _PCBList[this.processIndex].base];
+            value += _Memory.memory[this.PC+1 + _PCBList[this.processIndex].base];
+            value = parseInt(value, 16) + _PCBList[this.processIndex].base;
+            console.log('Compare Address: ' + value);
+            if (parseInt(_Memory.memory[value], 16) == this.Xreg)
                 this.Zflag = 1;
             else
                 this.Zflag = 0;
@@ -243,9 +246,9 @@ module PotatOS {
 
         // Increments the desired byte by 1 and saves it in memory
         public incrByte() {
-            var addr = _MM.readAddr(this.PC+2, _PCBList[this.processIndex]);
-            addr += _MM.readAddr(this.PC+1, _PCBList[this.processIndex]);
-            addr = parseInt(addr, 16);
+            var addr =  _Memory.memory[this.PC+2 + _PCBList[this.processIndex].base];
+            addr += _Memory.memory[this.PC+1 + _PCBList[this.processIndex].base];
+            addr = parseInt(addr, 16) + _PCBList[this.processIndex].base;
             var memVal = parseInt(_Memory.memory[addr], 16) + 1;
             var memString = memVal.toString(16).toUpperCase();
             if (memString.length != 2)

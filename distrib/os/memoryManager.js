@@ -59,13 +59,9 @@ var PotatOS;
             _CPU.Acc = pcb.Acc;
             _PCBList[_CPU.processIndex].state = 'RUNNING';
         };
-        MM.prototype.readAddr = function (addr, pcb) {
-            if (addr >= 0 && addr <= pcb.limit)
-                return _Memory.memory[pcb.base + addr];
-        };
         MM.prototype.writeAddr = function (addr, pcb, code) {
-            if (addr >= 0 && addr <= pcb.limit) {
-                _Memory.memory[pcb.base + addr] = code;
+            if (addr >= pcb.base && addr <= this.getLimit(pcb.segment)) {
+                _Memory.memory[addr] = code;
                 PotatOS.Control.updateMemoryDisplay();
             }
         };

@@ -109,29 +109,31 @@ var PotatOS;
             this.IR = 'A9';
         };
         Cpu.prototype.loadAccMem = function () {
-            var value = _MM.readAddr(this.PC + 2, _PCBList[this.processIndex]);
-            value += _MM.readAddr(this.PC + 1, _PCBList[this.processIndex]);
-            value = parseInt(value, 16);
-            this.Acc = parseInt(_MM.readAddr(value, _PCBList[this.processIndex]), 16);
+            var value = _Memory.memory[this.PC + 2 + _PCBList[this.processIndex].base];
+            value += _Memory.memory[this.PC + 1 + _PCBList[this.processIndex].base];
+            value = parseInt(value, 16) + _PCBList[this.processIndex].base;
+            this.Acc = parseInt(_Memory.memory[value], 16);
             this.IR = 'AD';
             this.PC += 3;
         };
         Cpu.prototype.writeAcc = function () {
-            var addr = _MM.readAddr(this.PC + 2, _PCBList[this.processIndex]);
-            addr += _MM.readAddr(this.PC + 1, _PCBList[this.processIndex]);
-            addr = parseInt(addr, 16);
+            var addr = _Memory.memory[this.PC + 2 + _PCBList[this.processIndex].base];
+            addr += _Memory.memory[this.PC + 1 + _PCBList[this.processIndex].base];
+            addr = parseInt(addr, 16) + _PCBList[this.processIndex].base;
             var accVal = this.Acc.toString(16).toUpperCase();
             if (accVal.length != 2)
                 accVal = '0' + accVal;
+            console.log('Before write: ' + _Memory.memory[addr] + 'Addr: ' + addr);
             _MM.writeAddr(addr, _PCBList[this.processIndex], accVal);
+            console.log('After write: ' + _Memory.memory[addr] + 'Addr: ' + addr);
             this.IR = '8D';
             this.PC += 3;
         };
         Cpu.prototype.addAcc = function () {
-            var value = _MM.readAddr(this.PC + 2, _PCBList[this.processIndex]);
-            value += _MM.readAddr(this.PC + 1, _PCBList[this.processIndex]);
-            value = parseInt(value, 16);
-            this.Acc += parseInt(_MM.readAddr(value, _PCBList[this.processIndex]), 16);
+            var value = _Memory.memory[this.PC + 2 + _PCBList[this.processIndex].base];
+            value += _Memory.memory[this.PC + 1 + _PCBList[this.processIndex].base];
+            value = parseInt(value, 16) + _PCBList[this.processIndex].base;
+            this.Acc += parseInt(_Memory.memory[value], 16);
             this.IR = '6D';
             this.PC += 3;
         };
@@ -141,10 +143,10 @@ var PotatOS;
             this.IR = 'A2';
         };
         Cpu.prototype.loadXMem = function () {
-            var value = _MM.readAddr(this.PC + 2, _PCBList[this.processIndex]);
-            value += _MM.readAddr(this.PC + 1, _PCBList[this.processIndex]);
-            value = parseInt(value, 16);
-            this.Xreg = parseInt(_MM.readAddr(value, _PCBList[this.processIndex]), 16);
+            var value = _Memory.memory[this.PC + 2 + _PCBList[this.processIndex].base];
+            value += _Memory.memory[this.PC + 1 + _PCBList[this.processIndex].base];
+            value = parseInt(value, 16) + _PCBList[this.processIndex].base;
+            this.Xreg = parseInt(_Memory.memory[value], 16);
             this.IR = 'AE';
             this.PC += 3;
         };
@@ -154,10 +156,10 @@ var PotatOS;
             this.IR = 'A0';
         };
         Cpu.prototype.loadYMem = function () {
-            var value = _MM.readAddr(this.PC + 2, _PCBList[this.processIndex]);
-            value += _MM.readAddr(this.PC + 1, _PCBList[this.processIndex]);
-            value = parseInt(value, 16);
-            this.Yreg = parseInt(_MM.readAddr(value, _PCBList[this.processIndex]), 16);
+            var value = _Memory.memory[this.PC + 2 + _PCBList[this.processIndex].base];
+            value += _Memory.memory[this.PC + 1 + _PCBList[this.processIndex].base];
+            value = parseInt(value, 16) + _PCBList[this.processIndex].base;
+            this.Yreg = parseInt(_Memory.memory[value], 16);
             this.IR = 'AC';
             this.PC += 3;
         };
@@ -178,10 +180,11 @@ var PotatOS;
             _OsShell.putPrompt();
         };
         Cpu.prototype.compareByteX = function () {
-            var value = _MM.readAddr(this.PC + 2, _PCBList[this.processIndex]);
-            value += _MM.readAddr(this.PC + 1, _PCBList[this.processIndex]);
-            value = parseInt(value, 16);
-            if (parseInt(_MM.readAddr(value, _PCBList[this.processIndex]), 16) == this.Xreg)
+            var value = _Memory.memory[this.PC + 2 + _PCBList[this.processIndex].base];
+            value += _Memory.memory[this.PC + 1 + _PCBList[this.processIndex].base];
+            value = parseInt(value, 16) + _PCBList[this.processIndex].base;
+            console.log('Compare Address: ' + value);
+            if (parseInt(_Memory.memory[value], 16) == this.Xreg)
                 this.Zflag = 1;
             else
                 this.Zflag = 0;
@@ -209,9 +212,9 @@ var PotatOS;
             this.IR = 'D0';
         };
         Cpu.prototype.incrByte = function () {
-            var addr = _MM.readAddr(this.PC + 2, _PCBList[this.processIndex]);
-            addr += _MM.readAddr(this.PC + 1, _PCBList[this.processIndex]);
-            addr = parseInt(addr, 16);
+            var addr = _Memory.memory[this.PC + 2 + _PCBList[this.processIndex].base];
+            addr += _Memory.memory[this.PC + 1 + _PCBList[this.processIndex].base];
+            addr = parseInt(addr, 16) + _PCBList[this.processIndex].base;
             var memVal = parseInt(_Memory.memory[addr], 16) + 1;
             var memString = memVal.toString(16).toUpperCase();
             if (memString.length != 2)
