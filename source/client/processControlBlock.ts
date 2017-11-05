@@ -12,7 +12,7 @@ module PotatOS {
                       public segment: number = 0,
                       public base: number = _MM.getBase(segment),
                       public limit: number = 0,
-                      public state: string = 'READY',
+                      public state: string = 'NEW',
                       public priority: number = 0,
                       public runtime: number = 0,
                       public waitTime: number = 0){

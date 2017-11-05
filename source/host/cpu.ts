@@ -28,7 +28,10 @@ module PotatOS {
                     public processIndex = 0,
                     public IR = '',
                     public codeArray = new Array(),
-                    public singleStep: boolean = false) {
+                    public singleStep: boolean = false,
+                    public quantum: number = 6,
+                    public qCount: number = 0,
+                    public runAll: boolean = false) {
 
         }
 
@@ -43,6 +46,9 @@ module PotatOS {
             this.IR = '';
             this.codeArray = [0,0,0];
             this.singleStep = false;
+            this.quantum = 5;
+            this.qCount = 0;
+            this.runAll = false;
         }
 
         public cycle(): void {
@@ -55,12 +61,29 @@ module PotatOS {
                     this.isExecuting = false;
             }
             else {
-                this.terminate();
+                this.terminate(_PCBList[this.processIndex]);
             }
 
             this.updateProcess();
             PotatOS.Control.updateCPUDisplay();
             PotatOS.Control.updateProcessDisplay();
+
+            // Handles Round-Robin Scheduling
+            if (this.runAll == true) {
+                this.qCount++;
+                if (this.qCount == this.quantum) {
+                    this.qCount = 0;
+                    _PCBList[this.processIndex].state = 'READY';
+                    if (this.processIndex == 2)
+                        this.processIndex = 0;
+                    else
+                        this.processIndex++;
+                    _PCBList[this.processIndex].state = 'RUNNING';
+                    this.codeArray = _MM.read(_PCBList[this.processIndex].PC, _PCBList[this.processIndex].limit);
+                }
+            }
+            else
+                this.runAll = false;
         }
 
         public execute(PCB: PCB): void {
@@ -96,7 +119,7 @@ module PotatOS {
                     break;
                 case '00':
                     this.IR = '00';
-                    this.terminate();
+                    this.terminate(_PCBList[this.processIndex]);
                     break;
                 case 'EC':
                     this.compareByteX();
@@ -114,7 +137,7 @@ module PotatOS {
                     _StdOut.putText('OP code is invalid. Nice job. It was ' + this.codeArray[this.PC] + ' if you care ' +
                         'enough to fix it. Or don\'t. Doesn\'t matter to me.');
                     _StdOut.advanceLine();
-                    this.terminate();
+                    this.terminate(_PCBList[this.processIndex]);
             }
         }
 
@@ -190,21 +213,47 @@ module PotatOS {
         }
 
         // Ends process, removes it from the PCB List, and removes it from memory
-        public terminate() {
-            _StdOut.putText('PID: ' + _PCBList[this.processIndex].PID + ' has completed.');
-            _MM.segment[_PCBList[this.processIndex].segment] = 0;
-            for (var i = _PCBList[this.processIndex].base; i < _MM.getLimit(_PCBList[this.processIndex].segment); i++) {
+        public terminate(pcb: PCB) {
+            _StdOut.putText('PID: ' + pcb.PID + ' has ended.');
+            _MM.segment[pcb.segment] = 0;
+            for (var i = pcb.base; i < _MM.getLimit(pcb.segment); i++) {
                 _Memory.memory[i] = '00';
             }
-            _PCBList.splice(this.processIndex, 1);
-            this.processIndex = -1;
-            this.singleStep = false;
-            (<HTMLButtonElement>document.getElementById("btnStep")).disabled = true;
-            this.isExecuting = false;
-            this.codeArray = [0,0,0];
-            PotatOS.Control.updateMemoryDisplay();
-            _StdOut.advanceLine();
-            _OsShell.putPrompt();
+            var terminatedIndex = _PCBList.indexOf(pcb);
+            _PCBList.splice(terminatedIndex, 1);
+
+            function finalTerminate() {
+                _CPU.processIndex = -1;
+                _CPU.singleStep = false;
+                (<HTMLButtonElement>document.getElementById("btnStep")).disabled = true;
+                _CPU.isExecuting = false;
+                _CPU.codeArray = [0, 0, 0];
+                PotatOS.Control.updateMemoryDisplay();
+                _StdOut.advanceLine();
+                _OsShell.putPrompt();
+                _CPU.runAll = false;
+            }
+
+            if (this.runAll == true) {
+                // If there are no more processes in ready queue, then end everything
+                if (_PCBList.length < 1) {
+                    finalTerminate();
+                }
+                // Otherwise, move to next process and continue with regular scheduling
+                else {
+                    if (this.processIndex == 2)
+                        this.processIndex = 0;
+                    else
+                        this.processIndex++;
+                    this.qCount = 0;
+                    this.codeArray = _MM.read(_PCBList[this.processIndex].PC, _PCBList[this.processIndex].limit);
+                    PotatOS.Control.updateMemoryDisplay();
+                    _StdOut.advanceLine();
+                }
+            }
+            else {
+                finalTerminate();
+            }
         }
 
         public compareByteX() {

@@ -48,11 +48,11 @@ module PotatOS {
         // Get the limit address for a given segment
         public getLimit(segment: number) {
             if (segment == 0)
-                return 256;
+                return 255;
             else if (segment == 1)
-                return 512;
+                return 511;
             else if (segment == 2)
-                return 768;
+                return 767;
         }
 
         // Returns next available memory space
@@ -83,6 +83,10 @@ module PotatOS {
             if (addr >= pcb.base && addr <= this.getLimit(pcb.segment)) {
                 _Memory.memory[addr] = code;
                 PotatOS.Control.updateMemoryDisplay();
+            }
+            else {
+                _StdOut.putText('Memory access error. ');
+                _CPU.terminate();
             }
         }
 

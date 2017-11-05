@@ -12,7 +12,7 @@ var PotatOS;
             if (segment === void 0) { segment = 0; }
             if (base === void 0) { base = _MM.getBase(segment); }
             if (limit === void 0) { limit = 0; }
-            if (state === void 0) { state = 'READY'; }
+            if (state === void 0) { state = 'NEW'; }
             if (priority === void 0) { priority = 0; }
             if (runtime === void 0) { runtime = 0; }
             if (waitTime === void 0) { waitTime = 0; }

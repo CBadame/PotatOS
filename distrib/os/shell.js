@@ -41,7 +41,9 @@ var PotatOS;
             this.commandList[this.commandList.length] = sc;
             sc = new PotatOS.ShellCommand(this.shellRun, "run", "<number> - Executes a given process from memory.");
             this.commandList[this.commandList.length] = sc;
-            sc = new PotatOS.ShellCommand(this.shellPrograms, "programs", " - Lists programs stored in memory.");
+            sc = new PotatOS.ShellCommand(this.shellPrograms, "ps", " - Lists active programs in the ready queue.");
+            this.commandList[this.commandList.length] = sc;
+            sc = new PotatOS.ShellCommand(this.shellKill, "kill", "<pid> - Terminates a given program.");
             this.commandList[this.commandList.length] = sc;
             this.putPrompt();
         };
@@ -321,9 +323,19 @@ var PotatOS;
         };
         Shell.prototype.shellPrograms = function () {
             for (var i = 0; i < _PCBList.length; i++) {
-                _StdOut.putText('PID: ' + _PCBList[i].PID);
-                _StdOut.advanceLine();
+                if (_PCBList[i].state != 'NEW') {
+                    _StdOut.putText('PID: ' + _PCBList[i].PID);
+                    _StdOut.advanceLine();
+                }
             }
+        };
+        Shell.prototype.shellKill = function (pid) {
+            for (var i = 0; i < _PCBList.length; i++) {
+                if (_PCBList[i].PID == pid)
+                    _CPU.terminate(_PCBList[i]);
+            }
+        };
+        Shell.prototype.shellRunAll = function () {
         };
         return Shell;
     }());

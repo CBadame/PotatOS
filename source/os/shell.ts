@@ -125,8 +125,14 @@ module PotatOS {
 
             //programs
             sc = new ShellCommand(this.shellPrograms,
-                "programs",
-                " - Lists programs stored in memory.");
+                "ps",
+                " - Lists active programs in the ready queue.");
+            this.commandList[this.commandList.length] = sc;
+
+            //kill <pid>
+            sc = new ShellCommand(this.shellKill,
+                "kill",
+                "<pid> - Terminates a given program.");
             this.commandList[this.commandList.length] = sc;
 
             // kill <id> - kills the specified process id.
@@ -464,9 +470,22 @@ module PotatOS {
 
         public shellPrograms() {
             for (var i = 0; i < _PCBList.length; i++) {
-                _StdOut.putText('PID: ' + _PCBList[i].PID);
-                _StdOut.advanceLine();
+                if (_PCBList[i].state != 'NEW') {
+                    _StdOut.putText('PID: ' + _PCBList[i].PID);
+                    _StdOut.advanceLine();
+                }
             }
+        }
+
+        public shellKill(pid: number) {
+            for (var i = 0; i < _PCBList.length; i++) {
+                if (_PCBList[i].PID == pid)
+                    _CPU.terminate(_PCBList[i]);
+            }
+        }
+
+        public shellRunAll() {
+
         }
 
     }

@@ -1,7 +1,7 @@
 var PotatOS;
 (function (PotatOS) {
     var Cpu = (function () {
-        function Cpu(PC, Acc, Xreg, Yreg, Zflag, isExecuting, processIndex, IR, codeArray, singleStep) {
+        function Cpu(PC, Acc, Xreg, Yreg, Zflag, isExecuting, processIndex, IR, codeArray, singleStep, quantum, qCount, runAll) {
             if (PC === void 0) { PC = 0; }
             if (Acc === void 0) { Acc = 0; }
             if (Xreg === void 0) { Xreg = 0; }
@@ -12,6 +12,9 @@ var PotatOS;
             if (IR === void 0) { IR = ''; }
             if (codeArray === void 0) { codeArray = new Array(); }
             if (singleStep === void 0) { singleStep = false; }
+            if (quantum === void 0) { quantum = 6; }
+            if (qCount === void 0) { qCount = 0; }
+            if (runAll === void 0) { runAll = false; }
             this.PC = PC;
             this.Acc = Acc;
             this.Xreg = Xreg;
@@ -22,6 +25,9 @@ var PotatOS;
             this.IR = IR;
             this.codeArray = codeArray;
             this.singleStep = singleStep;
+            this.quantum = quantum;
+            this.qCount = qCount;
+            this.runAll = runAll;
         }
         Cpu.prototype.init = function () {
             this.PC = 0;
@@ -34,6 +40,9 @@ var PotatOS;
             this.IR = '';
             this.codeArray = [0, 0, 0];
             this.singleStep = false;
+            this.quantum = 5;
+            this.qCount = 0;
+            this.runAll = false;
         };
         Cpu.prototype.cycle = function () {
             _Kernel.krnTrace('CPU cycle');
@@ -43,11 +52,26 @@ var PotatOS;
                     this.isExecuting = false;
             }
             else {
-                this.terminate();
+                this.terminate(_PCBList[this.processIndex]);
             }
             this.updateProcess();
             PotatOS.Control.updateCPUDisplay();
             PotatOS.Control.updateProcessDisplay();
+            if (this.runAll == true) {
+                this.qCount++;
+                if (this.qCount == this.quantum) {
+                    this.qCount = 0;
+                    _PCBList[this.processIndex].state = 'READY';
+                    if (this.processIndex == 2)
+                        this.processIndex = 0;
+                    else
+                        this.processIndex++;
+                    _PCBList[this.processIndex].state = 'RUNNING';
+                    this.codeArray = _MM.read(_PCBList[this.processIndex].PC, _PCBList[this.processIndex].limit);
+                }
+            }
+            else
+                this.runAll = false;
         };
         Cpu.prototype.execute = function (PCB) {
             this.processIndex = _PCBList.indexOf(PCB);
@@ -82,7 +106,7 @@ var PotatOS;
                     break;
                 case '00':
                     this.IR = '00';
-                    this.terminate();
+                    this.terminate(_PCBList[this.processIndex]);
                     break;
                 case 'EC':
                     this.compareByteX();
@@ -100,7 +124,7 @@ var PotatOS;
                     _StdOut.putText('OP code is invalid. Nice job. It was ' + this.codeArray[this.PC] + ' if you care ' +
                         'enough to fix it. Or don\'t. Doesn\'t matter to me.');
                     _StdOut.advanceLine();
-                    this.terminate();
+                    this.terminate(_PCBList[this.processIndex]);
             }
         };
         Cpu.prototype.loadAccConst = function (constant) {
@@ -163,21 +187,43 @@ var PotatOS;
             this.IR = 'AC';
             this.PC += 3;
         };
-        Cpu.prototype.terminate = function () {
-            _StdOut.putText('PID: ' + _PCBList[this.processIndex].PID + ' has completed.');
-            _MM.segment[_PCBList[this.processIndex].segment] = 0;
-            for (var i = _PCBList[this.processIndex].base; i < _MM.getLimit(_PCBList[this.processIndex].segment); i++) {
+        Cpu.prototype.terminate = function (pcb) {
+            _StdOut.putText('PID: ' + pcb.PID + ' has ended.');
+            _MM.segment[pcb.segment] = 0;
+            for (var i = pcb.base; i < _MM.getLimit(pcb.segment); i++) {
                 _Memory.memory[i] = '00';
             }
-            _PCBList.splice(this.processIndex, 1);
-            this.processIndex = -1;
-            this.singleStep = false;
-            document.getElementById("btnStep").disabled = true;
-            this.isExecuting = false;
-            this.codeArray = [0, 0, 0];
-            PotatOS.Control.updateMemoryDisplay();
-            _StdOut.advanceLine();
-            _OsShell.putPrompt();
+            var terminatedIndex = _PCBList.indexOf(pcb);
+            _PCBList.splice(terminatedIndex, 1);
+            function finalTerminate() {
+                _CPU.processIndex = -1;
+                _CPU.singleStep = false;
+                document.getElementById("btnStep").disabled = true;
+                _CPU.isExecuting = false;
+                _CPU.codeArray = [0, 0, 0];
+                PotatOS.Control.updateMemoryDisplay();
+                _StdOut.advanceLine();
+                _OsShell.putPrompt();
+                _CPU.runAll = false;
+            }
+            if (this.runAll == true) {
+                if (_PCBList.length < 1) {
+                    finalTerminate();
+                }
+                else {
+                    if (this.processIndex == 2)
+                        this.processIndex = 0;
+                    else
+                        this.processIndex++;
+                    this.qCount = 0;
+                    this.codeArray = _MM.read(_PCBList[this.processIndex].PC, _PCBList[this.processIndex].limit);
+                    PotatOS.Control.updateMemoryDisplay();
+                    _StdOut.advanceLine();
+                }
+            }
+            else {
+                finalTerminate();
+            }
         };
         Cpu.prototype.compareByteX = function () {
             var value = _Memory.memory[this.PC + 2 + _PCBList[this.processIndex].base];
