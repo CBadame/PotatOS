@@ -135,9 +135,12 @@ module PotatOS {
                 "<pid> - Terminates a given program.");
             this.commandList[this.commandList.length] = sc;
 
-            // kill <id> - kills the specified process id.
+            //runall
+            sc = new ShellCommand(this.shellRunAll,
+                "runall",
+                " - Runs all loaded programs via Round-Robin scheduling.");
+            this.commandList[this.commandList.length] = sc;
 
-            //
             // Display the initial prompt.
             this.putPrompt();
 
@@ -346,9 +349,14 @@ module PotatOS {
                         _StdOut.putText("Grabs one of the programs stored in a segment of memory and executes " +
                         "for the WHOLE world to see. Pretty exciting stuff here.");
                         break;
-                    case "programs":
-                        _StdOut.putText("Lists all programs stored in memory.");
+                    case "ps":
+                        _StdOut.putText("Lists all programs in the ready queue.");
                         break;
+                    case "kill":
+                        _StdOut.putText("Kills the desired program...you monster.");
+                        break;
+                    case "runall":
+                        _StdOut.putText("Runs all loaded programs via Round-Robin scheduling. *gulp*");
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -460,12 +468,16 @@ module PotatOS {
             var ifExists = false;
             for (var i = 0; i < _PCBList.length; i++) {
                 if (_PCBList[i].PID == pid) {
+                    if (_CPU.runAll == true)
+                        _PCBList[i].state = 'READY';
+                    else
+                        _PCBList[i].state = 'NEW';
                     _MM.run(_PCBList[i]);
                     ifExists = true;
                 }
             }
             if (!ifExists)
-                _StdOut.putText("This program does not exist. Type 'programs' to view what is currently in memory.");
+                _StdOut.putText("This program does not exist.");
         }
 
         public shellPrograms() {
@@ -479,13 +491,18 @@ module PotatOS {
 
         public shellKill(pid: number) {
             for (var i = 0; i < _PCBList.length; i++) {
-                if (_PCBList[i].PID == pid)
+                if (_PCBList[i].PID == pid) {
                     _CPU.terminate(_PCBList[i]);
+
+                }
             }
         }
 
         public shellRunAll() {
-
+            _CPU.runAll = true;
+            for (var i = 0; i < _PCBList.length; i++)
+                _PCBList[i].state = 'READY';
+            _MM.run(_PCBList[0]);
         }
 
     }

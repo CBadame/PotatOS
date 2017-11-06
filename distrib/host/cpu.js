@@ -46,6 +46,7 @@ var PotatOS;
         };
         Cpu.prototype.cycle = function () {
             _Kernel.krnTrace('CPU cycle');
+            console.log('Running process: ' + _PCBList[this.processIndex].PID);
             if (this.isExecuting == true && this.PC <= this.codeArray.length - 1) {
                 this.execute(_PCBList[this.processIndex]);
                 if (this.singleStep)
@@ -59,15 +60,16 @@ var PotatOS;
             PotatOS.Control.updateProcessDisplay();
             if (this.runAll == true) {
                 this.qCount++;
-                if (this.qCount == this.quantum) {
+                if (this.qCount > this.quantum) {
                     this.qCount = 0;
                     _PCBList[this.processIndex].state = 'READY';
-                    if (this.processIndex == 2)
+                    if (this.processIndex == _PCBList.length - 1)
                         this.processIndex = 0;
                     else
                         this.processIndex++;
                     _PCBList[this.processIndex].state = 'RUNNING';
-                    this.codeArray = _MM.read(_PCBList[this.processIndex].PC, _PCBList[this.processIndex].limit);
+                    this.codeArray = _MM.read(_PCBList[this.processIndex].base, _PCBList[this.processIndex].limit);
+                    this.updateCPU();
                 }
             }
             else
@@ -147,9 +149,7 @@ var PotatOS;
             var accVal = this.Acc.toString(16).toUpperCase();
             if (accVal.length != 2)
                 accVal = '0' + accVal;
-            console.log('Before write: ' + _Memory.memory[addr] + 'Addr: ' + addr);
             _MM.writeAddr(addr, _PCBList[this.processIndex], accVal);
-            console.log('After write: ' + _Memory.memory[addr] + 'Addr: ' + addr);
             this.IR = '8D';
             this.PC += 3;
         };
@@ -194,6 +194,7 @@ var PotatOS;
                 _Memory.memory[i] = '00';
             }
             var terminatedIndex = _PCBList.indexOf(pcb);
+            console.log('Terminated process: ' + _PCBList[terminatedIndex].PID);
             _PCBList.splice(terminatedIndex, 1);
             function finalTerminate() {
                 _CPU.processIndex = -1;
@@ -206,17 +207,14 @@ var PotatOS;
                 _OsShell.putPrompt();
                 _CPU.runAll = false;
             }
-            if (this.runAll == true) {
-                if (_PCBList.length < 1) {
+            if (_CPU.runAll == true) {
+                if (_PCBList.length == 0) {
                     finalTerminate();
                 }
                 else {
-                    if (this.processIndex == 2)
-                        this.processIndex = 0;
-                    else
-                        this.processIndex++;
-                    this.qCount = 0;
-                    this.codeArray = _MM.read(_PCBList[this.processIndex].PC, _PCBList[this.processIndex].limit);
+                    _CPU.qCount = 0;
+                    _CPU.codeArray = _MM.read(_PCBList[_CPU.processIndex].base, _PCBList[_CPU.processIndex].limit);
+                    _CPU.updateCPU();
                     PotatOS.Control.updateMemoryDisplay();
                     _StdOut.advanceLine();
                 }
@@ -229,7 +227,6 @@ var PotatOS;
             var value = _Memory.memory[this.PC + 2 + _PCBList[this.processIndex].base];
             value += _Memory.memory[this.PC + 1 + _PCBList[this.processIndex].base];
             value = parseInt(value, 16) + _PCBList[this.processIndex].base;
-            console.log('Compare Address: ' + value);
             if (parseInt(_Memory.memory[value], 16) == this.Xreg)
                 this.Zflag = 1;
             else
@@ -294,7 +291,7 @@ var PotatOS;
             this.PC++;
         };
         Cpu.prototype.updateProcess = function () {
-            if (this.processIndex != 1 && _PCBList[this.processIndex]) {
+            if (this.processIndex != -1 && _PCBList[this.processIndex]) {
                 _PCBList[this.processIndex].PC = _CPU.PC;
                 _PCBList[this.processIndex].Acc = _CPU.Acc;
                 _PCBList[this.processIndex].IR = _CPU.IR;
@@ -302,6 +299,14 @@ var PotatOS;
                 _PCBList[this.processIndex].Yreg = _CPU.Yreg;
                 _PCBList[this.processIndex].Zflag = _CPU.Zflag;
             }
+        };
+        Cpu.prototype.updateCPU = function () {
+            this.PC = _PCBList[this.processIndex].PC;
+            this.Acc = _PCBList[this.processIndex].Acc;
+            this.IR = _PCBList[this.processIndex].IR;
+            this.Xreg = _PCBList[this.processIndex].Xreg;
+            this.Yreg = _PCBList[this.processIndex].Yreg;
+            this.Zflag = _PCBList[this.processIndex].Zflag;
         };
         return Cpu;
     }());
