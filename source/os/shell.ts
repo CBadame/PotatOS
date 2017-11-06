@@ -493,7 +493,9 @@ module PotatOS {
             for (var i = 0; i < _PCBList.length; i++) {
                 if (_PCBList[i].PID == pid) {
                     _CPU.terminate(_PCBList[i]);
-
+                    PotatOS.Control.updateCPUDisplay();
+                    PotatOS.Control.updateProcessDisplay();
+                    PotatOS.Control.updateMemoryDisplay();
                 }
             }
         }

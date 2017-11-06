@@ -57,13 +57,19 @@ module PotatOS {
             // Do the real work here. Be sure to set this.isExecuting appropriately.
             console.log('Running process: ' + _PCBList[this.processIndex].PID);
             if (this.isExecuting == true && this.PC <= this.codeArray.length - 1) {
-                this.execute(_PCBList[this.processIndex]);
-                if (this.singleStep)
-                    this.isExecuting = false;
+                if (this.PC >= _MM.getLimit(_PCBList[this.processIndex].PID)) {
+                    _StdOut.putText('Memory out of bounds.');
+                    console.log(this.isExecuting);
+                    _OsShell.shellKill(_PCBList[this.processIndex]);
+                }
+                else {
+                    this.execute(_PCBList[this.processIndex]);
+                    if (this.singleStep)
+                        this.isExecuting = false;
+                }
             }
-            else {
+            else
                 this.terminate(_PCBList[this.processIndex]);
-            }
 
             this.updateProcess();
             PotatOS.Control.updateCPUDisplay();
@@ -242,6 +248,8 @@ module PotatOS {
                 }
                 // Otherwise, move to next process and continue with regular scheduling
                 else {
+                    if (_CPU.processIndex > _PCBList.length - 1)
+                        _CPU.processIndex = 0;
                     _CPU.qCount = 0;
                     _CPU.codeArray = _MM.read(_PCBList[_CPU.processIndex].base, _PCBList[_CPU.processIndex].limit);
                     _CPU.updateCPU();
@@ -353,3 +361,4 @@ module PotatOS {
 
     }
 }
+                   
