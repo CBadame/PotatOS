@@ -141,6 +141,18 @@ module PotatOS {
                 " - Runs all loaded programs via Round-Robin scheduling.");
             this.commandList[this.commandList.length] = sc;
 
+            //quantum
+            sc = new ShellCommand(this.shellQuantum,
+                "quantum",
+                "<number> - Sets Round-Robin quantum to a given value.");
+            this.commandList[this.commandList.length] = sc;
+
+            //clearMem
+            sc = new ShellCommand(this.shellClearMem,
+                "clearmem",
+                " - Clears all memory partitions.");
+            this.commandList[this.commandList.length] = sc;
+
             // Display the initial prompt.
             this.putPrompt();
 
@@ -357,6 +369,15 @@ module PotatOS {
                         break;
                     case "runall":
                         _StdOut.putText("Runs all loaded programs via Round-Robin scheduling. *gulp*");
+                        break;
+                    case "quantum":
+                        _StdOut.putText("Sets the Round-Robin scheduling quantum to whatever your little heart " +
+                            "desires.");
+                        break;
+                    case "clearmem":
+                        _StdOut.putText("This will remove everything from memory. I would tell you to save " +
+                            "first, but that\'s not really an option here.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -505,6 +526,23 @@ module PotatOS {
             for (var i = 0; i < _PCBList.length; i++)
                 _PCBList[i].state = 'READY';
             _MM.run(_PCBList[0]);
+        }
+
+        public shellQuantum(newVal: number) {
+            if (newVal > 0)
+                _cpuScheduling.quantum = newVal;
+            else
+                _StdOut.putText('Please stop trying to break the scheduler, it\'s very fragile.');
+        }
+
+        public shellClearMem() {
+            while (_PCBList.length > 0) {
+                _CPU.terminate(_PCBList[0]);
+            }
+        }
+
+        public extraLine() {
+
         }
 
     }

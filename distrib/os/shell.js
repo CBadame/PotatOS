@@ -47,6 +47,10 @@ var PotatOS;
             this.commandList[this.commandList.length] = sc;
             sc = new PotatOS.ShellCommand(this.shellRunAll, "runall", " - Runs all loaded programs via Round-Robin scheduling.");
             this.commandList[this.commandList.length] = sc;
+            sc = new PotatOS.ShellCommand(this.shellQuantum, "quantum", "<number> - Sets Round-Robin quantum to a given value.");
+            this.commandList[this.commandList.length] = sc;
+            sc = new PotatOS.ShellCommand(this.shellClearMem, "clearmem", " - Clears all memory partitions.");
+            this.commandList[this.commandList.length] = sc;
             this.putPrompt();
         };
         Shell.prototype.putPrompt = function () {
@@ -222,6 +226,15 @@ var PotatOS;
                         break;
                     case "runall":
                         _StdOut.putText("Runs all loaded programs via Round-Robin scheduling. *gulp*");
+                        break;
+                    case "quantum":
+                        _StdOut.putText("Sets the Round-Robin scheduling quantum to whatever your little heart " +
+                            "desires.");
+                        break;
+                    case "clearmem":
+                        _StdOut.putText("This will remove everything from memory. I would tell you to save " +
+                            "first, but that\'s not really an option here.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -355,6 +368,19 @@ var PotatOS;
             for (var i = 0; i < _PCBList.length; i++)
                 _PCBList[i].state = 'READY';
             _MM.run(_PCBList[0]);
+        };
+        Shell.prototype.shellQuantum = function (newVal) {
+            if (newVal > 0)
+                _cpuScheduling.quantum = newVal;
+            else
+                _StdOut.putText('Please stop trying to break the scheduler, it\'s very fragile.');
+        };
+        Shell.prototype.shellClearMem = function () {
+            while (_PCBList.length > 0) {
+                _CPU.terminate(_PCBList[0]);
+            }
+        };
+        Shell.prototype.extraLine = function () {
         };
         return Shell;
     }());
