@@ -66,7 +66,7 @@ var PotatOS;
             }
             else {
                 _StdOut.putText('Memory access error. ');
-                _CPU.terminate();
+                _CPU.terminate(pcb);
             }
         };
         return MM;

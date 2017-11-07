@@ -39,15 +39,9 @@ var PotatOS;
             _Kernel.krnTrace('CPU cycle');
             console.log('Running process: ' + _PCBList[this.processIndex].PID);
             if (this.isExecuting == true && this.PC <= this.codeArray.length - 1) {
-                if (this.PC >= _MM.getLimit(_PCBList[this.processIndex].PID)) {
-                    _StdOut.putText('Memory out of bounds.');
-                    _OsShell.shellKill(_PCBList[this.processIndex]);
-                }
-                else {
-                    this.execute(_PCBList[this.processIndex]);
-                    if (this.singleStep)
-                        this.isExecuting = false;
-                }
+                this.execute(_PCBList[this.processIndex]);
+                if (this.singleStep)
+                    this.isExecuting = false;
             }
             else
                 this.terminate(_PCBList[this.processIndex]);
