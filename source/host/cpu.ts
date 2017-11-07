@@ -28,10 +28,7 @@ module PotatOS {
                     public processIndex = 0,
                     public IR = '',
                     public codeArray = new Array(),
-                    public singleStep: boolean = false,
-                    public quantum: number = 6,
-                    public qCount: number = 0,
-                    public runAll: boolean = false) {
+                    public singleStep: boolean = false) {
 
         }
 
@@ -46,9 +43,6 @@ module PotatOS {
             this.IR = '';
             this.codeArray = [0,0,0];
             this.singleStep = false;
-            this.quantum = 5;
-            this.qCount = 0;
-            this.runAll = false;
         }
 
         public cycle(): void {
@@ -59,7 +53,6 @@ module PotatOS {
             if (this.isExecuting == true && this.PC <= this.codeArray.length - 1) {
                 if (this.PC >= _MM.getLimit(_PCBList[this.processIndex].PID)) {
                     _StdOut.putText('Memory out of bounds.');
-                    console.log(this.isExecuting);
                     _OsShell.shellKill(_PCBList[this.processIndex]);
                 }
                 else {
@@ -76,22 +69,13 @@ module PotatOS {
             PotatOS.Control.updateProcessDisplay();
 
             // Handles Round-Robin Scheduling
-            if (this.runAll == true) {
-                this.qCount++;
-                if (this.qCount > this.quantum) {
-                    this.qCount = 0;
-                    _PCBList[this.processIndex].state = 'READY';
-                    if (this.processIndex == _PCBList.length - 1)
-                        this.processIndex = 0;
-                    else
-                        this.processIndex++;
-                    _PCBList[this.processIndex].state = 'RUNNING';
-                    this.codeArray = _MM.read(_PCBList[this.processIndex].base, _PCBList[this.processIndex].limit);
-                    this.updateCPU();
-                }
+            if (_cpuScheduling.runAll == true) {
+                _cpuScheduling.qCount++;
+                if (_cpuScheduling.qCount > _cpuScheduling.quantum)
+                    _cpuScheduling.nextProcess();
             }
             else
-                this.runAll = false;
+                _cpuScheduling.runAll = false;
         }
 
         public execute(PCB: PCB): void {
@@ -238,24 +222,17 @@ module PotatOS {
                 PotatOS.Control.updateMemoryDisplay();
                 _StdOut.advanceLine();
                 _OsShell.putPrompt();
-                _CPU.runAll = false;
+                _cpuScheduling.runAll = false;
             }
 
-            if (_CPU.runAll == true) {
+            if (_cpuScheduling.runAll == true) {
                 // If there are no more processes in ready queue, then end everything
                 if (_PCBList.length == 0) {
                     finalTerminate();
                 }
                 // Otherwise, move to next process and continue with regular scheduling
-                else {
-                    if (_CPU.processIndex > _PCBList.length - 1)
-                        _CPU.processIndex = 0;
-                    _CPU.qCount = 0;
-                    _CPU.codeArray = _MM.read(_PCBList[_CPU.processIndex].base, _PCBList[_CPU.processIndex].limit);
-                    _CPU.updateCPU();
-                    PotatOS.Control.updateMemoryDisplay();
-                    _StdOut.advanceLine();
-                }
+                else
+                    _cpuScheduling.endProcess();
             }
             else {
                 finalTerminate();

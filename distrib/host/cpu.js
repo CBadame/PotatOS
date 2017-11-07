@@ -1,7 +1,7 @@
 var PotatOS;
 (function (PotatOS) {
     var Cpu = (function () {
-        function Cpu(PC, Acc, Xreg, Yreg, Zflag, isExecuting, processIndex, IR, codeArray, singleStep, quantum, qCount, runAll) {
+        function Cpu(PC, Acc, Xreg, Yreg, Zflag, isExecuting, processIndex, IR, codeArray, singleStep) {
             if (PC === void 0) { PC = 0; }
             if (Acc === void 0) { Acc = 0; }
             if (Xreg === void 0) { Xreg = 0; }
@@ -12,9 +12,6 @@ var PotatOS;
             if (IR === void 0) { IR = ''; }
             if (codeArray === void 0) { codeArray = new Array(); }
             if (singleStep === void 0) { singleStep = false; }
-            if (quantum === void 0) { quantum = 6; }
-            if (qCount === void 0) { qCount = 0; }
-            if (runAll === void 0) { runAll = false; }
             this.PC = PC;
             this.Acc = Acc;
             this.Xreg = Xreg;
@@ -25,9 +22,6 @@ var PotatOS;
             this.IR = IR;
             this.codeArray = codeArray;
             this.singleStep = singleStep;
-            this.quantum = quantum;
-            this.qCount = qCount;
-            this.runAll = runAll;
         }
         Cpu.prototype.init = function () {
             this.PC = 0;
@@ -40,9 +34,6 @@ var PotatOS;
             this.IR = '';
             this.codeArray = [0, 0, 0];
             this.singleStep = false;
-            this.quantum = 5;
-            this.qCount = 0;
-            this.runAll = false;
         };
         Cpu.prototype.cycle = function () {
             _Kernel.krnTrace('CPU cycle');
@@ -50,7 +41,6 @@ var PotatOS;
             if (this.isExecuting == true && this.PC <= this.codeArray.length - 1) {
                 if (this.PC >= _MM.getLimit(_PCBList[this.processIndex].PID)) {
                     _StdOut.putText('Memory out of bounds.');
-                    console.log(this.isExecuting);
                     _OsShell.shellKill(_PCBList[this.processIndex]);
                 }
                 else {
@@ -64,22 +54,13 @@ var PotatOS;
             this.updateProcess();
             PotatOS.Control.updateCPUDisplay();
             PotatOS.Control.updateProcessDisplay();
-            if (this.runAll == true) {
-                this.qCount++;
-                if (this.qCount > this.quantum) {
-                    this.qCount = 0;
-                    _PCBList[this.processIndex].state = 'READY';
-                    if (this.processIndex == _PCBList.length - 1)
-                        this.processIndex = 0;
-                    else
-                        this.processIndex++;
-                    _PCBList[this.processIndex].state = 'RUNNING';
-                    this.codeArray = _MM.read(_PCBList[this.processIndex].base, _PCBList[this.processIndex].limit);
-                    this.updateCPU();
-                }
+            if (_cpuScheduling.runAll == true) {
+                _cpuScheduling.qCount++;
+                if (_cpuScheduling.qCount > _cpuScheduling.quantum)
+                    _cpuScheduling.nextProcess();
             }
             else
-                this.runAll = false;
+                _cpuScheduling.runAll = false;
         };
         Cpu.prototype.execute = function (PCB) {
             this.processIndex = _PCBList.indexOf(PCB);
@@ -211,21 +192,14 @@ var PotatOS;
                 PotatOS.Control.updateMemoryDisplay();
                 _StdOut.advanceLine();
                 _OsShell.putPrompt();
-                _CPU.runAll = false;
+                _cpuScheduling.runAll = false;
             }
-            if (_CPU.runAll == true) {
+            if (_cpuScheduling.runAll == true) {
                 if (_PCBList.length == 0) {
                     finalTerminate();
                 }
-                else {
-                    if (_CPU.processIndex > _PCBList.length - 1)
-                        _CPU.processIndex = 0;
-                    _CPU.qCount = 0;
-                    _CPU.codeArray = _MM.read(_PCBList[_CPU.processIndex].base, _PCBList[_CPU.processIndex].limit);
-                    _CPU.updateCPU();
-                    PotatOS.Control.updateMemoryDisplay();
-                    _StdOut.advanceLine();
-                }
+                else
+                    _cpuScheduling.endProcess();
             }
             else {
                 finalTerminate();

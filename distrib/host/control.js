@@ -36,6 +36,8 @@ var PotatOS;
             _PCB = new PotatOS.PCB();
             _CPU = new PotatOS.Cpu();
             _CPU.init();
+            _cpuScheduling = new PotatOS.cpuScheduling();
+            _cpuScheduling.init();
             _hardwareClockID = setInterval(PotatOS.Devices.hostClockPulse, CPU_CLOCK_INTERVAL);
             _Kernel = new PotatOS.Kernel();
             _Kernel.krnBootstrap();

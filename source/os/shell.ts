@@ -468,7 +468,7 @@ module PotatOS {
             var ifExists = false;
             for (var i = 0; i < _PCBList.length; i++) {
                 if (_PCBList[i].PID == pid) {
-                    if (_CPU.runAll == true)
+                    if (_cpuScheduling.runAll == true)
                         _PCBList[i].state = 'READY';
                     else
                         _PCBList[i].state = 'NEW';
@@ -501,7 +501,7 @@ module PotatOS {
         }
 
         public shellRunAll() {
-            _CPU.runAll = true;
+            _cpuScheduling.runAll = true;
             for (var i = 0; i < _PCBList.length; i++)
                 _PCBList[i].state = 'READY';
             _MM.run(_PCBList[0]);

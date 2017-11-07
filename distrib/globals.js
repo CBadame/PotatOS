@@ -4,6 +4,7 @@ var CPU_CLOCK_INTERVAL = 100;
 var TIMER_IRQ = 0;
 var KEYBOARD_IRQ = 1;
 var _CPU;
+var _cpuScheduling;
 var _OSclock = 0;
 var _Mode = 0;
 var _Memory;
