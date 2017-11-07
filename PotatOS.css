@@ -44,16 +44,16 @@ h3 {
   position: relative;
   background-color: white;
   height:90px;
-  width:250px;
+  width:300px;
   overflow-y:auto;
   display: inline-block;
-  margin-right: 300px;
+  margin-right: 250px;
 }
 
 #tbPCB{
   position: relative;
   background-color: white;
-  height:100px;
+  height:200px;
   width:500px;
   overflow-y:auto;
   display: inline-block;
