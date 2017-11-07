@@ -379,8 +379,7 @@ var PotatOS;
             while (_PCBList.length > 0) {
                 _CPU.terminate(_PCBList[0]);
             }
-        };
-        Shell.prototype.extraLine = function () {
+            PotatOS.Control.updateProcessDisplay();
         };
         return Shell;
     }());

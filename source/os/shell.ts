@@ -539,10 +539,7 @@ module PotatOS {
             while (_PCBList.length > 0) {
                 _CPU.terminate(_PCBList[0]);
             }
-        }
-
-        public extraLine() {
-
+            PotatOS.Control.updateProcessDisplay();
         }
 
     }
