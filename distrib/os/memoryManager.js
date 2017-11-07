@@ -44,8 +44,10 @@ var PotatOS;
         MM.prototype.checkMem = function () {
             var availableSeg;
             for (var j = 0; j < this.segment.length; j++) {
-                if (this.segment[j] == 0)
+                if (this.segment[j] == 0) {
                     availableSeg = j;
+                    break;
+                }
             }
             return availableSeg;
         };
