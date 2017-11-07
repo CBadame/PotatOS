@@ -39,9 +39,15 @@ var PotatOS;
             _Kernel.krnTrace('CPU cycle');
             console.log('Running process: ' + _PCBList[this.processIndex].PID);
             if (this.isExecuting == true && this.PC <= this.codeArray.length - 1) {
-                this.execute(_PCBList[this.processIndex]);
+                for (var i = 0; i < _PCBList.length; i++) {
+                    _PCBList[i].taTime++;
+                    if (this.processIndex != i) {
+                        _PCBList[i].waitTime++;
+                    }
+                }
                 if (this.singleStep)
                     this.isExecuting = false;
+                this.execute(_PCBList[this.processIndex]);
             }
             else
                 this.terminate(_PCBList[this.processIndex]);
@@ -169,7 +175,13 @@ var PotatOS;
             this.PC += 3;
         };
         Cpu.prototype.terminate = function (pcb) {
+            _StdOut.advanceLine();
             _StdOut.putText('PID: ' + pcb.PID + ' has ended.');
+            _StdOut.advanceLine();
+            _StdOut.putText('Turnaround Time: ' + pcb.taTime);
+            _StdOut.advanceLine();
+            _StdOut.putText('Wait Time: ' + pcb.waitTime);
+            _StdOut.advanceLine();
             _MM.segment[pcb.segment] = 0;
             for (var i = pcb.base; i < _MM.getLimit(pcb.segment); i++) {
                 _Memory.memory[i] = '00';

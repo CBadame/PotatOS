@@ -58,8 +58,11 @@ var PotatOS;
             var displayIR = '00';
             if (_CPU.IR != '')
                 displayIR = _CPU.IR;
+            var hexPC = _CPU.PC.toString(16).toUpperCase();
+            if (hexPC.length < 2)
+                hexPC = '0' + hexPC;
             var str = '<tr><td>PC</td><td>AC</td><td>IR</td><td>X</td><td>Y</td><td>Z</td></tr>';
-            str += '<tr><td>' + _CPU.PC + '</td><td>' + _CPU.Acc + '</td><td>' + displayIR + '</td><td>' + _CPU.Xreg +
+            str += '<tr><td>' + hexPC + '</td><td>' + _CPU.Acc + '</td><td>' + displayIR + '</td><td>' + _CPU.Xreg +
                 '</td><td>' + _CPU.Yreg + '</td><td>' + _CPU.Zflag + '</td></tr>';
             document.getElementById("tbCPU").innerHTML = str;
         };
@@ -89,7 +92,10 @@ var PotatOS;
                 '<td>State</td><td>Segment</td></tr>';
             var i = 0;
             while (i < _PCBList.length) {
-                str += '<tr><td>' + _PCBList[i].PID + '</td><td>' + _PCBList[i].PC + '</td><td>' + _PCBList[i].Acc +
+                var hexPC = _PCBList[i].PC.toString(16).toUpperCase();
+                if (hexPC.length < 2)
+                    hexPC = '0' + hexPC;
+                str += '<tr><td>' + _PCBList[i].PID + '</td><td>' + hexPC + '</td><td>' + _PCBList[i].Acc +
                     '</td><td>' + _PCBList[i].IR + '</td><td>' + _PCBList[i].Xreg + '</td><td>' + _PCBList[i].Yreg +
                     '</td><td>' + _PCBList[i].Zflag + '</td><td>' + _PCBList[i].state + '</td><td>' +
                     _PCBList[i].segment + '</td><td>';

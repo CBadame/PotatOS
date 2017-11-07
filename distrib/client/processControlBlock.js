@@ -1,7 +1,7 @@
 var PotatOS;
 (function (PotatOS) {
     var PCB = (function () {
-        function PCB(PC, Acc, Xreg, Yreg, Zflag, PID, IR, segment, base, limit, state, priority, runtime, waitTime) {
+        function PCB(PC, Acc, Xreg, Yreg, Zflag, PID, IR, segment, base, limit, state, priority, taTime, waitTime) {
             if (PC === void 0) { PC = 0; }
             if (Acc === void 0) { Acc = 0; }
             if (Xreg === void 0) { Xreg = 0; }
@@ -14,7 +14,7 @@ var PotatOS;
             if (limit === void 0) { limit = 0; }
             if (state === void 0) { state = 'NEW'; }
             if (priority === void 0) { priority = 0; }
-            if (runtime === void 0) { runtime = 0; }
+            if (taTime === void 0) { taTime = 0; }
             if (waitTime === void 0) { waitTime = 0; }
             this.PC = PC;
             this.Acc = Acc;
@@ -28,7 +28,7 @@ var PotatOS;
             this.limit = limit;
             this.state = state;
             this.priority = priority;
-            this.runtime = runtime;
+            this.taTime = taTime;
             this.waitTime = waitTime;
         }
         return PCB;

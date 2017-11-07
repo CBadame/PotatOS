@@ -14,7 +14,7 @@ module PotatOS {
                       public limit: number = 0,
                       public state: string = 'NEW',
                       public priority: number = 0,
-                      public runtime: number = 0,
+                      public taTime: number = 0,
                       public waitTime: number = 0){
         }
 

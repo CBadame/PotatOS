@@ -51,9 +51,18 @@ module PotatOS {
             // Do the real work here. Be sure to set this.isExecuting appropriately.
             console.log('Running process: ' + _PCBList[this.processIndex].PID);
             if (this.isExecuting == true && this.PC <= this.codeArray.length - 1) {
-                this.execute(_PCBList[this.processIndex]);
+
+                // Keeps track of turnaround and wait times
+                for (var i = 0; i < _PCBList.length; i++) {
+                    _PCBList[i].taTime++;
+                    if (this.processIndex != i) {
+                        _PCBList[i].waitTime++;
+                    }
+                }
                 if (this.singleStep)
                     this.isExecuting = false;
+
+                this.execute(_PCBList[this.processIndex]);
             }
             else
                 this.terminate(_PCBList[this.processIndex]);
@@ -198,7 +207,16 @@ module PotatOS {
 
         // Ends process, removes it from the PCB List, and removes it from memory
         public terminate(pcb: PCB) {
+            // Prints the finished PID along with the turnaround + wait times
+            _StdOut.advanceLine();
             _StdOut.putText('PID: ' + pcb.PID + ' has ended.');
+            _StdOut.advanceLine();
+            _StdOut.putText('Turnaround Time: ' + pcb.taTime);
+            _StdOut.advanceLine();
+            _StdOut.putText('Wait Time: ' + pcb.waitTime);
+            _StdOut.advanceLine();
+
+            // Removes the terminated program from memory and the PCB List
             _MM.segment[pcb.segment] = 0;
             for (var i = pcb.base; i < _MM.getLimit(pcb.segment); i++) {
                 _Memory.memory[i] = '00';
@@ -207,6 +225,7 @@ module PotatOS {
             console.log('Terminated process: ' + _PCBList[terminatedIndex].PID);
             _PCBList.splice(terminatedIndex, 1);
 
+            // Sets variables accordingly when there are no more programs left to run
             function finalTerminate() {
                 _CPU.processIndex = -1;
                 _CPU.singleStep = false;
