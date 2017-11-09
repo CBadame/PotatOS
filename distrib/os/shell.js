@@ -308,8 +308,8 @@ var PotatOS;
                         else
                             PCB.priority = 0;
                         _PCBList.push(PCB);
-                        PotatOS.Control.updateProcessDisplay();
                         _MM.write(userInput, PCB);
+                        PotatOS.Control.updateProcessDisplay();
                     }
                     else
                         _StdOut.putText('No more free memory.');

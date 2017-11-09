@@ -1,7 +1,8 @@
 /* PotatOS.css */
 
 body {
-  background: #909193 url(distrib/images/linen.png) repeat;
+  background: #909193 url(distrib/images/BuscemiPotato.jpg);
+  background-size: cover;
   font-family: Helvetica, Verdana, Arial, sans-serif;
   font-size: 12pt;
   font-weight: normal;
@@ -66,8 +67,23 @@ h3 {
 }
 
 .normal_button {
-  width: 100px;
+  width: auto;
+  text-align: center;
+  padding: 10px 24px;
+  border-radius: 8px;
+  border-style: solid;
+  border-color: transparent;
 }
+
+.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+table, tr, td {
+
+}
+
 
 .footerText {
   color: black;
