@@ -61,10 +61,17 @@ var PotatOS;
             var hexPC = _CPU.PC.toString(16).toUpperCase();
             if (hexPC.length < 2)
                 hexPC = '0' + hexPC;
-            var str = '<tr><td>PC</td><td>AC</td><td>IR</td><td>X</td><td>Y</td><td>Z</td></tr>';
+            var str = '<tr style="border-collapse:collapse; border-bottom:1px solid black;">' +
+                '<td style="border-collapse:collapse; width:23px; background-color:white">PC</td>' +
+                '<td style="border-collapse:collapse; width:27px; background-color:white">AC</td>' +
+                '<td style="border-collapse:collapse; width:23px; background-color:white">IR</td>' +
+                '<td style="border-collapse:collapse; width:27px; background-color:white">X</td>' +
+                '<td style="border-collapse:collapse; width:27px; background-color:white">Y</td>' +
+                '<td style="border-collapse:collapse; background-color:white">Z</td></tr>';
             str += '<tr><td>' + hexPC + '</td><td>' + _CPU.Acc + '</td><td>' + displayIR + '</td><td>' + _CPU.Xreg +
                 '</td><td>' + _CPU.Yreg + '</td><td>' + _CPU.Zflag + '</td></tr>';
             document.getElementById("tbCPU").innerHTML = str;
+            document.getElementById("tbCPU").setAttribute("style", "width: auto; height: auto;");
         };
         Control.updateMemoryDisplay = function () {
             var str = '';
@@ -72,13 +79,13 @@ var PotatOS;
             var byteCount = 0;
             while (count < _Memory.memory.length) {
                 if (count < 10)
-                    str += '<tr><td>0x00' + count.toString() + '</td>';
+                    str += '<tr><td style="border-right: 1px solid darkgrey;">0x00' + count.toString() + '</td>';
                 else if (count >= 10 && count < 100)
-                    str += '<tr><td>0x0' + count.toString() + '</td>';
+                    str += '<tr><td style="border-right: 1px solid darkgrey;">0x0' + count.toString() + '</td>';
                 else
-                    str += '<tr><td>0x' + count.toString() + '</td>';
+                    str += '<tr><td style="border-right: 1px solid darkgrey;">0x' + count.toString() + '</td>';
                 while (byteCount < 8) {
-                    str += '<td>' + _Memory.memory[count] + '</td>';
+                    str += '<td style="border-bottom: 1px solid darkgrey;">' + _Memory.memory[count] + '</td>';
                     byteCount++;
                     count++;
                 }
@@ -86,10 +93,20 @@ var PotatOS;
                 byteCount = 0;
             }
             document.getElementById("tbMemory").innerHTML = str;
+            document.getElementById("tbMemory").setAttribute("style", "width: auto;");
         };
         Control.updateProcessDisplay = function () {
-            var str = '<tr><td>PID</td><td>PC</td><td>AC</td><td>IR</td><td>X</td><td>Y</td><td>Z</td>' +
-                '<td>State</td><td>Segment</td></tr>';
+            var str = '<tr style="border-collapse:collapse; border-bottom:1px solid black;">' +
+                '<td style="border-collapse:collapse; width:23px;">PID</td>' +
+                '<td style="border-collapse:collapse; width:23px;">PC</td>' +
+                '<td style="border-collapse:collapse; width:27px;">AC</td>' +
+                '<td style="border-collapse:collapse; width:23px;">IR</td>' +
+                '<td style="border-collapse:collapse; width:27px;">X</td>' +
+                '<td style="border-collapse:collapse; width:27px;">Y</td>' +
+                '<td style="border-collapse:collapse; width:27px;">Z</td>' +
+                '<td style="border-collapse:collapse; width:75px;">State</td>' +
+                '<td style="border-collapse:collapse;">Segment</td></tr>';
+            document.getElementById("tbPCB").setAttribute("style", "width: auto; height: auto; margin-right: auto");
             var i = 0;
             while (i < _PCBList.length) {
                 var hexPC = _PCBList[i].PC.toString(16).toUpperCase();
@@ -98,7 +115,7 @@ var PotatOS;
                 str += '<tr><td>' + _PCBList[i].PID + '</td><td>' + hexPC + '</td><td>' + _PCBList[i].Acc +
                     '</td><td>' + _PCBList[i].IR + '</td><td>' + _PCBList[i].Xreg + '</td><td>' + _PCBList[i].Yreg +
                     '</td><td>' + _PCBList[i].Zflag + '</td><td>' + _PCBList[i].state + '</td><td>' +
-                    _PCBList[i].segment + '</td><td>';
+                    _PCBList[i].segment + '</td>';
                 i++;
             }
             document.getElementById("tbPCB").innerHTML = str;
