@@ -86,6 +86,16 @@ textarea{
   position: relative;
 }
 
+#tbHDD{
+  background-color: white;
+  height:197px;
+  width:430px;
+  overflow-y:auto;
+  overflow-x:hidden;
+  display: inline-block;
+  position: relative;
+}
+
 #display {
   background-color:#DFDBC3;
   border: 1px solid black;

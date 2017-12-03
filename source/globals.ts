@@ -40,6 +40,9 @@ var _PIDCount = -1;	// Creates global counter for processes.
 var _PCB: PotatOS.PCB; // Utilize TypeScript's type annotation system to ensure that _PCB is an instance of the PCB class.
 var _PCBList = new Array(); // Global array to store all processes.
 
+// Hard Drive
+var _DISK: PotatOS.Disk;	// Initializes a virtual hard drive.
+
 var _Canvas: HTMLCanvasElement;         // Initialized in Control.hostInit().
 var _DrawingContext: any; // = _Canvas.getContext("2d");  // Assigned here for type safety, but re-initialized in Control.hostInit() for OCD and logic.
 var _DefaultFontFamily: string = "sans";        // Ignored, I think. The was just a place-holder in 2008, but the HTML canvas may have use for it.
@@ -68,9 +71,6 @@ var _SarcasticMode: boolean = false;
 // Global Device Driver Objects - page 12
 var _krnKeyboardDriver; //  = null;
 var _krnDiskDriver; //	= null;
-
-// Hard Drive
-var _DISK: PotatOS.Disk;	// Initializes a virtual hard drive.
 
 var _hardwareClockID: number = null;
 

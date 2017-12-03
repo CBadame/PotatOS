@@ -38,12 +38,15 @@ var PotatOS;
             _CPU.init();
             _cpuScheduling = new PotatOS.cpuScheduling();
             _cpuScheduling.init();
+            _DISK = new PotatOS.Disk();
+            _DISK.init();
             _hardwareClockID = setInterval(PotatOS.Devices.hostClockPulse, CPU_CLOCK_INTERVAL);
             _Kernel = new PotatOS.Kernel();
             _Kernel.krnBootstrap();
             PotatOS.Control.updateMemoryDisplay();
             PotatOS.Control.updateCPUDisplay();
             PotatOS.Control.updateProcessDisplay();
+            PotatOS.Control.updateHDDDisplay();
         };
         Control.hostBtnHaltOS_click = function (btn) {
             Control.hostLog("Emergency halt", "host");
@@ -119,6 +122,21 @@ var PotatOS;
                 i++;
             }
             document.getElementById("tbPCB").innerHTML = str;
+        };
+        Control.updateHDDDisplay = function () {
+            var str = '';
+            for (var i = 0; i <= 3; i++) {
+                for (var j = 0; j <= 7; j++) {
+                    for (var k = 0; k <= 7; k++) {
+                        var tsb = _DISK.makeTSB(i, j, k);
+                        str += '<tr><td style="border-right: 1px solid darkgrey;">' + tsb +
+                            '</td><td style="border-bottom: 1px solid darkgrey;">' +
+                            sessionStorage.getItem(tsb) + '</td></tr>';
+                    }
+                }
+            }
+            document.getElementById("tbHDD").innerHTML = str;
+            document.getElementById("tbHDD").setAttribute("style", "width: auto;");
         };
         Control.singleStep_click = function (btn) {
             if (_CPU.singleStep) {

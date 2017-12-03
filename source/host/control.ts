@@ -105,6 +105,10 @@ module PotatOS {
             _cpuScheduling = new PotatOS.cpuScheduling();
             _cpuScheduling.init();
 
+            // ... Create and initialize the HDD ...
+            _DISK = new Disk();
+            _DISK.init();
+
             // ... then set the host clock pulse ...
             _hardwareClockID = setInterval(Devices.hostClockPulse, CPU_CLOCK_INTERVAL);
             // .. and call the OS Kernel Bootstrap routine.
@@ -116,6 +120,7 @@ module PotatOS {
             PotatOS.Control.updateMemoryDisplay();
             PotatOS.Control.updateCPUDisplay();
             PotatOS.Control.updateProcessDisplay();
+            PotatOS.Control.updateHDDDisplay();
         }
 
         public static hostBtnHaltOS_click(btn): void {
@@ -213,6 +218,24 @@ module PotatOS {
                 i++;
             }
             document.getElementById("tbPCB").innerHTML = str;
+        }
+
+        // Builds HDD table in UI based of off the memory array
+        public static updateHDDDisplay(): void {
+            var str = '';
+            for (var i = 0; i <= 3; i++) {
+                for (var j = 0; j <= 7; j++) {
+                    for (var k = 0; k <= 7; k++) {
+                        var tsb = _DISK.makeTSB(i,j,k);
+                        str += '<tr><td style="border-right: 1px solid darkgrey;">'+ tsb +
+                            '</td><td style="border-bottom: 1px solid darkgrey;">'+
+                            sessionStorage.getItem(tsb) +'</td></tr>';
+                    }
+                }
+            }
+            document.getElementById("tbHDD").innerHTML = str;
+            document.getElementById("tbHDD").setAttribute(
+                "style", "width: auto;");
         }
 
         // If singleStep is active, turn it off and allow the program to run normally. Otherwise, activate singleStep
