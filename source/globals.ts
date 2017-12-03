@@ -67,6 +67,10 @@ var _SarcasticMode: boolean = false;
 
 // Global Device Driver Objects - page 12
 var _krnKeyboardDriver; //  = null;
+var _krnDiskDriver; //	= null;
+
+// Hard Drive
+var _DISK: PotatOS.Disk;	// Initializes a virtual hard drive.
 
 var _hardwareClockID: number = null;
 

@@ -28,6 +28,8 @@ var _Console;
 var _OsShell;
 var _SarcasticMode = false;
 var _krnKeyboardDriver;
+var _krnDiskDriver;
+var _DISK;
 var _hardwareClockID = null;
 var Glados = null;
 var _GLaDOS = null;
