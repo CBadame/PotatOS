@@ -388,11 +388,11 @@ var PotatOS;
             PotatOS.Control.updateProcessDisplay();
         };
         Shell.prototype.shellCreate = function (fName) {
-            if (fName == '') {
+            if (fName[0] == '') {
                 _StdOut.putText("Please supply a file name.");
             }
             else {
-                _krnDiskDriver.createFile(fName);
+                _krnDiskDriver.createFile(fName[0]);
             }
         };
         return Shell;

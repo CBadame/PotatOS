@@ -21,7 +21,6 @@ var PotatOS;
             this.status = "loaded";
         };
         DeviceDriverDisk.prototype.createFile = function (fName) {
-            fName = fName.toString();
             var newData = "01";
             var tsb = '';
             var foundTsb = false;
@@ -51,6 +50,9 @@ var PotatOS;
                             if (pointerData[0] + pointerData[1] == '00') {
                                 foundPointer = true;
                                 newData += "0" + i.toString() + "0" + j.toString() + "0" + k.toString();
+                                sessionStorage.setItem(_DISK.makeTSB(i, j, k), '01000000000000000000000000000000' +
+                                    '000000000000000000000000000000000000000000000000000000000000000000000000000000' +
+                                    '000000000000000000');
                                 i = j = k = 100;
                                 break;
                             }

@@ -553,11 +553,11 @@ module PotatOS {
         }
 
         public shellCreate(fName: string) {
-            if (fName == '') {
+            if (fName[0] == '') {
                 _StdOut.putText("Please supply a file name.");
             }
             else {
-                _krnDiskDriver.createFile(fName);
+                _krnDiskDriver.createFile(fName[0]);
             }
         }
 
