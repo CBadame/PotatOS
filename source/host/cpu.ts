@@ -71,6 +71,7 @@ module PotatOS {
             PotatOS.Control.updateCPUDisplay();
             PotatOS.Control.updateProcessDisplay();
 
+
             // Handles Round-Robin Scheduling
             if (_cpuScheduling.runAll == true) {
                 _cpuScheduling.qCount++;

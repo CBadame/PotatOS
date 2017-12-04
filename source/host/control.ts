@@ -220,7 +220,7 @@ module PotatOS {
             document.getElementById("tbPCB").innerHTML = str;
         }
 
-        // Builds HDD table in UI based of off the memory array
+        // Builds HDD table in UI based of off session storage
         public static updateHDDDisplay(): void {
             var str = '';
             for (var i = 0; i <= 3; i++) {

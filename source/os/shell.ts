@@ -153,6 +153,12 @@ module PotatOS {
                 " - Clears all memory partitions.");
             this.commandList[this.commandList.length] = sc;
 
+            //create
+            sc = new ShellCommand(this.shellCreate,
+                "create",
+                "<string> - Creates a new file in HDD with the given name.");
+            this.commandList[this.commandList.length] = sc;
+
             // Display the initial prompt.
             this.putPrompt();
 
@@ -378,6 +384,10 @@ module PotatOS {
                         _StdOut.putText("This will remove everything from memory. I would tell you to save " +
                             "first, but that\'s not really an option here.");
                         break;
+                    case "create":
+                        _StdOut.putText("This will create a new file in HDD storage with whatever name you " +
+                            "would like. Let's keep this PG please.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -540,6 +550,15 @@ module PotatOS {
                 _CPU.terminate(_PCBList[0]);
             }
             PotatOS.Control.updateProcessDisplay();
+        }
+
+        public shellCreate(fName: string) {
+            if (fName == '') {
+                _StdOut.putText("Please supply a file name.");
+            }
+            else {
+                _krnDiskDriver.createFile(fName);
+            }
         }
 
     }

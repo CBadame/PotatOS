@@ -51,6 +51,8 @@ var PotatOS;
             this.commandList[this.commandList.length] = sc;
             sc = new PotatOS.ShellCommand(this.shellClearMem, "clearmem", " - Clears all memory partitions.");
             this.commandList[this.commandList.length] = sc;
+            sc = new PotatOS.ShellCommand(this.shellCreate, "create", "<string> - Creates a new file in HDD with the given name.");
+            this.commandList[this.commandList.length] = sc;
             this.putPrompt();
         };
         Shell.prototype.putPrompt = function () {
@@ -235,6 +237,10 @@ var PotatOS;
                         _StdOut.putText("This will remove everything from memory. I would tell you to save " +
                             "first, but that\'s not really an option here.");
                         break;
+                    case "create":
+                        _StdOut.putText("This will create a new file in HDD storage with whatever name you " +
+                            "would like. Let's keep this PG please.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -380,6 +386,14 @@ var PotatOS;
                 _CPU.terminate(_PCBList[0]);
             }
             PotatOS.Control.updateProcessDisplay();
+        };
+        Shell.prototype.shellCreate = function (fName) {
+            if (fName == '') {
+                _StdOut.putText("Please supply a file name.");
+            }
+            else {
+                _krnDiskDriver.createFile(fName);
+            }
         };
         return Shell;
     }());
