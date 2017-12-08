@@ -2,8 +2,9 @@ module PotatOS {
 
     export class Disk {
 
-        constructor(){
-        }
+        constructor(
+            public FileList = new Array()
+        ){}
 
         // Initializes a blank HDD
         public init(): void {

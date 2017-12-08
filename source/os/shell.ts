@@ -156,7 +156,13 @@ module PotatOS {
             //create
             sc = new ShellCommand(this.shellCreate,
                 "create",
-                "<string> - Creates a new file in HDD with the given name.");
+                "<filename> - Creates a new file in HDD with the given name.");
+            this.commandList[this.commandList.length] = sc;
+
+            //write
+            sc = new ShellCommand(this.shellWrite,
+                "write",
+                "<filename> \"data\" - Writes the data to the given file.");
             this.commandList[this.commandList.length] = sc;
 
             // Display the initial prompt.
@@ -388,6 +394,9 @@ module PotatOS {
                         _StdOut.putText("This will create a new file in HDD storage with whatever name you " +
                             "would like. Let's keep this PG please.");
                         break;
+                    case "write":
+                        _StdOut.putText("Allows you to write some stuff to a given file.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -558,6 +567,27 @@ module PotatOS {
             }
             else {
                 _krnDiskDriver.createFile(fName[0]);
+            }
+        }
+
+        public shellWrite(contents: string) {
+            // Check to make sure the filename is valid
+            var fileTsb = _krnDiskDriver.checkFile(contents[0]);
+            if (fileTsb != "") {
+                // Enforce formatting
+                if (contents[1].charCodeAt(0) != 34 || contents[1].charCodeAt(contents[1].length - 1) != 34) {
+                    _StdOut.putText("Please make sure to use quotation marks around the data for the file.");
+                }
+                // If everything passes, actually write to disk
+                else {
+                    var data = contents[1].replace(/['"]+/g, '');
+                    _krnDiskDriver.write(fileTsb, data);
+                    _StdOut.putText("Successfully wrote to " + contents[0] + "!");
+                }
+            }
+            else {
+                _StdOut.putText("File does not exists. Please check the spelling of the file name or create " +
+                    "a new file.");
             }
         }
 

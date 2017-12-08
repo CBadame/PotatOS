@@ -1,7 +1,9 @@
 var PotatOS;
 (function (PotatOS) {
     var Disk = (function () {
-        function Disk() {
+        function Disk(FileList) {
+            if (FileList === void 0) { FileList = new Array(); }
+            this.FileList = FileList;
         }
         Disk.prototype.init = function () {
             for (var i = 0; i <= 3; i++) {
