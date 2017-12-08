@@ -165,6 +165,12 @@ module PotatOS {
                 "<filename> \"data\" - Writes the data to the given file.");
             this.commandList[this.commandList.length] = sc;
 
+            //read
+            sc = new ShellCommand(this.shellRead,
+                "read",
+                "<filename> - Prints contents of the given file.");
+            this.commandList[this.commandList.length] = sc;
+
             // Display the initial prompt.
             this.putPrompt();
 
@@ -397,6 +403,9 @@ module PotatOS {
                     case "write":
                         _StdOut.putText("Allows you to write some stuff to a given file.");
                         break;
+                    case "read":
+                        _StdOut.putText("Prints the contents of the file given.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -562,7 +571,7 @@ module PotatOS {
         }
 
         public shellCreate(fName: string) {
-            if (fName[0] == '') {
+            if (fName == "") {
                 _StdOut.putText("Please supply a file name.");
             }
             else {
@@ -573,21 +582,43 @@ module PotatOS {
         public shellWrite(contents: string) {
             // Check to make sure the filename is valid
             var fileTsb = _krnDiskDriver.checkFile(contents[0]);
-            if (fileTsb != "") {
-                // Enforce formatting
-                if (contents[1].charCodeAt(0) != 34 || contents[1].charCodeAt(contents[1].length - 1) != 34) {
-                    _StdOut.putText("Please make sure to use quotation marks around the data for the file.");
+            var data = contents[1];
+
+            // This will allow for the user to have spaces in their data
+            if (contents.length >= 2) {
+                for (var i = 2; i < contents.length; i++) {
+                    data += " " + contents[i];
                 }
-                // If everything passes, actually write to disk
+                if (fileTsb != "") {
+                    // Enforce formatting
+                    if (data.charCodeAt(0) != 34 || data.charCodeAt(data.length - 1) != 34) {
+                        _StdOut.putText("Please make sure to use quotation marks around the data for the file.");
+                    }
+                    // If everything passes, actually write to disk
+                    else {
+                        var data = data.replace(/['"]+/g, '');
+                        _krnDiskDriver.write(fileTsb, data);
+                        _StdOut.putText("Successfully wrote to " + contents[0] + "!");
+                    }
+                }
                 else {
-                    var data = contents[1].replace(/['"]+/g, '');
-                    _krnDiskDriver.write(fileTsb, data);
-                    _StdOut.putText("Successfully wrote to " + contents[0] + "!");
+                    _StdOut.putText("File does not exists. Please check the spelling of the file name or create " +
+                        "a new file.");
                 }
             }
-            else {
+            else if (contents.length < 2) {
+                _StdOut.putText("Please supply a file name AND data.");
+            }
+        }
+
+        public shellRead(fName: string) {
+            var tsb = _krnDiskDriver.checkFile(fName);
+            if (tsb == "") {
                 _StdOut.putText("File does not exists. Please check the spelling of the file name or create " +
                     "a new file.");
+            }
+            else {
+                _krnDiskDriver.read(tsb);
             }
         }
 

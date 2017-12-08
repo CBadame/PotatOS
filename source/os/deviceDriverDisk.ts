@@ -64,6 +64,7 @@ module PotatOS {
             }
         }
 
+        // Checks to see if a file with the given name exists
         public checkFile(fileName: string) {
             var fileTsb = "";
             for (var i = 0; i < _DISK.FileList.length; i++) {
@@ -75,6 +76,7 @@ module PotatOS {
             return fileTsb;
         }
 
+        // Finds the next free block in the HDD
         public findBlock() {
             var pointerTsb = '';
             for (var i = 1; i <= 3; i++) {
@@ -91,6 +93,7 @@ module PotatOS {
             return pointerTsb;
         }
 
+        // Does as the name describes
         public toHex(value: string) {
             var hexVal = '';
             for (var i = 0; i < value.length; i++) {
@@ -105,7 +108,7 @@ module PotatOS {
 
         // Used to fill empty space in a block with zeroes
         public zeroFill(value: string) {
-            var diff = 128 - value.length;
+            var diff = 127 - value.length;
             for (var i = 0; i < diff; i++) {
                 value += "0";
             }
@@ -119,26 +122,68 @@ module PotatOS {
             var pointerTsb = _krnDiskDriver.findBlock();
             newData += "0" + pointerTsb[0] + "0" + pointerTsb[2] + "0" + pointerTsb[4];
             newData += _krnDiskDriver.toHex(fileData);
+            console.log(newData);
 
             // Break the data into multiple blocks if needed
             if (newData.length > 128) {
-                var diffData = newData.slice(129, newData.length);
+                var diffData = newData.slice(128, newData.length);
                 var diffString = '';
-                for (var i = 0; i < diffData.length - 1; i++) {
+                for (var i = 0; i < diffData.length; i++) {
                     diffString += String.fromCharCode(parseInt(diffData[i] + diffData[i + 1], 16));
                     i++;
                 }
+                // Write the first 128 nibbles and then call write() on the rest
                 newData = newData.slice(0, 128);
                 sessionStorage.setItem(newTsb, newData);
                 _krnDiskDriver.write(newTsb, diffString);
             }
             else {
                 // If data does not fill an entire block, fill the empty space with zeroes
+                newData = "01000000" + newData.slice(8, newData.length);
                 newData = _krnDiskDriver.zeroFill(newData);
-                newData = "01000000" + newData.substring(8, 127);
                 sessionStorage.setItem(newTsb, newData);
                 PotatOS.Control.updateHDDDisplay();
             }
+        }
+
+        public read(tsb: string) {
+            var data = sessionStorage.getItem(tsb);
+            var output = "";
+            var tsbList = new Array();
+            var nextTsb = data[3] + ":" + data[5] + ":" + data[7];
+            // Store each tsb associated with file data in a list
+            while (nextTsb != "0:0:0") {
+                tsbList.push(nextTsb);
+                data = sessionStorage.getItem(nextTsb);
+                nextTsb = data[3] + ":" + data[5] + ":" + data[7];
+            }
+
+            // Append the file data for each block to
+            for (var i = 0; i < tsbList.length - 1; i++) {
+                data = sessionStorage.getItem(tsbList[i]);
+                output += data.slice(8, 128);
+            }
+            data = sessionStorage.getItem(tsbList[tsbList.length - 1]);
+
+            // Append final block of data to output
+            for (var i = 8; i < data.length; i++) {
+                if (data[i] + data[i+1] == "00") {
+                    i = 200;
+                }
+                else {
+                    output += data[i] + data[i+1];
+                }
+                i++;
+            }
+
+            // Convert hex to string
+            var outputText = "";
+            for (var i = 0; i < output.length; i++) {
+                outputText += String.fromCharCode(parseInt(output[i] + output[i + 1], 16));
+                i++;
+            }
+
+            _StdOut.putText(outputText);
         }
 
     }

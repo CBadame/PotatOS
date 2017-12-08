@@ -55,6 +55,8 @@ var PotatOS;
             this.commandList[this.commandList.length] = sc;
             sc = new PotatOS.ShellCommand(this.shellWrite, "write", "<filename> \"data\" - Writes the data to the given file.");
             this.commandList[this.commandList.length] = sc;
+            sc = new PotatOS.ShellCommand(this.shellRead, "read", "<filename> - Prints contents of the given file.");
+            this.commandList[this.commandList.length] = sc;
             this.putPrompt();
         };
         Shell.prototype.putPrompt = function () {
@@ -246,6 +248,9 @@ var PotatOS;
                     case "write":
                         _StdOut.putText("Allows you to write some stuff to a given file.");
                         break;
+                    case "read":
+                        _StdOut.putText("Prints the contents of the file given.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -393,7 +398,7 @@ var PotatOS;
             PotatOS.Control.updateProcessDisplay();
         };
         Shell.prototype.shellCreate = function (fName) {
-            if (fName[0] == '') {
+            if (fName == "") {
                 _StdOut.putText("Please supply a file name.");
             }
             else {
@@ -402,19 +407,38 @@ var PotatOS;
         };
         Shell.prototype.shellWrite = function (contents) {
             var fileTsb = _krnDiskDriver.checkFile(contents[0]);
-            if (fileTsb != "") {
-                if (contents[1].charCodeAt(0) != 34 || contents[1].charCodeAt(contents[1].length - 1) != 34) {
-                    _StdOut.putText("Please make sure to use quotation marks around the data for the file.");
+            var data = contents[1];
+            if (contents.length >= 2) {
+                for (var i = 2; i < contents.length; i++) {
+                    data += " " + contents[i];
+                }
+                if (fileTsb != "") {
+                    if (data.charCodeAt(0) != 34 || data.charCodeAt(data.length - 1) != 34) {
+                        _StdOut.putText("Please make sure to use quotation marks around the data for the file.");
+                    }
+                    else {
+                        var data = data.replace(/['"]+/g, '');
+                        _krnDiskDriver.write(fileTsb, data);
+                        _StdOut.putText("Successfully wrote to " + contents[0] + "!");
+                    }
                 }
                 else {
-                    var data = contents[1].replace(/['"]+/g, '');
-                    _krnDiskDriver.write(fileTsb, data);
-                    _StdOut.putText("Successfully wrote to " + contents[0] + "!");
+                    _StdOut.putText("File does not exists. Please check the spelling of the file name or create " +
+                        "a new file.");
                 }
             }
-            else {
+            else if (contents.length < 2) {
+                _StdOut.putText("Please supply a file name AND data.");
+            }
+        };
+        Shell.prototype.shellRead = function (fName) {
+            var tsb = _krnDiskDriver.checkFile(fName);
+            if (tsb == "") {
                 _StdOut.putText("File does not exists. Please check the spelling of the file name or create " +
                     "a new file.");
+            }
+            else {
+                _krnDiskDriver.read(tsb);
             }
         };
         return Shell;

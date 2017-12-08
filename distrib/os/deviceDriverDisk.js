@@ -97,7 +97,7 @@ var PotatOS;
             return hexVal;
         };
         DeviceDriverDisk.prototype.zeroFill = function (value) {
-            var diff = 128 - value.length;
+            var diff = 127 - value.length;
             for (var i = 0; i < diff; i++) {
                 value += "0";
             }
@@ -110,10 +110,11 @@ var PotatOS;
             var pointerTsb = _krnDiskDriver.findBlock();
             newData += "0" + pointerTsb[0] + "0" + pointerTsb[2] + "0" + pointerTsb[4];
             newData += _krnDiskDriver.toHex(fileData);
+            console.log(newData);
             if (newData.length > 128) {
-                var diffData = newData.slice(129, newData.length);
+                var diffData = newData.slice(128, newData.length);
                 var diffString = '';
-                for (var i = 0; i < diffData.length - 1; i++) {
+                for (var i = 0; i < diffData.length; i++) {
                     diffString += String.fromCharCode(parseInt(diffData[i] + diffData[i + 1], 16));
                     i++;
                 }
@@ -122,11 +123,42 @@ var PotatOS;
                 _krnDiskDriver.write(newTsb, diffString);
             }
             else {
+                newData = "01000000" + newData.slice(8, newData.length);
                 newData = _krnDiskDriver.zeroFill(newData);
-                newData = "01000000" + newData.substring(8, 127);
                 sessionStorage.setItem(newTsb, newData);
                 PotatOS.Control.updateHDDDisplay();
             }
+        };
+        DeviceDriverDisk.prototype.read = function (tsb) {
+            var data = sessionStorage.getItem(tsb);
+            var output = "";
+            var tsbList = new Array();
+            var nextTsb = data[3] + ":" + data[5] + ":" + data[7];
+            while (nextTsb != "0:0:0") {
+                tsbList.push(nextTsb);
+                data = sessionStorage.getItem(nextTsb);
+                nextTsb = data[3] + ":" + data[5] + ":" + data[7];
+            }
+            for (var i = 0; i < tsbList.length - 1; i++) {
+                data = sessionStorage.getItem(tsbList[i]);
+                output += data.slice(8, 128);
+            }
+            data = sessionStorage.getItem(tsbList[tsbList.length - 1]);
+            for (var i = 8; i < data.length; i++) {
+                if (data[i] + data[i + 1] == "00") {
+                    i = 200;
+                }
+                else {
+                    output += data[i] + data[i + 1];
+                }
+                i++;
+            }
+            var outputText = "";
+            for (var i = 0; i < output.length; i++) {
+                outputText += String.fromCharCode(parseInt(output[i] + output[i + 1], 16));
+                i++;
+            }
+            _StdOut.putText(outputText);
         };
         return DeviceDriverDisk;
     }(PotatOS.DeviceDriver));
