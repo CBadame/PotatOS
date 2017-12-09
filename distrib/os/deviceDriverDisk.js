@@ -161,6 +161,11 @@ var PotatOS;
             _StdOut.putText(outputText);
         };
         DeviceDriverDisk.prototype["delete"] = function (tsb) {
+            for (var i = 0; i < _DISK.FileList.length; i++) {
+                if (_DISK.FileList[i][0] == tsb) {
+                    _DISK.FileList.splice(i, 1);
+                }
+            }
             var data = sessionStorage.getItem(tsb);
             var output = "";
             var tsbList = new Array();
@@ -180,6 +185,7 @@ var PotatOS;
         };
         DeviceDriverDisk.prototype.format = function () {
             _DISK.init();
+            _DISK.FileList = new Array();
             PotatOS.Control.updateHDDDisplay();
         };
         return DeviceDriverDisk;

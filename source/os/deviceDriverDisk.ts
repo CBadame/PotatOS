@@ -188,6 +188,12 @@ module PotatOS {
 
         // Works similarly to the read() function, but deletes each block instead of printing them
         public delete(tsb: string) {
+            // Removes the file from file list
+            for (var i = 0; i < _DISK.FileList.length; i++) {
+                if (_DISK.FileList[i][0] == tsb) {
+                    _DISK.FileList.splice(i, 1);
+                }
+            }
             var data = sessionStorage.getItem(tsb);
             var output = "";
             var tsbList = new Array();
@@ -209,6 +215,7 @@ module PotatOS {
 
         public format() {
             _DISK.init();
+            _DISK.FileList = new Array();
             PotatOS.Control.updateHDDDisplay();
         }
 
