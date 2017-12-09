@@ -61,6 +61,8 @@ var PotatOS;
             this.commandList[this.commandList.length] = sc;
             sc = new PotatOS.ShellCommand(this.shellFormat, "format", " - Reformats the hard drive.");
             this.commandList[this.commandList.length] = sc;
+            sc = new PotatOS.ShellCommand(this.shellList, "ls", " - Lists all files on disk.");
+            this.commandList[this.commandList.length] = sc;
             this.putPrompt();
         };
         Shell.prototype.putPrompt = function () {
@@ -257,6 +259,9 @@ var PotatOS;
                         break;
                     case "delete":
                         _StdOut.putText("Deletes filename and contents of the given file from storage.");
+                        break;
+                    case "ls":
+                        _StdOut.putText("Lists all files stored on the disk.");
                         break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
@@ -461,6 +466,14 @@ var PotatOS;
         Shell.prototype.shellFormat = function () {
             _krnDiskDriver.format();
             _StdOut.putText("Hard drive successfully formatted!");
+        };
+        Shell.prototype.shellList = function () {
+            _StdOut.putText("Files on HDD: ");
+            _StdOut.advanceLine();
+            for (var i = 0; i < _DISK.FileList.length; i++) {
+                _StdOut.putText(_DISK.FileList[i][1]);
+                _StdOut.advanceLine();
+            }
         };
         return Shell;
     }());

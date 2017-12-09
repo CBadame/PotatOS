@@ -183,6 +183,12 @@ module PotatOS {
                 " - Reformats the hard drive.");
             this.commandList[this.commandList.length] = sc;
 
+            //list
+            sc = new ShellCommand(this.shellList,
+                "ls",
+                " - Lists all files on disk.");
+            this.commandList[this.commandList.length] = sc;
+
             // Display the initial prompt.
             this.putPrompt();
 
@@ -421,6 +427,9 @@ module PotatOS {
                     case "delete":
                         _StdOut.putText("Deletes filename and contents of the given file from storage.");
                         break;
+                    case "ls":
+                        _StdOut.putText("Lists all files stored on the disk.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -651,6 +660,15 @@ module PotatOS {
         public shellFormat() {
             _krnDiskDriver.format();
             _StdOut.putText("Hard drive successfully formatted!");
+        }
+
+        public shellList() {
+            _StdOut.putText("Files on HDD: ");
+            _StdOut.advanceLine();
+            for (var i = 0; i < _DISK.FileList.length; i++) {
+                _StdOut.putText(_DISK.FileList[i][1]);
+                _StdOut.advanceLine();
+            }
         }
 
     }
