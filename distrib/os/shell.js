@@ -59,6 +59,8 @@ var PotatOS;
             this.commandList[this.commandList.length] = sc;
             sc = new PotatOS.ShellCommand(this.shellDelete, "delete", "<filename> - Deletes a given file from storage.");
             this.commandList[this.commandList.length] = sc;
+            sc = new PotatOS.ShellCommand(this.shellFormat, "format", " - Reformats the hard drive.");
+            this.commandList[this.commandList.length] = sc;
             this.putPrompt();
         };
         Shell.prototype.putPrompt = function () {
@@ -455,6 +457,10 @@ var PotatOS;
                 _krnDiskDriver["delete"](tsb);
                 _StdOut.putText("Successfully deleted " + fName[0] + "!");
             }
+        };
+        Shell.prototype.shellFormat = function () {
+            _krnDiskDriver.format();
+            _StdOut.putText("Hard drive successfully formatted!");
         };
         return Shell;
     }());

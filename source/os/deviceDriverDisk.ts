@@ -207,6 +207,11 @@ module PotatOS {
             PotatOS.Control.updateHDDDisplay();
         }
 
+        public format() {
+            _DISK.init();
+            PotatOS.Control.updateHDDDisplay();
+        }
+
     }
 
 }

@@ -177,6 +177,12 @@ module PotatOS {
                 "<filename> - Deletes a given file from storage.");
             this.commandList[this.commandList.length] = sc;
 
+            //format
+            sc = new ShellCommand(this.shellFormat,
+                "format",
+                " - Reformats the hard drive.");
+            this.commandList[this.commandList.length] = sc;
+
             // Display the initial prompt.
             this.putPrompt();
 
@@ -640,6 +646,11 @@ module PotatOS {
                 _krnDiskDriver.delete(tsb);
                 _StdOut.putText("Successfully deleted " + fName[0] + "!");
             }
+        }
+
+        public shellFormat() {
+            _krnDiskDriver.format();
+            _StdOut.putText("Hard drive successfully formatted!");
         }
 
     }

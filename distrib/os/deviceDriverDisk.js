@@ -178,6 +178,10 @@ var PotatOS;
             }
             PotatOS.Control.updateHDDDisplay();
         };
+        DeviceDriverDisk.prototype.format = function () {
+            _DISK.init();
+            PotatOS.Control.updateHDDDisplay();
+        };
         return DeviceDriverDisk;
     }(PotatOS.DeviceDriver));
     PotatOS.DeviceDriverDisk = DeviceDriverDisk;
