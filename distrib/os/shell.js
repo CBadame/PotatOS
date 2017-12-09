@@ -57,6 +57,8 @@ var PotatOS;
             this.commandList[this.commandList.length] = sc;
             sc = new PotatOS.ShellCommand(this.shellRead, "read", "<filename> - Prints contents of the given file.");
             this.commandList[this.commandList.length] = sc;
+            sc = new PotatOS.ShellCommand(this.shellDelete, "delete", "<filename> - Deletes a given file from storage.");
+            this.commandList[this.commandList.length] = sc;
             this.putPrompt();
         };
         Shell.prototype.putPrompt = function () {
@@ -251,6 +253,9 @@ var PotatOS;
                     case "read":
                         _StdOut.putText("Prints the contents of the file given.");
                         break;
+                    case "delete":
+                        _StdOut.putText("Deletes filename and contents of the given file from storage.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -439,6 +444,16 @@ var PotatOS;
             }
             else {
                 _krnDiskDriver.read(tsb);
+            }
+        };
+        Shell.prototype.shellDelete = function (fName) {
+            var tsb = _krnDiskDriver.checkFile(fName);
+            if (tsb == "") {
+                _StdOut.putText("File does not exists. Please check the spelling of the file name.");
+            }
+            else {
+                _krnDiskDriver["delete"](tsb);
+                _StdOut.putText("Successfully deleted " + fName[0] + "!");
             }
         };
         return Shell;

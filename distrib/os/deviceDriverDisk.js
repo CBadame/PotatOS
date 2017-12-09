@@ -160,6 +160,24 @@ var PotatOS;
             }
             _StdOut.putText(outputText);
         };
+        DeviceDriverDisk.prototype["delete"] = function (tsb) {
+            var data = sessionStorage.getItem(tsb);
+            var output = "";
+            var tsbList = new Array();
+            var nextTsb = data[3] + ":" + data[5] + ":" + data[7];
+            sessionStorage.setItem(tsb, "0000000000000000000000000000000000000000" +
+                "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
+            while (nextTsb != "0:0:0") {
+                tsbList.push(nextTsb);
+                data = sessionStorage.getItem(nextTsb);
+                nextTsb = data[3] + ":" + data[5] + ":" + data[7];
+            }
+            for (var i = 0; i < tsbList.length; i++) {
+                data = sessionStorage.setItem(tsbList[i], "0000000000000000000000000000000000000000" +
+                    "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
+            }
+            PotatOS.Control.updateHDDDisplay();
+        };
         return DeviceDriverDisk;
     }(PotatOS.DeviceDriver));
     PotatOS.DeviceDriverDisk = DeviceDriverDisk;

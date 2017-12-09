@@ -186,6 +186,27 @@ module PotatOS {
             _StdOut.putText(outputText);
         }
 
+        // Works similarly to the read() function, but deletes each block instead of printing them
+        public delete(tsb: string) {
+            var data = sessionStorage.getItem(tsb);
+            var output = "";
+            var tsbList = new Array();
+            var nextTsb = data[3] + ":" + data[5] + ":" + data[7];
+            sessionStorage.setItem(tsb, "0000000000000000000000000000000000000000" +
+                "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
+            // Store each tsb associated with file data in a list
+            while (nextTsb != "0:0:0") {
+                tsbList.push(nextTsb);
+                data = sessionStorage.getItem(nextTsb);
+                nextTsb = data[3] + ":" + data[5] + ":" + data[7];
+            }
+            for (var i = 0; i < tsbList.length; i++) {
+                data = sessionStorage.setItem(tsbList[i],"0000000000000000000000000000000000000000" +
+                    "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
+            }
+            PotatOS.Control.updateHDDDisplay();
+        }
+
     }
 
 }

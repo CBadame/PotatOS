@@ -171,6 +171,12 @@ module PotatOS {
                 "<filename> - Prints contents of the given file.");
             this.commandList[this.commandList.length] = sc;
 
+            //delete
+            sc = new ShellCommand(this.shellDelete,
+                "delete",
+                "<filename> - Deletes a given file from storage.");
+            this.commandList[this.commandList.length] = sc;
+
             // Display the initial prompt.
             this.putPrompt();
 
@@ -406,6 +412,9 @@ module PotatOS {
                     case "read":
                         _StdOut.putText("Prints the contents of the file given.");
                         break;
+                    case "delete":
+                        _StdOut.putText("Deletes filename and contents of the given file from storage.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -619,6 +628,17 @@ module PotatOS {
             }
             else {
                 _krnDiskDriver.read(tsb);
+            }
+        }
+
+        public shellDelete(fName: string) {
+            var tsb = _krnDiskDriver.checkFile(fName);
+            if (tsb == "") {
+                _StdOut.putText("File does not exists. Please check the spelling of the file name.");
+            }
+            else {
+                _krnDiskDriver.delete(tsb);
+                _StdOut.putText("Successfully deleted " + fName[0] + "!");
             }
         }
 
