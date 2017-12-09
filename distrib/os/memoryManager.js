@@ -5,6 +5,7 @@ var PotatOS;
             this.segment = [0, 0, 0];
         }
         MM.prototype.write = function (code, pcb) {
+            pcb.location = "Memory";
             var codeArray = code.split(" ");
             var pcbNum = _PCBList.indexOf(pcb);
             _PCBList[pcbNum].segment = this.checkMem();
@@ -17,7 +18,6 @@ var PotatOS;
                 arrayCount++;
             }
             PotatOS.Control.updateMemoryDisplay();
-            _StdOut.putText('The process successfully loaded and has a PID of: ' + _PCBList[pcbNum].PID);
         };
         MM.prototype.read = function (base, limit) {
             var codeArray = Array();

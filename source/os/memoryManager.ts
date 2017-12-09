@@ -8,6 +8,8 @@ module PotatOS {
         // Writes user program to memory
         public write(code: string, pcb: PCB): void {
 
+            pcb.location = "Memory";
+
             var codeArray = code.split(" ");
             var pcbNum = _PCBList.indexOf(pcb);
 
@@ -24,7 +26,6 @@ module PotatOS {
                 arrayCount++;
             }
             PotatOS.Control.updateMemoryDisplay();
-            _StdOut.putText('The process successfully loaded and has a PID of: ' + _PCBList[pcbNum].PID);
         }
 
         // Reads user program from memory

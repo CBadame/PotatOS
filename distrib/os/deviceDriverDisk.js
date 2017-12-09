@@ -39,7 +39,7 @@ var PotatOS;
                 }
             }
             if (!foundTsb) {
-                return "No available storage space. I'm not sure how this happened...";
+                _StdOut.put("No available storage space. I'm not sure how this happened...");
             }
             else {
                 newTsb = _krnDiskDriver.findBlock();
@@ -57,6 +57,7 @@ var PotatOS;
                 sessionStorage.setItem(tsb, newData);
                 _DISK.FileList.push([tsb, fName]);
                 PotatOS.Control.updateHDDDisplay();
+                return tsb;
             }
         };
         DeviceDriverDisk.prototype.checkFile = function (fileName) {
@@ -102,14 +103,17 @@ var PotatOS;
             }
             return value;
         };
-        DeviceDriverDisk.prototype.write = function (tsb, fileData) {
+        DeviceDriverDisk.prototype.write = function (tsb, inputData) {
+            var fileData = '';
+            for (var i = 0; i < inputData.length; i++) {
+                fileData += inputData[i].toString();
+            }
             var data = sessionStorage.getItem(tsb);
             var newTsb = data[3] + ":" + data[5] + ":" + data[7];
             var newData = "01";
             var pointerTsb = _krnDiskDriver.findBlock();
             newData += "0" + pointerTsb[0] + "0" + pointerTsb[2] + "0" + pointerTsb[4];
             newData += _krnDiskDriver.toHex(fileData);
-            console.log(newData);
             if (newData.length > 128) {
                 var diffData = newData.slice(128, newData.length);
                 var diffString = '';
@@ -119,11 +123,13 @@ var PotatOS;
                 }
                 newData = newData.slice(0, 128);
                 sessionStorage.setItem(newTsb, newData);
+                console.log(newData);
                 _krnDiskDriver.write(newTsb, diffString);
             }
             else {
                 newData = "01000000" + newData.slice(8, newData.length);
                 newData = _krnDiskDriver.zeroFill(newData);
+                console.log(newData);
                 sessionStorage.setItem(newTsb, newData);
                 PotatOS.Control.updateHDDDisplay();
             }
@@ -138,26 +144,16 @@ var PotatOS;
                 data = sessionStorage.getItem(nextTsb);
                 nextTsb = data[3] + ":" + data[5] + ":" + data[7];
             }
-            for (var i = 0; i < tsbList.length - 1; i++) {
+            for (var i = 0; i < tsbList.length; i++) {
                 data = sessionStorage.getItem(tsbList[i]);
                 output += data.slice(8, 128);
-            }
-            data = sessionStorage.getItem(tsbList[tsbList.length - 1]);
-            for (var i = 8; i < data.length; i++) {
-                if (data[i] + data[i + 1] == "00") {
-                    i = 200;
-                }
-                else {
-                    output += data[i] + data[i + 1];
-                }
-                i++;
             }
             var outputText = "";
             for (var i = 0; i < output.length; i++) {
                 outputText += String.fromCharCode(parseInt(output[i] + output[i + 1], 16));
                 i++;
             }
-            _StdOut.putText(outputText);
+            return outputText;
         };
         DeviceDriverDisk.prototype["delete"] = function (tsb) {
             for (var i = 0; i < _DISK.FileList.length; i++) {
@@ -186,6 +182,22 @@ var PotatOS;
             _DISK.init();
             _DISK.FileList = new Array();
             PotatOS.Control.updateHDDDisplay();
+        };
+        DeviceDriverDisk.prototype.swap = function (pcbMem, pcbDisk) {
+            pcbDisk.segment = pcbMem.segment;
+            var newTsb = _krnDiskDriver.createFile(pcbMem.PID.toString());
+            _krnDiskDriver.write(newTsb, _MM.read(pcbMem.base, pcbMem.limit));
+            for (var i = pcbMem.base; i < _MM.getLimit(pcbMem.segment); i++) {
+                _Memory.memory[i] = '00';
+            }
+            _MM.segment[pcbMem.segment] = 0;
+            pcbMem.base = -1;
+            pcbMem.limit = -1;
+            pcbMem.segment = -1;
+            pcbMem.location = "HDD";
+            var tsb = _krnDiskDriver.checkFile(pcbDisk.PID.toString());
+            _MM.write(_krnDiskDriver.read(tsb), pcbDisk);
+            _krnDiskDriver["delete"](tsb);
         };
         return DeviceDriverDisk;
     }(PotatOS.DeviceDriver));

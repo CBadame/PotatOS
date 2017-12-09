@@ -49,7 +49,6 @@ module PotatOS {
             _Kernel.krnTrace('CPU cycle');
             // TODO: Accumulate CPU usage and profiling statistics here.
             // Do the real work here. Be sure to set this.isExecuting appropriately.
-            console.log('Running process: ' + _PCBList[this.processIndex].PID);
             if (this.isExecuting == true && this.PC <= this.codeArray.length - 1) {
 
                 // Keeps track of turnaround and wait times
@@ -232,7 +231,6 @@ module PotatOS {
                 _Memory.memory[i] = '00';
             }
             var terminatedIndex = _PCBList.indexOf(pcb);
-            console.log('Terminated process: ' + _PCBList[terminatedIndex].PID);
             _PCBList.splice(terminatedIndex, 1);
 
             // Sets variables accordingly when there are no more programs left to run

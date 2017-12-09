@@ -37,7 +37,6 @@ var PotatOS;
         };
         Cpu.prototype.cycle = function () {
             _Kernel.krnTrace('CPU cycle');
-            console.log('Running process: ' + _PCBList[this.processIndex].PID);
             if (this.isExecuting == true && this.PC <= this.codeArray.length - 1) {
                 for (var i = 0; i < _PCBList.length; i++) {
                     _PCBList[i].taTime++;
@@ -189,7 +188,6 @@ var PotatOS;
                 _Memory.memory[i] = '00';
             }
             var terminatedIndex = _PCBList.indexOf(pcb);
-            console.log('Terminated process: ' + _PCBList[terminatedIndex].PID);
             _PCBList.splice(terminatedIndex, 1);
             function finalTerminate() {
                 _CPU.processIndex = -1;

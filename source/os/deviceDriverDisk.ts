@@ -37,7 +37,7 @@ module PotatOS {
             }
 
             if (!foundTsb) {
-                return "No available storage space. I'm not sure how this happened...";
+                _StdOut.put("No available storage space. I'm not sure how this happened...");
             }
             // Find a block that can be pointed to from the first track
             else {
@@ -60,6 +60,7 @@ module PotatOS {
                 sessionStorage.setItem(tsb, newData);
                 _DISK.FileList.push([tsb, fName]);
                 PotatOS.Control.updateHDDDisplay();
+                return tsb;
             }
         }
 
@@ -114,14 +115,17 @@ module PotatOS {
             return value;
         }
 
-        public write(tsb: string, fileData: string) {
+        public write(tsb: string, inputData) {
+            var fileData = '';
+            for (var i = 0; i < inputData.length; i++) {
+                fileData += inputData[i].toString();
+            }
             var data = sessionStorage.getItem(tsb);
             var newTsb = data[3] + ":" + data[5] + ":" + data[7];
             var newData = "01";
             var pointerTsb = _krnDiskDriver.findBlock();
             newData += "0" + pointerTsb[0] + "0" + pointerTsb[2] + "0" + pointerTsb[4];
             newData += _krnDiskDriver.toHex(fileData);
-            console.log(newData);
 
             // Break the data into multiple blocks if needed
             if (newData.length > 128) {
@@ -134,12 +138,14 @@ module PotatOS {
                 // Write the first 128 nibbles and then call write() on the rest
                 newData = newData.slice(0, 128);
                 sessionStorage.setItem(newTsb, newData);
+                console.log(newData);
                 _krnDiskDriver.write(newTsb, diffString);
             }
             else {
                 // If data does not fill an entire block, fill the empty space with zeroes
                 newData = "01000000" + newData.slice(8, newData.length);
                 newData = _krnDiskDriver.zeroFill(newData);
+                console.log(newData);
                 sessionStorage.setItem(newTsb, newData);
                 PotatOS.Control.updateHDDDisplay();
             }
@@ -158,21 +164,9 @@ module PotatOS {
             }
 
             // Append the file data for each block to
-            for (var i = 0; i < tsbList.length - 1; i++) {
+            for (var i = 0; i < tsbList.length; i++) {
                 data = sessionStorage.getItem(tsbList[i]);
                 output += data.slice(8, 128);
-            }
-            data = sessionStorage.getItem(tsbList[tsbList.length - 1]);
-
-            // Append final block of data to output
-            for (var i = 8; i < data.length; i++) {
-                if (data[i] + data[i+1] == "00") {
-                    i = 200;
-                }
-                else {
-                    output += data[i] + data[i+1];
-                }
-                i++;
             }
 
             // Convert hex to string
@@ -182,7 +176,7 @@ module PotatOS {
                 i++;
             }
 
-            _StdOut.putText(outputText);
+            return outputText;
         }
 
         // Works similarly to the read() function, but deletes each block instead of printing them
@@ -216,6 +210,28 @@ module PotatOS {
             _DISK.init();
             _DISK.FileList = new Array();
             PotatOS.Control.updateHDDDisplay();
+        }
+
+        public swap(pcbMem: PCB, pcbDisk: PCB) {
+            // Move the first process out of memory and write it to disk
+            pcbDisk.segment = pcbMem.segment;
+            var newTsb = _krnDiskDriver.createFile(pcbMem.PID.toString());
+            _krnDiskDriver.write(newTsb, _MM.read(pcbMem.base, pcbMem.limit));
+            for (var i = pcbMem.base; i < _MM.getLimit(pcbMem.segment); i++) {
+                _Memory.memory[i] = '00';
+            }
+            _MM.segment[pcbMem.segment] = 0;
+            pcbMem.base = -1;
+            pcbMem.limit = -1;
+            pcbMem.segment = -1;
+            pcbMem.location = "HDD";
+
+
+            // Move the second process out of disk and into memory
+            var tsb = _krnDiskDriver.checkFile(pcbDisk.PID.toString());
+            _MM.write(_krnDiskDriver.read(tsb), pcbDisk);
+            _krnDiskDriver.delete(tsb);
+
         }
 
     }

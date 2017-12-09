@@ -329,23 +329,25 @@ var PotatOS;
                 if (!userInput.match(/^[A-F0-9\s]+$/))
                     _StdOut.putText("User input is invalid. Please use hex, digits, or spaces.");
                 else {
-                    var PCB = new PotatOS.PCB();
+                    var pcb = new PotatOS.PCB();
                     if (priority) {
-                        PCB.priority = priority;
+                        pcb.priority = priority;
                     }
                     else {
-                        PCB.priority = 0;
+                        pcb.priority = 0;
                     }
-                    _PCBList.push(PCB);
+                    _PCBList.push(pcb);
                     if (_MM.checkMem() != null) {
-                        _MM.write(userInput, PCB);
-                        PotatOS.Control.updateProcessDisplay();
+                        _MM.write(userInput, pcb);
                     }
                     else {
-                        PCB.location = "HDD";
-                        _krnDiskDriver.createFile(PCB.PID);
-                        _krnDiskDriver.write(userInput);
+                        pcb.location = "HDD";
+                        pcb.segment = -1;
+                        var newTsb = _krnDiskDriver.createFile(pcb.PID.toString());
+                        _krnDiskDriver.write(newTsb, userInput);
                     }
+                    _StdOut.putText('The process successfully loaded and has a PID of: ' + pcb.PID);
+                    PotatOS.Control.updateProcessDisplay();
                 }
             }
             else
@@ -367,10 +369,29 @@ var PotatOS;
             var ifExists = false;
             for (var i = 0; i < _PCBList.length; i++) {
                 if (_PCBList[i].PID == pid) {
-                    if (_cpuScheduling.runAll == true)
+                    if (_cpuScheduling.runAll == true) {
                         _PCBList[i].state = 'READY';
-                    else
+                    }
+                    else {
                         _PCBList[i].state = 'NEW';
+                    }
+                    if (_PCBList[i].location == "HDD") {
+                        if (_MM.checkMem() == null) {
+                            var pcbMem;
+                            for (var j = 0; j < _PCBList.length; j++) {
+                                if (_PCBList[j].segment == 2) {
+                                    pcbMem = _PCBList[j];
+                                    j = _PCBList.length;
+                                }
+                            }
+                            _krnDiskDriver.swap(pcbMem, _PCBList[i]);
+                        }
+                        else {
+                            var tsb = _krnDiskDriver.checkFile(_PCBList[i].PID.toString());
+                            _MM.write(_krnDiskDriver.read(tsb), _PCBList[i]);
+                            _krnDiskDriver["delete"](tsb);
+                        }
+                    }
                     _MM.run(_PCBList[i]);
                     ifExists = true;
                 }
@@ -423,8 +444,8 @@ var PotatOS;
                     _StdOut.putText("File name is too long.");
                 }
                 else {
-                    _krnDiskDriver.createFile(fName[0]);
-                    _StdOut.putText("File '" + fName + "' created!");
+                    var tsb = _krnDiskDriver.createFile(fName[0]);
+                    _StdOut.putText("File '" + fName + "' created at " + tsb);
                 }
             }
         };
@@ -461,7 +482,7 @@ var PotatOS;
                     "a new file.");
             }
             else {
-                _krnDiskDriver.read(tsb);
+                _StdOut.putText(_krnDiskDriver.read(tsb));
             }
         };
         Shell.prototype.shellDelete = function (fName) {
