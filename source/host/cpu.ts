@@ -74,10 +74,19 @@ module PotatOS {
 
             // Handles Round-Robin Scheduling
             if (_cpuScheduling.runAll == true) {
-                _cpuScheduling.qCount++;
-                if (_cpuScheduling.qCount > _cpuScheduling.quantum)
-                    _cpuScheduling.nextProcess();
+                if (_cpuScheduling.schedule == 'Round Robin') {
+                    _cpuScheduling.qCount++;
+                    if (_cpuScheduling.qCount > _cpuScheduling.quantum)
+                        _cpuScheduling.nextProcess();
+                }
+                // THIS IS WHERE THE OTHER SCHEDULING ALGORITHMS WILL GO
+
+
+
+
+                ////////////////////////////////////////////////////////
             }
+            // It needed this for some reason
             else
                 _cpuScheduling.runAll = false;
         }

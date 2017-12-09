@@ -55,9 +55,11 @@ var PotatOS;
             PotatOS.Control.updateCPUDisplay();
             PotatOS.Control.updateProcessDisplay();
             if (_cpuScheduling.runAll == true) {
-                _cpuScheduling.qCount++;
-                if (_cpuScheduling.qCount > _cpuScheduling.quantum)
-                    _cpuScheduling.nextProcess();
+                if (_cpuScheduling.schedule == 'Round Robin') {
+                    _cpuScheduling.qCount++;
+                    if (_cpuScheduling.qCount > _cpuScheduling.quantum)
+                        _cpuScheduling.nextProcess();
+                }
             }
             else
                 _cpuScheduling.runAll = false;

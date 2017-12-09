@@ -15,7 +15,8 @@ module PotatOS {
                       public state: string = 'NEW',
                       public priority: number = 0,
                       public taTime: number = 0,
-                      public waitTime: number = 0){
+                      public waitTime: number = 0,
+                      public location: string = "Memory"){
         }
 
     }

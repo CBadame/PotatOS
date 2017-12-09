@@ -505,18 +505,27 @@ module PotatOS {
                     _StdOut.putText("User input is invalid. Please use hex, digits, or spaces.");
                 else {
                     // Sets the PCB's priority and adds it to the list of ready PCBs
-                    if (_MM.checkMem() != null) {
+
                         var PCB = new PotatOS.PCB();
-                        if (priority)
+                        if (priority) {
                             PCB.priority = priority;
-                        else
+                        }
+                        else {
                             PCB.priority = 0;
+                        }
                         _PCBList.push(PCB);
-                        _MM.write(userInput, PCB);
-                        PotatOS.Control.updateProcessDisplay();
-                    }
-                    else
-                        _StdOut.putText('No more free memory.');
+
+                        // Decide if the process can be added to Memory or if it needs to go to HDD
+                        if (_MM.checkMem() != null) {
+                            _MM.write(userInput, PCB);
+                            PotatOS.Control.updateProcessDisplay();
+                        }
+                        else {
+                            PCB.location = "HDD";
+                            _krnDiskDriver.createFile(PCB.PID);
+                            _krnDiskDriver.write(userInput);
+                        }
+
                 }
             }
                 else
@@ -599,7 +608,13 @@ module PotatOS {
                 _StdOut.putText("Please supply a file name.");
             }
             else {
-                _krnDiskDriver.createFile(fName[0]);
+                if (_krnDiskDriver.toHex(fName[0]).length > 120) {
+                    _StdOut.putText("File name is too long.");
+                }
+                else {
+                    _krnDiskDriver.createFile(fName[0]);
+                    _StdOut.putText("File '" + fName + "' created!");
+                }
             }
         }
 

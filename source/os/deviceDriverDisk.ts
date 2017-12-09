@@ -58,7 +58,6 @@ module PotatOS {
             else {
                 newData = _krnDiskDriver.zeroFill(newData);
                 sessionStorage.setItem(tsb, newData);
-                _StdOut.putText("File '" + fName + "' created at " + tsb);
                 _DISK.FileList.push([tsb, fName]);
                 PotatOS.Control.updateHDDDisplay();
             }

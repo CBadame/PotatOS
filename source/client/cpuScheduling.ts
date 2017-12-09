@@ -4,13 +4,15 @@ module PotatOS {
 
         constructor(public quantum: number = 6,
                     public qCount: number = 0,
-                    public runAll: boolean = false) {
+                    public runAll: boolean = false,
+                    public schedule: string = 'Round Robin') {
         }
 
         public init(): void {
             this.quantum = 5;
             this.qCount = 0;
             this.runAll = false;
+            this.schedule = 'Round Robin';
         }
 
         public nextProcess() {

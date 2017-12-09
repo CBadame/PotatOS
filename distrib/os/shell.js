@@ -329,18 +329,23 @@ var PotatOS;
                 if (!userInput.match(/^[A-F0-9\s]+$/))
                     _StdOut.putText("User input is invalid. Please use hex, digits, or spaces.");
                 else {
+                    var PCB = new PotatOS.PCB();
+                    if (priority) {
+                        PCB.priority = priority;
+                    }
+                    else {
+                        PCB.priority = 0;
+                    }
+                    _PCBList.push(PCB);
                     if (_MM.checkMem() != null) {
-                        var PCB = new PotatOS.PCB();
-                        if (priority)
-                            PCB.priority = priority;
-                        else
-                            PCB.priority = 0;
-                        _PCBList.push(PCB);
                         _MM.write(userInput, PCB);
                         PotatOS.Control.updateProcessDisplay();
                     }
-                    else
-                        _StdOut.putText('No more free memory.');
+                    else {
+                        PCB.location = "HDD";
+                        _krnDiskDriver.createFile(PCB.PID);
+                        _krnDiskDriver.write(userInput);
+                    }
                 }
             }
             else
@@ -414,7 +419,13 @@ var PotatOS;
                 _StdOut.putText("Please supply a file name.");
             }
             else {
-                _krnDiskDriver.createFile(fName[0]);
+                if (_krnDiskDriver.toHex(fName[0]).length > 120) {
+                    _StdOut.putText("File name is too long.");
+                }
+                else {
+                    _krnDiskDriver.createFile(fName[0]);
+                    _StdOut.putText("File '" + fName + "' created!");
+                }
             }
         };
         Shell.prototype.shellWrite = function (contents) {

@@ -1,18 +1,21 @@
 var PotatOS;
 (function (PotatOS) {
     var cpuScheduling = (function () {
-        function cpuScheduling(quantum, qCount, runAll) {
+        function cpuScheduling(quantum, qCount, runAll, schedule) {
             if (quantum === void 0) { quantum = 6; }
             if (qCount === void 0) { qCount = 0; }
             if (runAll === void 0) { runAll = false; }
+            if (schedule === void 0) { schedule = 'Round Robin'; }
             this.quantum = quantum;
             this.qCount = qCount;
             this.runAll = runAll;
+            this.schedule = schedule;
         }
         cpuScheduling.prototype.init = function () {
             this.quantum = 5;
             this.qCount = 0;
             this.runAll = false;
+            this.schedule = 'Round Robin';
         };
         cpuScheduling.prototype.nextProcess = function () {
             _cpuScheduling.qCount = 0;
