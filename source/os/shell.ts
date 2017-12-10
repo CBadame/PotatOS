@@ -180,7 +180,7 @@ module PotatOS {
             //format
             sc = new ShellCommand(this.shellFormat,
                 "format",
-                " - Reformats the hard drive.");
+                "<type> - Reformats the hard drive.");
             this.commandList[this.commandList.length] = sc;
 
             //list
@@ -728,9 +728,18 @@ module PotatOS {
             }
         }
 
-        public shellFormat() {
-            _krnDiskDriver.format();
-            _StdOut.putText("Hard drive successfully formatted!");
+        public shellFormat(type) {
+            var formatType = type[0];
+            if (formatType == null) {
+                formatType = "-full";
+            }
+            if (formatType == "-full" || formatType == "-quick") {
+                _krnDiskDriver.format(formatType);
+                _StdOut.putText("Hard drive successfully formatted!");
+            }
+            else {
+                _StdOut.putText("Not a valid formatting type.");
+            }
         }
 
         public shellList() {

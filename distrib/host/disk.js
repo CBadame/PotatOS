@@ -17,6 +17,19 @@ var PotatOS;
             sessionStorage.setItem('0:0:0', '0100000000000000000000000000000000000000' +
                 '0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000');
         };
+        Disk.prototype.quickFormat = function () {
+            for (var i = 0; i <= 3; i++) {
+                for (var j = 0; j <= 7; j++) {
+                    for (var k = 0; k <= 7; k++) {
+                        var data = sessionStorage.getItem(_DISK.makeTSB(i, j, k));
+                        var data = "00000000" + data.slice(8, 128);
+                        sessionStorage.setItem(_DISK.makeTSB(i, j, k), data);
+                    }
+                }
+            }
+            sessionStorage.setItem('0:0:0', '0100000000000000000000000000000000000000' +
+                '0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000');
+        };
         Disk.prototype.makeTSB = function (t, s, b) {
             var tsb = t.toString() + ":" + s.toString() + ":" + b.toString();
             return tsb;

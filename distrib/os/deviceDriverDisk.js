@@ -184,8 +184,13 @@ var PotatOS;
             }
             PotatOS.Control.updateHDDDisplay();
         };
-        DeviceDriverDisk.prototype.format = function () {
-            _DISK.init();
+        DeviceDriverDisk.prototype.format = function (type) {
+            if (type == "-full") {
+                _DISK.init();
+            }
+            else if (type == "-quick") {
+                _DISK.quickFormat();
+            }
             _DISK.FileList = new Array();
             for (var i = 0; i < _PCBList.length; i++) {
                 if (_PCBList[i].location == "HDD") {

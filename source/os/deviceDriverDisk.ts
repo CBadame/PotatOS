@@ -217,8 +217,13 @@ module PotatOS {
             PotatOS.Control.updateHDDDisplay();
         }
 
-        public format() {
-            _DISK.init();
+        public format(type: string) {
+            if (type == "-full") {
+                _DISK.init();
+            }
+            else if (type == "-quick") {
+                _DISK.quickFormat();
+            }
             _DISK.FileList = new Array();
             for (var i = 0; i < _PCBList.length; i++) {
                 if (_PCBList[i].location == "HDD") {
