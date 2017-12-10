@@ -264,6 +264,9 @@ var PotatOS;
                     case "delete":
                         _StdOut.putText("Deletes filename and contents of the given file from storage.");
                         break;
+                    case "format":
+                        _StdOut.putText("Formats hard drive and clears all blocks. Supports -quick and -full.");
+                        break;
                     case "ls":
                         _StdOut.putText("Lists all files stored on the disk.");
                         break;
@@ -536,8 +539,11 @@ var PotatOS;
             _StdOut.putText("Files on HDD: ");
             _StdOut.advanceLine();
             for (var i = 0; i < _DISK.FileList.length; i++) {
-                _StdOut.putText(_DISK.FileList[i][1]);
-                _StdOut.advanceLine();
+                var fileName = _DISK.FileList[i][1];
+                if (fileName[0] != ".") {
+                    _StdOut.putText(fileName);
+                    _StdOut.advanceLine();
+                }
             }
         };
         Shell.prototype.shellGetSchedule = function () {
