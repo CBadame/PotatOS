@@ -512,7 +512,7 @@ module PotatOS {
             _StdOut.putText(factGenerator(factList));
         }
 
-        public shellLoad(priority: number) {
+        public shellLoad(priority) {
             var userInput =(<HTMLInputElement>document.getElementById('taProgramInput')).value;
             if (userInput) {
                 // Decided to use regex because the valueType of 'taProgramInput' was being returned as 'undefined'...
@@ -526,8 +526,8 @@ module PotatOS {
                     // Sets the PCB's priority and adds it to the list of ready PCBs
 
                     var pcb = new PotatOS.PCB();
-                    if (priority) {
-                        pcb.priority = priority;
+                    if (priority[0] != null) {
+                        pcb.priority = priority[0];
                     }
                     else {
                         pcb.priority = 0;
@@ -749,6 +749,9 @@ module PotatOS {
             if (type[0] == "fcfs" || type[0] == "rr" || type[0] == "priority") {
                 _cpuScheduling.schedule = type[0];
                 _StdOut.putText("Scheduler changed to " + type[0]);
+            }
+            else {
+                _StdOut.putText(type[0] + " is not a valid scheduling algorithm.");
             }
         }
 

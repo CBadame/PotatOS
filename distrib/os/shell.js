@@ -341,8 +341,8 @@ var PotatOS;
                     _StdOut.putText("User input is invalid. Please use hex, digits, or spaces.");
                 else {
                     var pcb = new PotatOS.PCB();
-                    if (priority) {
-                        pcb.priority = priority;
+                    if (priority[0] != null) {
+                        pcb.priority = priority[0];
                     }
                     else {
                         pcb.priority = 0;
@@ -537,6 +537,9 @@ var PotatOS;
             if (type[0] == "fcfs" || type[0] == "rr" || type[0] == "priority") {
                 _cpuScheduling.schedule = type[0];
                 _StdOut.putText("Scheduler changed to " + type[0]);
+            }
+            else {
+                _StdOut.putText(type[0] + " is not a valid scheduling algorithm.");
             }
         };
         return Shell;
