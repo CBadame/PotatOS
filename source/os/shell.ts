@@ -559,6 +559,7 @@ module PotatOS {
                         _PCBList[i].state = 'NEW';
                     }
 
+                    // Swap the process into memory if it is currently on Disk
                     if (_PCBList[i].location == "HDD") {
                         if (_MM.checkMem() == null) {
                             var pcbMem;
@@ -570,6 +571,7 @@ module PotatOS {
                             }
                             _krnDiskDriver.swap(pcbMem, _PCBList[i]);
                         }
+                        // If there is room in memory for the process, just write it to memory
                         else {
                             var tsb = _krnDiskDriver.checkFile(_PCBList[i].PID.toString());
                             _MM.write(_krnDiskDriver.read(tsb), _PCBList[i]);
@@ -596,6 +598,12 @@ module PotatOS {
         public shellKill(pid: number) {
             for (var i = 0; i < _PCBList.length; i++) {
                 if (_PCBList[i].PID == pid) {
+                    for (var j = 0; j < _DISK.FileList.length; j++){
+                        if (_DISK.FileList[j][1] == pid.toString()) {
+                            _krnDiskDriver.delete(_DISK.FileList[j][0]);
+                            PotatOS.Control.updateHDDDisplay();
+                        }
+                    }
                     _CPU.terminate(_PCBList[i]);
                     PotatOS.Control.updateCPUDisplay();
                     PotatOS.Control.updateProcessDisplay();
@@ -690,6 +698,12 @@ module PotatOS {
             }
             else {
                 _krnDiskDriver.delete(tsb);
+                for (var i = 0; i < _PCBList.length; i++) {
+                    if (_PCBList[i].PID == fName) {
+                        _PCBList.splice(i, 1);
+                    }
+                }
+                PotatOS.Control.updateProcessDisplay();
                 _StdOut.putText("Successfully deleted " + fName[0] + "!");
             }
         }

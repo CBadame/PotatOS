@@ -410,6 +410,12 @@ var PotatOS;
         Shell.prototype.shellKill = function (pid) {
             for (var i = 0; i < _PCBList.length; i++) {
                 if (_PCBList[i].PID == pid) {
+                    for (var j = 0; j < _DISK.FileList.length; j++) {
+                        if (_DISK.FileList[j][1] == pid.toString()) {
+                            _krnDiskDriver["delete"](_DISK.FileList[j][0]);
+                            PotatOS.Control.updateHDDDisplay();
+                        }
+                    }
                     _CPU.terminate(_PCBList[i]);
                     PotatOS.Control.updateCPUDisplay();
                     PotatOS.Control.updateProcessDisplay();
@@ -492,6 +498,12 @@ var PotatOS;
             }
             else {
                 _krnDiskDriver["delete"](tsb);
+                for (var i = 0; i < _PCBList.length; i++) {
+                    if (_PCBList[i].PID == fName) {
+                        _PCBList.splice(i, 1);
+                    }
+                }
+                PotatOS.Control.updateProcessDisplay();
                 _StdOut.putText("Successfully deleted " + fName[0] + "!");
             }
         };

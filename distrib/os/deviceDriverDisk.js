@@ -105,14 +105,20 @@ var PotatOS;
         };
         DeviceDriverDisk.prototype.write = function (tsb, inputData) {
             var fileData = '';
-            for (var i = 0; i < inputData.length; i++) {
+            for (var i = 0; i < inputData.length - 1; i++) {
                 fileData += inputData[i].toString();
+                if (inputData[i].length == 2) {
+                    fileData += " ";
+                }
             }
+            fileData += inputData[inputData.length - 1].toString();
             var data = sessionStorage.getItem(tsb);
             var newTsb = data[3] + ":" + data[5] + ":" + data[7];
             var newData = "01";
             var pointerTsb = _krnDiskDriver.findBlock();
             newData += "0" + pointerTsb[0] + "0" + pointerTsb[2] + "0" + pointerTsb[4];
+            sessionStorage.setItem(pointerTsb, '0100000000000000000000000000000000000000' +
+                '0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000');
             newData += _krnDiskDriver.toHex(fileData);
             if (newData.length > 128) {
                 var diffData = newData.slice(128, newData.length);
@@ -123,13 +129,13 @@ var PotatOS;
                 }
                 newData = newData.slice(0, 128);
                 sessionStorage.setItem(newTsb, newData);
-                console.log(newData);
                 _krnDiskDriver.write(newTsb, diffString);
             }
             else {
                 newData = "01000000" + newData.slice(8, newData.length);
+                sessionStorage.setItem(pointerTsb, '0000000000000000000000000000000000000000' +
+                    '0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000');
                 newData = _krnDiskDriver.zeroFill(newData);
-                console.log(newData);
                 sessionStorage.setItem(newTsb, newData);
                 PotatOS.Control.updateHDDDisplay();
             }
@@ -181,6 +187,12 @@ var PotatOS;
         DeviceDriverDisk.prototype.format = function () {
             _DISK.init();
             _DISK.FileList = new Array();
+            for (var i = 0; i < _PCBList.length; i++) {
+                if (_PCBList[i].location == "HDD") {
+                    _PCBList.splice(i, 1);
+                }
+            }
+            PotatOS.Control.updateProcessDisplay();
             PotatOS.Control.updateHDDDisplay();
         };
         DeviceDriverDisk.prototype.swap = function (pcbMem, pcbDisk) {

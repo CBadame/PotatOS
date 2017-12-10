@@ -116,36 +116,48 @@ module PotatOS {
         }
 
         public write(tsb: string, inputData) {
+
+            // Convert input into a string in case an array is passed in
             var fileData = '';
-            for (var i = 0; i < inputData.length; i++) {
+            for (var i = 0; i < inputData.length - 1; i++) {
                 fileData += inputData[i].toString();
+                if (inputData[i].length == 2) {
+                    fileData += " ";
+                }
             }
+            fileData += inputData[inputData.length - 1].toString();
+
             var data = sessionStorage.getItem(tsb);
             var newTsb = data[3] + ":" + data[5] + ":" + data[7];
             var newData = "01";
             var pointerTsb = _krnDiskDriver.findBlock();
             newData += "0" + pointerTsb[0] + "0" + pointerTsb[2] + "0" + pointerTsb[4];
+            sessionStorage.setItem(pointerTsb, '0100000000000000000000000000000000000000' +
+                '0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000');
             newData += _krnDiskDriver.toHex(fileData);
 
             // Break the data into multiple blocks if needed
             if (newData.length > 128) {
                 var diffData = newData.slice(128, newData.length);
                 var diffString = '';
+
+                // Convert input data back to string from hex for recursive call
                 for (var i = 0; i < diffData.length; i++) {
                     diffString += String.fromCharCode(parseInt(diffData[i] + diffData[i + 1], 16));
                     i++;
                 }
+
                 // Write the first 128 nibbles and then call write() on the rest
                 newData = newData.slice(0, 128);
                 sessionStorage.setItem(newTsb, newData);
-                console.log(newData);
                 _krnDiskDriver.write(newTsb, diffString);
             }
             else {
                 // If data does not fill an entire block, fill the empty space with zeroes
                 newData = "01000000" + newData.slice(8, newData.length);
+                sessionStorage.setItem(pointerTsb, '0000000000000000000000000000000000000000' +
+                    '0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000');
                 newData = _krnDiskDriver.zeroFill(newData);
-                console.log(newData);
                 sessionStorage.setItem(newTsb, newData);
                 PotatOS.Control.updateHDDDisplay();
             }
@@ -162,7 +174,6 @@ module PotatOS {
                 data = sessionStorage.getItem(nextTsb);
                 nextTsb = data[3] + ":" + data[5] + ":" + data[7];
             }
-
             // Append the file data for each block to
             for (var i = 0; i < tsbList.length; i++) {
                 data = sessionStorage.getItem(tsbList[i]);
@@ -209,6 +220,12 @@ module PotatOS {
         public format() {
             _DISK.init();
             _DISK.FileList = new Array();
+            for (var i = 0; i < _PCBList.length; i++) {
+                if (_PCBList[i].location == "HDD") {
+                    _PCBList.splice(i, 1);
+                }
+            }
+            PotatOS.Control.updateProcessDisplay();
             PotatOS.Control.updateHDDDisplay();
         }
 
