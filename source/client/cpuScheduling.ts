@@ -54,6 +54,7 @@ module PotatOS {
             if (_CPU.processIndex > _PCBList.length - 1)
                 _CPU.processIndex = 0;
 
+            // Changes index to next highest priority process if scheduler is set to priority
             if (this.schedule == 'priority') {
                 _CPU.processIndex = this.findPriority();
             }
