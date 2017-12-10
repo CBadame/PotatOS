@@ -685,6 +685,7 @@ module PotatOS {
                     // If everything passes, actually write to disk
                     else {
                         var data = data.replace(/['"]+/g, '');
+                        _krnDiskDriver.deleteContents(fileTsb);
                         _krnDiskDriver.write(fileTsb, data);
                         _StdOut.putText("Successfully wrote to " + contents[0] + "!");
                     }

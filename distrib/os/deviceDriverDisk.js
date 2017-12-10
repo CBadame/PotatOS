@@ -211,6 +211,21 @@ var PotatOS;
             _MM.write(_krnDiskDriver.read(tsb), pcbDisk);
             _krnDiskDriver["delete"](tsb);
         };
+        DeviceDriverDisk.prototype.deleteContents = function (tsb) {
+            var data = sessionStorage.getItem(tsb);
+            var tsbList = new Array();
+            var nextTsb = data[3] + ":" + data[5] + ":" + data[7];
+            while (nextTsb != "0:0:0") {
+                tsbList.push(nextTsb);
+                data = sessionStorage.getItem(nextTsb);
+                nextTsb = data[3] + ":" + data[5] + ":" + data[7];
+            }
+            for (var i = 0; i < tsbList.length; i++) {
+                sessionStorage.setItem(tsbList[i], "0100000000000000000000000000000000000000" +
+                    "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
+            }
+            PotatOS.Control.updateHDDDisplay();
+        };
         return DeviceDriverDisk;
     }(PotatOS.DeviceDriver));
     PotatOS.DeviceDriverDisk = DeviceDriverDisk;
