@@ -63,6 +63,10 @@ var PotatOS;
             this.commandList[this.commandList.length] = sc;
             sc = new PotatOS.ShellCommand(this.shellList, "ls", " - Lists all files on disk.");
             this.commandList[this.commandList.length] = sc;
+            sc = new PotatOS.ShellCommand(this.shellGetSchedule, "getschedule", " - Returns the current CPU scheduling algorithm.");
+            this.commandList[this.commandList.length] = sc;
+            sc = new PotatOS.ShellCommand(this.shellSetSchedule, "setschedule", "<schedule> - Changes the scheduling algorithm to either fcfs, rr, or priority.");
+            this.commandList[this.commandList.length] = sc;
             this.putPrompt();
         };
         Shell.prototype.putPrompt = function () {
@@ -263,6 +267,13 @@ var PotatOS;
                     case "ls":
                         _StdOut.putText("Lists all files stored on the disk.");
                         break;
+                    case "getschedule":
+                        _StdOut.putText("Tells you which scheduling algorithm is currently being used. Haven't" +
+                            "implemented a calendar yet for other 'schedules'.");
+                        break;
+                    case "setschedule":
+                        _StdOut.putText("Sets the CPU scheduling algorithm to what is given. Can choose between " +
+                            "[fcfs, rr, priority].");
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -517,6 +528,15 @@ var PotatOS;
             for (var i = 0; i < _DISK.FileList.length; i++) {
                 _StdOut.putText(_DISK.FileList[i][1]);
                 _StdOut.advanceLine();
+            }
+        };
+        Shell.prototype.shellGetSchedule = function () {
+            _StdOut.putText(_cpuScheduling.schedule);
+        };
+        Shell.prototype.shellSetSchedule = function (type) {
+            if (type[0] == "fcfs" || type[0] == "rr" || type[0] == "priority") {
+                _cpuScheduling.schedule = type[0];
+                _StdOut.putText("Scheduler changed to " + type[0]);
             }
         };
         return Shell;

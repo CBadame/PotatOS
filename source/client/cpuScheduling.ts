@@ -5,14 +5,14 @@ module PotatOS {
         constructor(public quantum: number = 6,
                     public qCount: number = 0,
                     public runAll: boolean = false,
-                    public schedule: string = 'Round Robin') {
+                    public schedule: string = 'rr') {
         }
 
         public init(): void {
             this.quantum = 5;
             this.qCount = 0;
             this.runAll = false;
-            this.schedule = 'Round Robin';
+            this.schedule = 'rr';
         }
 
         public nextProcess() {
@@ -24,7 +24,7 @@ module PotatOS {
             else
                 _CPU.processIndex++;
             if (_PCBList[_CPU.processIndex].location == "HDD") {
-                if (this.schedule == 'Round Robin') {
+                if (this.schedule == 'rr') {
                     _krnDiskDriver.swap(_PCBList[previousProcess], _PCBList[_CPU.processIndex]);
                 }
             }

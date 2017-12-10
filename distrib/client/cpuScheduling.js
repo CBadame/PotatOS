@@ -5,7 +5,7 @@ var PotatOS;
             if (quantum === void 0) { quantum = 6; }
             if (qCount === void 0) { qCount = 0; }
             if (runAll === void 0) { runAll = false; }
-            if (schedule === void 0) { schedule = 'Round Robin'; }
+            if (schedule === void 0) { schedule = 'rr'; }
             this.quantum = quantum;
             this.qCount = qCount;
             this.runAll = runAll;
@@ -15,7 +15,7 @@ var PotatOS;
             this.quantum = 5;
             this.qCount = 0;
             this.runAll = false;
-            this.schedule = 'Round Robin';
+            this.schedule = 'rr';
         };
         cpuScheduling.prototype.nextProcess = function () {
             var previousProcess = _CPU.processIndex;
@@ -26,7 +26,7 @@ var PotatOS;
             else
                 _CPU.processIndex++;
             if (_PCBList[_CPU.processIndex].location == "HDD") {
-                if (this.schedule == 'Round Robin') {
+                if (this.schedule == 'rr') {
                     _krnDiskDriver.swap(_PCBList[previousProcess], _PCBList[_CPU.processIndex]);
                 }
             }
