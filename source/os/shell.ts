@@ -593,7 +593,6 @@ module PotatOS {
                             }
                             _krnDiskDriver.swap(pcbMem, _PCBList[i]);
                         }
-                        // If there is room in memory for the process, just write it to memory
                         else {
                             var tsb = _krnDiskDriver.checkFile(_PCBList[i].PID.toString());
                             _MM.write(_krnDiskDriver.read(tsb), _PCBList[i]);
@@ -638,7 +637,31 @@ module PotatOS {
             _cpuScheduling.runAll = true;
             for (var i = 0; i < _PCBList.length; i++)
                 _PCBList[i].state = 'READY';
-            _MM.run(_PCBList[0]);
+
+            if (_cpuScheduling.schedule == 'priority') {
+                _CPU.processIndex = _cpuScheduling.findPriority();
+                if (_PCBList[_CPU.processIndex].location == "HDD") {
+                    if (_MM.checkMem() == null) {
+                        var pcbMem;
+                        for (var j = 0; j < _PCBList.length; j++) {
+                            if (_PCBList[j].segment == 2) {
+                                pcbMem = _PCBList[j];
+                                j = _PCBList.length;
+                            }
+                        }
+                        _krnDiskDriver.swap(pcbMem, _PCBList[_CPU.processIndex]);
+                    }
+                    else {
+                        var tsb = _krnDiskDriver.checkFile(_PCBList[_CPU.processIndex].PID.toString());
+                        _MM.write(_krnDiskDriver.read(tsb), _PCBList[_CPU.processIndex]);
+                        _krnDiskDriver.delete(tsb);
+                    }
+                }
+            }
+            else {
+                _CPU.processIndex = 0;
+            }
+            _MM.run(_PCBList[_CPU.processIndex]);
         }
 
         public shellQuantum(newVal: number) {

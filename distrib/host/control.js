@@ -113,12 +113,20 @@ var PotatOS;
             var i = 0;
             while (i < _PCBList.length) {
                 var hexPC = _PCBList[i].PC.toString(16).toUpperCase();
-                if (hexPC.length < 2)
+                if (hexPC.length < 2) {
                     hexPC = '0' + hexPC;
+                }
+                var segment;
+                if (_PCBList[i].segment == -1) {
+                    segment = "HDD";
+                }
+                else {
+                    segment = _PCBList[i].segment;
+                }
                 str += '<tr><td>' + _PCBList[i].PID + '</td><td>' + hexPC + '</td><td>' + _PCBList[i].Acc +
                     '</td><td>' + _PCBList[i].IR + '</td><td>' + _PCBList[i].Xreg + '</td><td>' + _PCBList[i].Yreg +
                     '</td><td>' + _PCBList[i].Zflag + '</td><td>' + _PCBList[i].state + '</td><td>' +
-                    _PCBList[i].segment + '</td>';
+                    segment + '</td>';
                 i++;
             }
             document.getElementById("tbPCB").innerHTML = str;
