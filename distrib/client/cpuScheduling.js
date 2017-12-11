@@ -51,6 +51,7 @@ var PotatOS;
                 _CPU.processIndex = 0;
             if (this.schedule == 'priority') {
                 _CPU.processIndex = this.findPriority();
+                _PCBList[_CPU.processIndex].state = 'RUNNING';
             }
             if (_PCBList[_CPU.processIndex].location == "HDD") {
                 var tsb = _krnDiskDriver.checkFile(_PCBList[_CPU.processIndex].PID.toString());
